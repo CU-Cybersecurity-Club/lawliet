@@ -19,6 +19,7 @@ virtualenv
 
 # .env files
 .env
+!lawliet/.env
 secrets.yml
 
 # Database files

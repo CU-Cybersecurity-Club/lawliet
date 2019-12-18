@@ -1,0 +1,18 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block title %}Settings | Penlite{% endblock %}
+
+{% block page-content %}
+<h1 class="mt-4">Settings</h1>
+
+{% for field in password_change_form %}
+<div class="container">
+  <div class="form-group">
+    {{ field }}
+    {% if field.errors %}
+    {{ field.errors }}
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

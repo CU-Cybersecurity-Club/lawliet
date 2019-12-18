@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, maximum-scale=1, initial-scale=1, shrink-to-fit=no" />
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link
+      rel="favicon"
+      type="image/png"
+      {% load static %} href="{% static 'img/favicon.png' %}" />
+
+    <!-- Bootstrap stylesheet -->
+    <link
+      rel="stylesheet"
+      {% load static %} href="{% static 'css/bootstrap.min.css' %}"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" />
+
+    <!-- Custom stylesheet -->
+    <link
+      rel="stylesheet"
+      {% load static %} href="{% static 'css/style.css' %}" />
+
+    {% block head %}{% endblock %}
+  </head>
+
+  {% block navbar %}{% endblock %}
+
+  <body>
+    {% block body %}{% endblock %}
+
+    <!-- JavaScript -->
+    <script
+      {% load static %} src="{% static 'js/jquery-3.4.1.min.js' %}"
+      integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" ></script>
+    <script
+      {% load static %} src="{% static 'js/popper.min.js' %}"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" ></script>
+    <script
+      {% load static %} src="{% static 'js/bootstrap.min.js' %}"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" ></script>
+    {% block javascripts %}{% endblock %}
+  </body>
+</html>

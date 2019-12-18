@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: penlite-dashboard-database
+  labels:
+    app: penlite-dashboard-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: penlite-dashboard-database
+  template:
+    metadata:
+      labels:
+        app: penlite-dashboard-database
+    spec:
+      containers:
+        - name: penlite-dashboard-database
+          image: wshand/penlite-dashboard-database:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: dashboard-secrets
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: penlite-dashboard-webserver
+  labels:
+    app: penlite-dashboard-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: penlite-dashboard-webserver
+  template:
+    metadata:
+      labels:
+        app: penlite-dashboard-webserver
+    spec:
+      containers:
+        - name: penlite-dashboard-webserver
+          image: wshand/penlite-dashboard-webserver:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: dashboard-secrets
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: penlite-dashboard-proxy
+  labels:
+    app: penlite-dashboard-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: penlite-dashboard-proxy
+  template:
+    metadata:
+      labels:
+        app: penlite-dashboard-proxy
+    spec:
+      containers:
+        - name: penlite-dashboard-proxy
+          image: wshand/penlite-dashboard-proxy:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: dashboard-secrets
+          ports:
+            - containerPort: 80
+              protocol: TCP
+            - containerPort: 443
+              protocol: TCP
+        - name: dnsmasq
+          image: "janeczku/go-dnsmasq:release-1.0.5"
+          args:
+            - --listen
+            - "127.0.0.1:53"
+            - --default-resolver
+            - --append-search-domains
+            - --hostsfile=/etc/hosts
+            - --verbose
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penlite-dashboard-database-svc
+spec:
+  selector:
+    app: penlite-dashboard-database
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penlite-dashboard-webserver-svc
+spec:
+  selector:
+    app: penlite-dashboard-webserver
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: penlite-dashboard-proxy-svc
+spec:
+  selector:
+    app: penlite-dashboard-proxy
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+  type: NodePort

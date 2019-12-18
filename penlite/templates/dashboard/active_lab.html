@@ -1,0 +1,15 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block title %}Active lab | Penlite{% endblock %}
+
+{% block page-content %}
+<h1 class="mt-4">Active lab</h1>
+
+<div style="overflow: hidden; padding-top: 56.25%; position: relative">
+  <iframe
+    src="/vnc/{{ user.get_username }}/vnc.html"
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 90%;"
+    allowfullscreen="true">
+  </iframe>
+</div>
+{% endblock %}

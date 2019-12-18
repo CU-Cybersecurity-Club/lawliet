@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up | Penlite{% endblock %}
+
+{% block body %}
+<div class="container justify-content-md-center my-4">
+  <form method="POST">
+    {% csrf_token %}
+    <h2 class="text-center display-4">
+      Sign up
+    </h2>
+
+    {% if form.non_field_errors %}
+    <span class="d-flex justify-content-center">
+      <div class="form-error alert alert-danger mx-auto" role="alert">
+        Some errors occurred while you were trying to sign up.
+        {{ form.non_field_errors }}
+      </div>
+    </span>
+    {% endif %}
+
+    <div class="container auth-form">
+
+      {% for field in form %}
+      <div class="form-group">
+        {% if field.label != "" %}
+        <label for="{{ field.id_for_label }}">
+          {{ field.label }}
+        </label>
+        {% endif %}
+        {{ field }}
+
+        {% if field.errors %}
+        <div class="form-error alert alert-danger mx-auto" role="alert">
+          {% if field.errors|length == 1 %}
+            {% for error in field.errors %}
+            {{ error|escape }}
+            {% endfor %}
+          {% else %}
+            {{ field.errors }}
+          {% endif %}
+        </div>
+        {% endif %}
+
+      </div>
+      {% endfor %}
+
+      <div class="row">
+        <div class="col">
+          <button
+            type="submit"
+            class="btn btn-primary float-left"
+            id="login-submit-button">
+            Sign up
+          </button>
+        </div>
+        <div class="col">
+          <a href="/login">
+            <button class="btn btn-primary float-right">
+              Return to login page
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

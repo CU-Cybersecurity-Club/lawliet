@@ -1,0 +1,28 @@
+*~
+*.swp
+
+# Python residuals
+*.pyc
+*.pyx
+*__pycache__
+*.ipynb_checkpoints
+*migrations
+
+# Static and user-uploaded files
+penlite/static
+penlite/media
+*keys
+
+# Virtual environments
+venv
+virtualenv
+
+# .env files
+.env
+secrets.yml
+
+# Database files
+db.sqlite3
+
+# Log file
+*.log

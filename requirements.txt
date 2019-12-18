@@ -1,0 +1,19 @@
+# Testing
+selenium
+
+# Web development
+django[argon2]
+gunicorn
+requests
+
+# Image processing
+Pillow
+
+# Database
+mysql
+
+# API access
+requests
+
+# Deployment automation
+python-dotenv

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: penlite-dashboard-database
+  name: lawliet-dashboard-database
   labels:
-    app: penlite-dashboard-database
+    app: lawliet-dashboard-database
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: penlite-dashboard-database
+      app: lawliet-dashboard-database
   template:
     metadata:
       labels:
-        app: penlite-dashboard-database
+        app: lawliet-dashboard-database
     spec:
       containers:
-        - name: penlite-dashboard-database
-          image: wshand/penlite-dashboard-database:latest
+        - name: lawliet-dashboard-database
+          image: wshand/lawliet-dashboard-database:latest
           imagePullPolicy: Always
           envFrom:
             - secretRef:
@@ -29,22 +29,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: penlite-dashboard-webserver
+  name: lawliet-dashboard-webserver
   labels:
-    app: penlite-dashboard-webserver
+    app: lawliet-dashboard-webserver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: penlite-dashboard-webserver
+      app: lawliet-dashboard-webserver
   template:
     metadata:
       labels:
-        app: penlite-dashboard-webserver
+        app: lawliet-dashboard-webserver
     spec:
       containers:
-        - name: penlite-dashboard-webserver
-          image: wshand/penlite-dashboard-webserver:latest
+        - name: lawliet-dashboard-webserver
+          image: wshand/lawliet-dashboard-webserver:latest
           imagePullPolicy: Always
           envFrom:
             - secretRef:
@@ -57,22 +57,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: penlite-dashboard-proxy
+  name: lawliet-dashboard-proxy
   labels:
-    app: penlite-dashboard-proxy
+    app: lawliet-dashboard-proxy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: penlite-dashboard-proxy
+      app: lawliet-dashboard-proxy
   template:
     metadata:
       labels:
-        app: penlite-dashboard-proxy
+        app: lawliet-dashboard-proxy
     spec:
       containers:
-        - name: penlite-dashboard-proxy
-          image: wshand/penlite-dashboard-proxy:latest
+        - name: lawliet-dashboard-proxy
+          image: wshand/lawliet-dashboard-proxy:latest
           imagePullPolicy: Always
           envFrom:
             - secretRef:
@@ -96,10 +96,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: penlite-dashboard-database-svc
+  name: lawliet-dashboard-database-svc
 spec:
   selector:
-    app: penlite-dashboard-database
+    app: lawliet-dashboard-database
   ports:
     - name: mysql
       port: 3306
@@ -110,10 +110,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: penlite-dashboard-webserver-svc
+  name: lawliet-dashboard-webserver-svc
 spec:
   selector:
-    app: penlite-dashboard-webserver
+    app: lawliet-dashboard-webserver
   ports:
     - name: http
       port: 8000
@@ -124,10 +124,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: penlite-dashboard-proxy-svc
+  name: lawliet-dashboard-proxy-svc
 spec:
   selector:
-    app: penlite-dashboard-proxy
+    app: lawliet-dashboard-proxy
   ports:
     - name: http
       port: 80

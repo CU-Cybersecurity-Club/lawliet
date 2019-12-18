@@ -33,7 +33,7 @@ RUN addgroup ${SERVER_USER} \
     && adduser -D -s /bin/false -H -G ${SERVER_USER} ${SERVER_USER} \
     && chown -R ${SERVER_USER}:${SERVER_USER} ${SITE_DIRECTORY}
 
-ADD penlite ${SITE_DIRECTORY}
+ADD lawliet ${SITE_DIRECTORY}
 
 WORKDIR ${SITE_DIRECTORY}
 COPY deploy_tools/webserver/run.sh .

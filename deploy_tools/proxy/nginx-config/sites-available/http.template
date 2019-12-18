@@ -28,7 +28,7 @@ server {
         proxy_set_header Connection "Upgrade";
 
         resolver 127.0.0.1:53 ipv6=off;
-        set ${DOLLAR}backend "http://penlite-env-${DOLLAR}1:6080/websockify";
+        set ${DOLLAR}backend "http://lawliet-env-${DOLLAR}1:6080/websockify";
         proxy_pass ${DOLLAR}backend;
     }
 
@@ -39,7 +39,7 @@ server {
         proxy_buffering off;
 
         resolver 127.0.0.1:53 ipv6=off;
-        set ${DOLLAR}backend "http://penlite-env-${DOLLAR}1:6080/${DOLLAR}2";
+        set ${DOLLAR}backend "http://lawliet-env-${DOLLAR}1:6080/${DOLLAR}2";
 	    proxy_pass ${DOLLAR}backend;
 	}
 }

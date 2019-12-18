@@ -9,8 +9,8 @@
 *migrations
 
 # Static and user-uploaded files
-penlite/static
-penlite/media
+lawliet/static
+lawliet/media
 *keys
 
 # Virtual environments

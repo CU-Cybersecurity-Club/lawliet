@@ -33,7 +33,7 @@ EOECHO
 fi
 
 # Run webserver
-gunicorn penlite.wsgi \
+gunicorn lawliet.wsgi \
     --bind 0.0.0.0:8000 \
     --chdir ${SITE_DIRECTORY} \
     --workers 2

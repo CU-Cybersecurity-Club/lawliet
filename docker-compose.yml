@@ -5,7 +5,7 @@ services:
   database:
     build:
       context: deploy_tools/db
-    image: wshand/penlite-dashboard-database:latest
+    image: wshand/lawliet-dashboard-database:latest
     volumes:
       - mysql-database:/var/lib/mysql:rw
     env_file:
@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: deploy_tools/webserver/Dockerfile
-    image: wshand/penlite-dashboard-webserver:latest
+    image: wshand/lawliet-dashboard-webserver:latest
     env_file:
       - .env
     ports:
@@ -28,7 +28,7 @@ services:
   proxy:
     build:
       context: deploy_tools/proxy
-    image: wshand/penlite-dashboard-proxy:latest
+    image: wshand/lawliet-dashboard-proxy:latest
     env_file:
       - .env
     volumes:

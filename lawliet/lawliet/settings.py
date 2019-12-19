@@ -29,12 +29,6 @@ if os.path.exists(dotenv_path):
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-#
-# If DJANGO_SECRET_KEY is undefined or doesn't exist as an environmental
-# variable, we generate a randomized 128-bit key.
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", b64encode(uuid.uuid4().bytes))
-
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.setdefault("DEVELOPMENT", "").lower() == "1":
     logging.warn("Running server in debug mode")
@@ -45,6 +39,18 @@ else:
 
 if not DEBUG and "HOST" not in os.environ:
     raise Exception("HOST environmental variable must be defined if DEBUG is False.")
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+#
+# If DJANGO_SECRET_KEY is undefined or doesn't exist as an environmental
+# variable, and DEBUG is True, we generate a randomized 128-bit key.
+if "DJANGO_SECRET_KEY" in os.environ:
+    SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+elif DEBUG:
+    SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", b64encode(uuid.uuid4().bytes))
+else:
+    raise Exception("DJANGO_SECRET_KEY must be defined in DEBUG is False.")
 
 ALLOWED_HOSTS = [os.environ.setdefault("HOST", "*"), "127.0.0.1"]
 

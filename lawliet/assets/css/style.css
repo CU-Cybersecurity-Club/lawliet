@@ -46,3 +46,7 @@ a.profile-card, a.profile-card:hover, a.profile-card:visited {
 .errorlist {
   margin-bottom: 0rem;
 }
+
+input.remember-me {
+  transform: scale(1.8);
+}

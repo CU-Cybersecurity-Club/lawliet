@@ -2,11 +2,12 @@ import os
 import random
 
 from django.test import TestCase
-from django.contrib.auth.models import User
 from dashboard.forms.auth import LoginForm, SignupForm
 from dashboard.forms.settings import PasswordChangeForm
 from uuid import UUID
+
 from .utils import *
+from users.models import User
 
 """
 ---------------------------------------------------

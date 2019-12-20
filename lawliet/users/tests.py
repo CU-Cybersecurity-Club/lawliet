@@ -3,15 +3,64 @@ import random
 
 from django.test import TestCase
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.exceptions import ValidationError
 from uuid import UUID
+
+from users.models import User
 
 # Helper functions
 
-random_username = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}"
-random_email = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}@colorado.edu"
-random_password = lambda rd: UUID(int=rd.getrandbits(128)).hex
+from dashboard.tests.utils import *
+
+"""
+---------------------------------------------------
+User tests (for custom User model)
+---------------------------------------------------
+"""
+
+
+class UserTestCase(TestCase):
+    def setUp(self):
+        self.rd = random.Random()
+        self.rd.seed(0)
+
+        self.username, self.email, self.password = create_random_user(self.rd)
+
+    def test_can_create_user(self):
+        user = User.objects.create_user(
+            username=self.username, email=self.email, password=self.password
+        )
+
+        self.assertEqual(user.username, self.username)
+        self.assertEqual(user.email, self.email)
+        self.assertTrue(user.check_password(self.password))
+        self.assertTrue(user.is_active)
+        self.assertFalse(user.is_staff)
+        self.assertFalse(user.is_superuser)
+
+    def test_can_create_superuser(self):
+        user = User.objects.create_superuser(
+            username=self.username, email=self.email, password=self.password
+        )
+        self.assertEqual(user.username, self.username)
+        self.assertEqual(user.email, self.email)
+        self.assertTrue(user.check_password(self.password))
+        self.assertTrue(user.is_active)
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_superuser)
+
+    def test_username_with_illegal_characters(self):
+        self.assertEqual(len(User.objects.all()), 0)
+
+        for username in ("meepy@", "me^epy", "m(eep)y"):
+            args = {
+                "username": username,
+                "email": self.email,
+                "password": self.password,
+            }
+            self.assertRaises(ValidationError, lambda: User.objects.create_user(*args))
+            self.assertEqual(len(User.objects.all()), 0)
 
 
 """

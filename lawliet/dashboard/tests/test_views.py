@@ -6,11 +6,11 @@ import random
 
 from django.test import TestCase, Client
 from django.contrib.auth import get_user, login, logout
-from django.contrib.auth.models import User
 from django.urls import reverse
 from uuid import UUID
 
 from .utils import *
+from users.models import User
 
 """
 ---------------------------------------------------

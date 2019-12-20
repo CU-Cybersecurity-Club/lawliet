@@ -2,12 +2,12 @@ import os
 import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from dashboard.forms.auth import SignupForm, LoginForm
 from dashboard.forms.settings import PasswordChangeForm
 from dashboard.models import LabEnvironment
+from users.models import User
 
 TEMPLATES = "dashboard"
 

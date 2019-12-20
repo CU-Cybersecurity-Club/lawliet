@@ -5,7 +5,8 @@ Forms for changing user settings.
 from django import forms
 from django.conf import settings
 from django.utils.translation import gettext as _
-from .fields import PasswordField
+from .fields import PasswordInput
+from users.models import User
 
 MAX_PASSWORD_LENGTH = settings.MAX_PASSWORD_LENGTH
 MIN_PASSWORD_LENGTH = settings.MIN_PASSWORD_LENGTH
@@ -19,17 +20,22 @@ PasswordChangeForm
 
 class PasswordChangeForm(forms.Form):
 
-    old_password = PasswordField(
-        placeholder="Enter current password",
+    old_password = forms.CharField(
+        widget=PasswordInput(attrs={"placeholder": "Enter current password"}),
         help_text="Enter the current password you use to login to this account.",
+        max_length=User.password.field.max_length,
     )
-    new_password = PasswordField(
-        placeholder="Enter new password",
+
+    new_password = forms.CharField(
+        widget=PasswordInput(attrs={"placeholder": "Enter current password"}),
         help_text="Enter the new password you want to use.",
+        max_length=User.password.field.max_length,
     )
-    new_repassword = PasswordField(
-        placeholder="Enter new password again",
+
+    new_repassword = forms.CharField(
+        widget=PasswordInput(attrs={"placeholder": "Enter new password again"}),
         help_text="Re-enter the new password you want to use.",
+        max_length=User.password.field.max_length,
     )
 
     def __init__(self, user, *args, **kwargs):

@@ -113,7 +113,7 @@ def scoreboard(request):
 @login_required
 def user_settings(request):
     template = os.path.join(TEMPLATES, "user_settings.html")
-    password_change_form = PasswordChangeForm()
+    password_change_form = PasswordChangeForm(request.user)
     return render(
         request, template, context={"password_change_form": password_change_form}
     )

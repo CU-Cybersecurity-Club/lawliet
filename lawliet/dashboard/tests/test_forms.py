@@ -4,6 +4,7 @@ import random
 from django.test import TestCase
 from django.contrib.auth.models import User
 from dashboard.forms.auth import LoginForm, SignupForm
+from dashboard.forms.settings import PasswordChangeForm
 from uuid import UUID
 from .utils import *
 
@@ -125,4 +126,51 @@ PasswordChangeForm tests
 
 class PasswordChangeFormTests(TestCase):
     def setUp(self):
-        pass
+        self.rd = random.Random()
+        self.rd.seed(0)
+
+        self.username, self.email, self.password = create_random_user(self.rd)
+
+        self.user = User.objects.create_user(
+            username=self.username, email=self.email, password=self.password
+        )
+
+    def test_valid_password_change(self):
+        # Login as the user and attempt to submit a
+        # password change request through the form.
+        new_password = random_password(self.rd)
+        form = PasswordChangeForm(
+            self.user,
+            data={
+                "old_password": self.password,
+                "new_password": new_password,
+                "new_repassword": new_password,
+            },
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_invalid_password_change(self):
+        # Input data should fail to be validated in the following
+        # cases:
+        # - The old_password isn't the user's password
+        # - The new password fields don't match up
+        new_password = random_password(self.rd)
+        form = PasswordChangeForm(
+            self.user,
+            data={
+                "old_password": random_password(self.rd),
+                "new_password": new_password,
+                "new_repassword": new_password,
+            },
+        )
+        self.assertFalse(form.is_valid())
+
+        form = PasswordChangeForm(
+            self.user,
+            data={
+                "old_password": self.password,
+                "new_password": random_password(self.rd),
+                "new_repassword": random_password(self.rd),
+            },
+        )
+        self.assertFalse(form.is_valid())

@@ -10,43 +10,14 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from uuid import UUID
 
-# Helper functions
-
-random_username = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}"
-random_email = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}@colorado.edu"
-random_password = lambda rd: UUID(int=rd.getrandbits(128)).hex
-
-def create_random_user(rd):
-    username = random_username(rd)
-    email = random_email(rd)
-    password = random_password(rd)
-    return username, email, password
-
-def signup_form_data(username, email, password):
-    return {
-        "username": username,
-        "email": email,
-        "password": password,
-        "repassword": password,
-    }
-
-def login_form_data(username, email, password):
-    return {
-        "username": username,
-        "password": password,
-    }
-
-def random_signup_form(rd):
-    return signup_form_data(*create_random_user(rd))
-
-def random_login_form(rd):
-    return login_form_data(*create_random_user(rd))
+from .utils import *
 
 """
 ---------------------------------------------------
 Signup tests
 ---------------------------------------------------
 """
+
 
 class SignupViewTestCase(TestCase):
     def setUp(self):
@@ -55,10 +26,8 @@ class SignupViewTestCase(TestCase):
         self.rd.seed(0)
 
         self.client = Client()
-        self.username, self.email, self.password = \
-            create_random_user(self.rd)
-        self.form_data = \
-            signup_form_data(self.username, self.email, self.password)
+        self.username, self.email, self.password = create_random_user(self.rd)
+        self.form_data = signup_form_data(self.username, self.email, self.password)
 
     def test_signup(self):
         # Create a new user and check that they were
@@ -84,7 +53,7 @@ class SignupViewTestCase(TestCase):
         #      - Passwords don't match
         kv_pairs = [
             ("username", self.username),
-            ("email",    self.email),
+            ("email", self.email),
             ("password", random_password(self.rd)),
         ]
         for (key, val) in kv_pairs:
@@ -94,11 +63,13 @@ class SignupViewTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(users, list(User.objects.all()))
 
+
 """
 ---------------------------------------------------
 Login tests
 ---------------------------------------------------
 """
+
 
 class LoginViewTestCase(TestCase):
     def setUp(self):
@@ -107,8 +78,7 @@ class LoginViewTestCase(TestCase):
         self.rd.seed(0)
 
         self.client = Client()
-        self.login_data = \
-            login_form_data(*create_random_user(self.rd))
+        self.login_data = login_form_data(*create_random_user(self.rd))
 
         User.objects.create_user(
             username=self.login_data["username"],
@@ -160,8 +130,7 @@ class LoginViewTestCase(TestCase):
         # 2. If we're logged out and try to visit another page, then
         #    we should be redirected to that page after login through
         #    the login page.
-        pages = ("user settings", "scoreboard", "active labs",
-                 "available labs")
+        pages = ("user settings", "scoreboard", "active labs", "available labs")
         for page in pages:
             response = self.client.get(reverse(page))
             self.assertEqual(response.status_code, 302)
@@ -179,11 +148,14 @@ class LoginViewTestCase(TestCase):
         response = self.client.post(response.url, self.login_data)
         self.assertEqual(response.url, reverse("dashboard"))
 
+
 """
 ---------------------------------------------------
 Logout tests
 ---------------------------------------------------
 """
+
+
 class LogoutViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -191,15 +163,11 @@ class LogoutViewTestCase(TestCase):
         self.rd.seed(0)
 
         self.client = Client()
-        self.username, self.email, self.password = \
-            create_random_user(self.rd)
-        self.form_data = \
-            signup_form_data(self.username, self.email, self.password)
+        self.username, self.email, self.password = create_random_user(self.rd)
+        self.form_data = signup_form_data(self.username, self.email, self.password)
 
         User.objects.create_user(
-            username=self.username,
-            email=random_email(self.rd),
-            password=self.password,
+            username=self.username, email=random_email(self.rd), password=self.password
         )
 
     def test_logout(self):

@@ -5,17 +5,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from dashboard.forms.auth import LoginForm, SignupForm
 from uuid import UUID
-
-# Helper functions
-
-random_username = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}"
-random_email = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}@colorado.edu"
-random_password = lambda rd: UUID(int=rd.getrandbits(128)).hex
-
+from .utils import *
 
 """
 ---------------------------------------------------
-LoginForm and SignupForm tests
+SignupForm tests
 ---------------------------------------------------
 """
 
@@ -82,6 +76,13 @@ class SignupFormTestCase(TestCase):
         self.assertFalse(signup_form.is_valid())
 
 
+"""
+---------------------------------------------------
+LoginForm tests
+---------------------------------------------------
+"""
+
+
 class LoginFormTestCase(TestCase):
     def setUp(self):
         # Seed RNG for reproducible results
@@ -113,3 +114,15 @@ class LoginFormTestCase(TestCase):
             data={"username": random_username(self.rd), "password": self.password}
         )
         self.assertFalse(login_form.is_valid())
+
+
+"""
+---------------------------------------------------
+PasswordChangeForm tests
+---------------------------------------------------
+"""
+
+
+class PasswordChangeFormTests(TestCase):
+    def setUp(self):
+        pass

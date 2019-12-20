@@ -22,14 +22,14 @@ from dashboard import views as dboard_views
 urlpatterns = [
     url(r"^$", dboard_views.index_page, name="index"),
     # Auth
-    url(r"^login$", dboard_views.login_page, name="login page"),
-    url(r"^logout$", dboard_views.logout_page, name="logout page"),
-    url(r"^signup$", dboard_views.signup_page, name="signup page"),
+    url(r"^login$", dboard_views.login_page, name="login"),
+    url(r"^logout$", dboard_views.logout_page, name="logout"),
+    url(r"^signup$", dboard_views.signup_page, name="signup"),
     url(r"^admin", admin.site.urls),
     # Dashboard
     url(r"^dashboard$", dboard_views.dashboard, name="dashboard"),
-    url(r"^labs$", dboard_views.lab_list, name="labs"),
-    url(r"^active-lab$", dboard_views.active_lab, name="active lab"),
+    url(r"^labs$", dboard_views.lab_list, name="available labs"),
+    url(r"^active-lab$", dboard_views.active_lab, name="active labs"),
     url(r"^scoreboard$", dboard_views.scoreboard, name="scoreboard"),
     url(r"^settings$", dboard_views.user_settings, name="user settings"),
     # Lab API

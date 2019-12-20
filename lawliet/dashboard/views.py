@@ -19,7 +19,7 @@ Landing page
 
 
 def index_page(request):
-    return redirect("/login")
+    return redirect("login")
 
 
 """
@@ -31,7 +31,7 @@ Authentication
 
 def login_page(request):
     if request.user.is_authenticated:
-        return redirect("/dashboard")
+        return redirect("dashboard")
 
     # On a POST request, attempt to login
     form = LoginForm(request.POST if request.POST else None)
@@ -39,7 +39,7 @@ def login_page(request):
         user = form.login(request)
         if user:
             login(request, user)
-            redirect_url = request.GET.get("next", "/dashboard")
+            redirect_url = request.GET.get("next", "dashboard")
             return redirect(redirect_url)
 
     template = os.path.join(TEMPLATES, "login.html")
@@ -48,7 +48,7 @@ def login_page(request):
 
 def signup_page(request):
     if request.user.is_authenticated:
-        return redirect("/dashboard")
+        return redirect("dashboard")
 
     template = os.path.join(TEMPLATES, "signup.html")
 
@@ -61,7 +61,7 @@ def signup_page(request):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             user = User.objects.create_user(username, email, password)
-            return redirect("/dashboard")
+            return redirect("dashboard")
 
         else:
             return render(request, template, context={"form": form})
@@ -74,7 +74,7 @@ def logout_page(request):
     if request.user.is_authenticated:
         logout(request)
 
-    return redirect("/login")
+    return redirect("login")
 
 
 """
@@ -123,11 +123,11 @@ def user_settings(request):
 def generate_lab(request):
     api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
     requests.put(url=api_server_host)
-    return redirect("/dashboard")
+    return redirect("dashboard")
 
 
 @login_required
 def delete_lab(request):
     api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
     requests.delete(url=api_server_host)
-    return redirect("/dashboard")
+    return redirect("dashboard")

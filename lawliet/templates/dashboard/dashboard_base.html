@@ -14,7 +14,7 @@
       <div class="sidebar-heading">Lawliet</div>
     <div class="list-group list-group-flush">
       <!-- Profile -->
-      <a href="dashboard" class="list-group-item list-group-item-action profile-card">
+      <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action profile-card">
         <div class="row row-cols-2">
           <div class="col" >
             <div class="rounded-lg" style="border-color: black; border-width: 10px;">
@@ -42,16 +42,16 @@
           Labs
         </button>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="/labs">Available labs</a>
-          <a class="dropdown-item" href="/active-lab">Active environments</a>
+          <a class="dropdown-item" href="{% url 'available labs' %}">Available labs</a>
+          <a class="dropdown-item" href="{% url 'active labs' %}">Active environments</a>
         </div>
       </div>
 
       <!-- Scoreboard -->
-      <a href="scoreboard" class="list-group-item list-group-item-action bg-light">Scoreboard</a>
+      <a href="{% url 'scoreboard' %}" class="list-group-item list-group-item-action bg-light">Scoreboard</a>
 
       <!-- Settings -->
-      <a href="settings" class="list-group-item list-group-item-action bg-light">Settings</a>
+      <a href="{% url 'user settings' %}" class="list-group-item list-group-item-action bg-light">Settings</a>
     </div>
   </div>
   <!-- /#sidebar-wrapper -->
@@ -73,7 +73,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="/logout">Logout<span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{% url 'logout' %}">Logout<span class="sr-only">(current)</span></a>
             </li>
             <!--
             <li class="nav-item dropdown">

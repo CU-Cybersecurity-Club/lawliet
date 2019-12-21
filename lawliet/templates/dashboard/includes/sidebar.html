@@ -1,0 +1,81 @@
+{% comment %}
+Sidebar for the dashboard
+{% endcomment %}
+
+<div class="accordion bg-light border-right" id="sidebar-wrapper">
+  <div class="sidebar-heading">
+    {% include "includes/logo.html" %}
+  </div>
+
+  <div class="list-group list-group-flush">
+
+    {# User profile #}
+    <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action profile-card">
+      <div class="row row-cols-2">
+        <div class="col" >
+          <div class="rounded-lg" style="border-color: black; border-width: 10px;">
+            <img 
+              class="profile-card-image"
+              {% load static %}
+              {% get_media_prefix as MEDIA_PREFIX %}
+              src="{{ MEDIA_PREFIX }}{{ user.profile.profile_image.name }}">
+          </div>
+        </div>
+        <div class="col profile-card-username">
+          <p style="margin: auto;">{{ user.get_username }}</p>
+        </div>
+      </div>
+    </a>
+
+    {# Dashboard #}
+    <a href="{% url 'dashboard' %}">
+      <button class="btn btn-dark sidebar-button text-left">
+        <p class="my-2">Dashboard</p>
+      </button>
+    </a>
+
+    {# Lab environment access #}
+    <div>
+      <button
+          class="border-top border-bottom btn btn-dark sidebar-button text-left"
+          type="button"
+          data-toggle="collapse"
+          data-target="#lab-menu"
+          aria-expanded="true"
+          aria-controls="lab-menu">
+        <p class="my-2">Labs</p>
+      </button>
+
+      <div
+          id="lab-menu"
+          class="collapse"
+          aria-labelledby="lab-menu-header"
+          data-parent="#sidebar-wrapper">
+        <ul class="list-group">
+          <a class="list-group-item list-group-item-action bg-light" href="{% url 'available labs' %}">
+            Available labs
+          </a>
+          <a class="list-group-item list-group-item-action bg-light" href="{% url 'active labs' %}">
+            Active labs
+          </a>
+        </ul>
+      </div>
+    </div>
+
+    {% comment %}
+    {# Scoreboard #}
+    <a href="{% url 'scoreboard' %}">
+      <button class="btn btn-dark sidebar-button text-left">
+        <p class="my-2">Scoreboard</p>
+      </button>
+    </a>
+    {% endcomment %}
+
+    {# Settings #}
+    <a href="{% url 'user settings' %}">
+      <button class="btn btn-dark sidebar-button text-left">
+        <p class="my-2">Settings</p>
+      </button>
+    </a>
+  </div>
+</div>

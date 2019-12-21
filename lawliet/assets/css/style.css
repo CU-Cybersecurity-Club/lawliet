@@ -17,6 +17,10 @@
   max-width: 1rem;
 }
 
+a, a:hover, a:visited {
+  text-decoration: none !important;
+}
+
 a.profile-card, a.profile-card:hover, a.profile-card:visited {
   background-color: #bbbbbb;
   text-decoration: none !important;
@@ -47,12 +51,13 @@ a.profile-card, a.profile-card:hover, a.profile-card:visited {
   margin-bottom: 0rem;
 }
 
-.site-title {
-  font-family: lobster two, roboto, sans-serif !important;
-}
-
 input.remember-me {
   transform: scale(1.8);
+}
+
+/* Styling for the site logo */
+.site-logo {
+  font-family: lobster two, roboto, sans-serif !important;
 }
 
 /***********************************
@@ -60,6 +65,12 @@ input.remember-me {
  ***********************************/
 #sidebar-wrapper .sidebar-heading {
   font-size: 1.5rem;
+}
+
+.sidebar-button {
+  width: 100%;
+  border-radius: 0px !important;
+  border-color: white !important;
 }
 
 /***********************************

@@ -21,25 +21,6 @@ a, a:hover, a:visited {
   text-decoration: none !important;
 }
 
-a.profile-card, a.profile-card:hover, a.profile-card:visited {
-  background-color: #bbbbbb;
-  text-decoration: none !important;
-}
-
-.profile-card-image {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-left: 0.5rem;
-  max-width: 60%;
-  max-height: 60%;
-}
-
-.profile-card-username {
-  margin: auto;
-  font-family: monospace, sans-serif, arial;
-  font-color: black;
-}
-
 .form-error {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -61,16 +42,57 @@ input.remember-me {
 }
 
 /***********************************
+ * Profile card
+ ***********************************/
+a.profile-card, a.profile-card:visited {
+  background-color: #99a3a4;
+  text-decoration: none !important;
+}
+
+a.profile-card:hover {
+  background-color: #85929e;
+  text-decoration: none !important;
+}
+
+.profile-card-image {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0.5rem;
+  max-width: 60%;
+  max-height: 60%;
+}
+
+.profile-card-username {
+  margin: auto;
+  font-family: monospace, sans-serif, arial;
+  color: black;
+}
+
+/***********************************
  * CSS for dashboard sidebar
  ***********************************/
 #sidebar-wrapper .sidebar-heading {
   font-size: 1.5rem;
+  color: white;
+}
+
+.sidebar-wrapper {
+  background-color: #212f3c;
+  font-family: sans-serif;
 }
 
 .sidebar-button {
   width: 100%;
+  background-color: #34495e;
+  color: white;
   border-radius: 0px !important;
   border-color: white !important;
+  border-width: 0px;
+}
+
+.sidebar-button:hover {
+  background-color: #1b2631;
+  color: white;
 }
 
 /***********************************

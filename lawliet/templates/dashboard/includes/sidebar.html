@@ -2,7 +2,7 @@
 Sidebar for the dashboard
 {% endcomment %}
 
-<div class="accordion bg-light border-right" id="sidebar-wrapper">
+<div class="accordion sidebar-wrapper border-right" id="sidebar-wrapper">
   <div class="sidebar-heading">
     {% include "includes/logo.html" %}
   </div>
@@ -28,16 +28,16 @@ Sidebar for the dashboard
     </a>
 
     {# Dashboard #}
-    <a href="{% url 'dashboard' %}">
-      <button class="btn btn-dark sidebar-button text-left">
+    <a class="mt-1" href="{% url 'dashboard' %}">
+      <button class="btn sidebar-button text-left">
         <p class="my-2">Dashboard</p>
       </button>
     </a>
 
     {# Lab environment access #}
-    <div>
+    <div class="mt-1">
       <button
-          class="border-top border-bottom btn btn-dark sidebar-button text-left"
+          class="btn sidebar-button text-left"
           type="button"
           data-toggle="collapse"
           data-target="#lab-menu"
@@ -64,15 +64,15 @@ Sidebar for the dashboard
 
     {% comment %}
     {# Scoreboard #}
-    <a href="{% url 'scoreboard' %}">
-      <button class="btn btn-dark sidebar-button text-left">
+    <a class="mt-1" href="{% url 'scoreboard' %}">
+      <button class="btn sidebar-button text-left">
         <p class="my-2">Scoreboard</p>
       </button>
     </a>
     {% endcomment %}
 
     {# Settings #}
-    <a href="{% url 'user settings' %}">
+    <a class="mt-1" href="{% url 'user settings' %}">
       <button class="btn btn-dark sidebar-button text-left">
         <p class="my-2">Settings</p>
       </button>

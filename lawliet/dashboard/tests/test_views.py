@@ -184,3 +184,64 @@ class LogoutViewTestCase(TestCase):
         self.assertFalse(get_user(self.client).is_authenticated)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("login"))
+
+
+"""
+---------------------------------------------------
+Settings tests
+---------------------------------------------------
+"""
+
+
+class SettingsViewTestCase(TestCase):
+    def setUp(self):
+        # Set up RNG to get reproducible results
+        self.rd = random.Random()
+        self.rd.seed(0)
+
+        self.client = Client()
+        self.username, self.email, self.password = create_random_user(self.rd)
+        User.objects.create_user(
+            username=self.username, email=random_email(self.rd), password=self.password
+        )
+
+        # Log the client into the test account by default
+        self.client.force_login(User.objects.get(username=self.username))
+
+    def test_change_password(self):
+        new_password = random_password(self.rd)
+        form_data = {
+            "old_password": self.password,
+            "new_password": new_password,
+            "new_repassword": new_password,
+        }
+        self.client.post(reverse("user settings"), form_data)
+        user = User.objects.get(username=self.username)
+        self.assertFalse(user.check_password(self.password))
+        self.assertTrue(user.check_password(new_password))
+
+    def test_invalid_change_password(self):
+        # Attempt to change password with invalid form data
+        new_password = random_password(self.rd)
+
+        # 1. Old password is incorrect
+        form_data = {
+            "old_password": random_password(self.rd),
+            "new_password": new_password,
+            "new_repassword": new_password,
+        }
+        self.client.post(reverse("user settings"), form_data)
+        user = User.objects.get(username=self.username)
+        self.assertTrue(user.check_password(self.password))
+        self.assertFalse(user.check_password(new_password))
+
+        # 2. New passwords don't match
+        form_data = {
+            "old_password": self.password,
+            "new_password": random_password(self.rd),
+            "new_repassword": random_password(self.rd),
+        }
+        self.client.post(reverse("user settings"), form_data)
+        user = User.objects.get(username=self.username)
+        self.assertTrue(user.check_password(self.password))
+        self.assertFalse(user.check_password(new_password))

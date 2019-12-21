@@ -11,7 +11,15 @@
 
     <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
-      <div class="sidebar-heading">Lawliet</div>
+      {% comment %}
+      <div class="sidebar-heading text-center">
+        Lawliet
+      </div>
+      {% endcomment %}
+      <div class="sidebar-heading">
+        {% include "includes/logo.html" %}
+      </div>
+
     <div class="list-group list-group-flush">
       <!-- Profile -->
       <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action profile-card">

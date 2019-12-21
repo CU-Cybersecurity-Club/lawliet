@@ -8,6 +8,7 @@ from dashboard.forms.auth import SignupForm, LoginForm
 from dashboard.forms.settings import PasswordChangeForm
 from dashboard.models import LabEnvironment
 from users.models import User
+from users.forms import ProfileForm
 
 TEMPLATES = "dashboard"
 
@@ -113,10 +114,24 @@ def scoreboard(request):
 @login_required
 def user_settings(request):
     template = os.path.join(TEMPLATES, "user_settings.html")
-    password_change_form = PasswordChangeForm(request.user)
-    return render(
-        request, template, context={"password_change_form": password_change_form}
+    pass_change_form = PasswordChangeForm(
+        request.user, request.POST if request.POST else None
     )
+    profile_change_form = ProfileForm(request.POST if request.POST else None)
+
+    if request.POST and pass_change_form.is_valid():
+        new_password = pass_change_form.cleaned_data["new_password"]
+        request.user.set_password(new_password)
+        request.user.save()
+    elif request.POST and profile_change_form.is_valid():
+        pass
+        # profile_change_form.save()
+
+    context = {
+        "password_change_form": pass_change_form,
+        "profile_change_form": profile_change_form,
+    }
+    return render(request, template, context=context)
 
 
 @login_required

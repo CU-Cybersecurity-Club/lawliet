@@ -16,12 +16,6 @@ body {
   transition: margin .25s ease-out;
 }
 
-#sidebar-wrapper .sidebar-heading {
-  padding: 0.875rem 1.25rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
 #sidebar-wrapper .list-group {
   width: 15rem;
 }

@@ -17,22 +17,6 @@ MAX_PASSWORD_LENGTH = settings.MAX_PASSWORD_LENGTH
 MIN_PASSWORD_LENGTH = settings.MIN_PASSWORD_LENGTH
 
 
-class TextInput(forms.TextInput):
-    """TextInput widget with custom styling."""
-
-    def __init__(self, placeholder=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.attrs = {"class": "form-control", "placeholder": placeholder}
-
-
-class PasswordInput(forms.PasswordInput):
-    """TextInput widget with custom styling."""
-
-    def __init__(self, placeholder=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.attrs = {"class": "form-control", "placeholder": placeholder}
-
-
 """
 ---------------------------------------------------
 SignupForm
@@ -46,7 +30,7 @@ class SignupForm(forms.ModelForm):
     """
 
     repassword = forms.CharField(
-        widget=PasswordInput(placeholder="Enter your password again"),
+        widget=PasswordInput(attrs={"placeholder": "Enter your password again"}),
         label="",
         help_text="Re-enter the password you entered in the previous box.",
         max_length=User.password.field.max_length,
@@ -56,9 +40,9 @@ class SignupForm(forms.ModelForm):
         model = User
         fields = ("email", "username", "password")
         widgets = {
-            "email": TextInput(placeholder="Enter your email address"),
-            "username": TextInput(placeholder="Select a username"),
-            "password": PasswordInput(placeholder="Choose a password"),
+            "email": TextInput(attrs={"placeholder": "Enter your email address"}),
+            "username": TextInput(attrs={"placeholder": "Select a username"}),
+            "password": PasswordInput(attrs={"placeholder": "Choose a password"}),
         }
         help_texts = {
             "email": (

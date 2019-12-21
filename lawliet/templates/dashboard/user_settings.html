@@ -3,16 +3,64 @@
 {% block title %}Settings | Lawliet{% endblock %}
 
 {% block page-content %}
-<h1 class="mt-4">Settings</h1>
+<h1 class="my-4">Settings</h1>
 
-{% for field in password_change_form %}
-<div class="container">
-  <div class="form-group">
-    {{ field }}
-    {% if field.errors %}
-    {{ field.errors }}
-    {% endif %}
+<div class="row">
+
+  {% comment %}
+  List of tabs on the left-hand side. Each tab corresponds to a group of
+  related settings that the user can set.
+  {% endcomment %}
+  <div class="col-4">
+    <div class="list-group" id="list-tab" role="tablist">
+      {% comment %}
+      <a
+        class="list-group-item list-group-item-action"
+        id="list-profile-list"
+        data-toggle="list"
+        href="#list-profile"
+        role="tab"
+        aria-controls="profile">
+        Profile options
+      </a>
+      {% endcomment %}
+      <a
+        class="list-group-item list-group-item-action active"
+        id="list-passchange-list"
+        data-toggle="list"
+        href="#list-passchange"
+        role="tab"
+        aria-controls="password change">
+        Change your password
+      </a>
+    </div>
   </div>
+
+  {% comment %}
+  List where each item is a group of related settings that the user
+  can modify.
+  {% endcomment %}
+  <div class="col-8">
+    <div class="tab-content" id="nav-tabContent">
+      {% comment %}
+      <div
+        class="tab-pane fade show"
+        id="list-profile"
+        role="tabpanel"
+        aria-labelledby="list-profile-list">
+        {% include "dashboard/includes/profile_change.html" %}
+      </div>
+      {% endcomment %}
+      <div
+        class="tab-pane fade show active"
+        id="list-passchange"
+        role="tabpanel"
+        aria-labelledby="list-passchange-list">
+        {% include "dashboard/includes/password_change.html" %}
+      </div>
+
+    </div>
+  </div>
+
 </div>
-{% endfor %}
 {% endblock %}

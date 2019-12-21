@@ -1,0 +1,66 @@
+<form method="POST">
+  <h2 class="mb-4">Make changes to your profile</h2>
+
+  {% comment %}
+  {% if profile_change_form.non_field_errors %}
+  <span class="d-flex justify-content-center">
+    <div class="form-error alert alert-danger mx-auto" role="alert">
+      {% if profile_change_form.non_field_errors|length == 1 %}
+
+      <div class="text-center">
+      {% for error in profile_change_form.non_field_errors %}
+      {{ error|escape }}
+      {% endfor %}
+      </div>
+
+      {% else %}
+
+      Unable to change your profile.
+      {{ profile_change_form.non_field_errors }}
+
+      {% endif %}
+    </div>
+  </span>
+  {% endif %}
+  {% endcomment %}
+
+  <div class="container float-left">
+    {% with profile_image=profile_change_form.profile_image %}
+    <div class="row">
+      <div class="col-4">
+        <h4>{{ profile_image.label }}</h4>
+      </div>
+      <div class="col-6">
+        {% load static %}
+        {% get_media_prefix as MEDIA_PREFIX %}
+        <img
+          class="img-thumbnail img-fluid mb-2 profile-card-image"
+          alt="User profile image"
+          src="{{ MEDIA_PREFIX }}{{ user.profile.profile_image.name }}">
+        <p>
+        {{ profile_image }}
+        {% if profile_image.errors %}
+        {{ profile_image.errors }}
+        {% endif %}
+        </p>
+      </div>
+    </div>
+    {% endwith %}
+
+    {% with description=profile_change_form.description %}
+    <div class="form-group">
+      {{ description }}
+      {% if description.errors %}
+      {{ description.errors }}
+      {% endif %}
+    </div>
+    {% endwith %}
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      id="profile-change-submit-button">
+      Save
+    </button>
+  </div>
+</form>

@@ -42,14 +42,3 @@ body {
     margin-left: -15rem;
   }
 }
-
-.sidebar-toggle {
-  border-width: 0.25rem;
-  border-color: black;
-  border-radius: 0.5rem;
-}
-
-.sidebar-toggle-icon {
-  max-width: 25px;
-  max-height: 25px;
-}

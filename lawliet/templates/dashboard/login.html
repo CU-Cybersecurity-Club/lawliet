@@ -3,10 +3,13 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
+<h1 class="display-1">
+  {% include "includes/logo.html" %}
+</h1>
 <div class="container justify-content-md-center my-4">
   <form method="POST">
     {% csrf_token %}
-    <h2 class="text-center display-4">
+    <h2 class="text-center display-5">
       Login
     </h2>
 

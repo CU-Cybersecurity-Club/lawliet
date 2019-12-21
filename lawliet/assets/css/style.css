@@ -96,6 +96,19 @@ a.profile-card:hover {
 }
 
 /***********************************
+ * Navbar CSS
+ ***********************************/
+.dashboard-navbar {
+  background-color: #34495e;
+  font-family: sans-serif;
+}
+
+.sidebar-toggle-icon {
+  max-width: 25px;
+  max-height: 25px;
+}
+
+/***********************************
  * Custom fonts
  ***********************************/
 @font-face {

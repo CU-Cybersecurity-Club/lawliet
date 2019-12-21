@@ -119,18 +119,22 @@ def user_settings(request):
     )
     profile_change_form = ProfileForm(request.POST if request.POST else None)
 
-    if request.POST and pass_change_form.is_valid():
-        new_password = pass_change_form.cleaned_data["new_password"]
-        request.user.set_password(new_password)
-        request.user.save()
-    elif request.POST and profile_change_form.is_valid():
-        pass
-        # profile_change_form.save()
-
     context = {
         "password_change_form": pass_change_form,
         "profile_change_form": profile_change_form,
     }
+
+    if request.POST and pass_change_form.is_valid():
+        new_password = pass_change_form.cleaned_data["new_password"]
+        request.user.set_password(new_password)
+        request.user.save()
+
+        context["successful_pass_change"] = True
+
+    elif request.POST and profile_change_form.is_valid():
+        pass
+        # profile_change_form.save()
+
     return render(request, template, context=context)
 
 

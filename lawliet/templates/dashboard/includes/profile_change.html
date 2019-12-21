@@ -26,11 +26,13 @@
   {% endcomment %}
 
   <div class="container float-left">
-    {% with profile_image=profile_change_form.profile_image %}
     <div class="row">
+      {# Profile image #}
+      {% with profile_image=profile_change_form.profile_image %}
       <div class="col-4">
         <h4>{{ profile_image.label }}</h4>
       </div>
+
       <div class="col-6">
         {% load static %}
         {% get_media_prefix as MEDIA_PREFIX %}
@@ -40,22 +42,24 @@
           src="{{ MEDIA_PREFIX }}{{ user.profile.profile_image.name }}">
         <p>
         {{ profile_image }}
-        {% if profile_image.errors %}
-        {{ profile_image.errors }}
-        {% endif %}
+        {% include "includes/field_errors.html" with errors=profile_image.errors only %}
         </p>
       </div>
-    </div>
-    {% endwith %}
+      {% endwith %}
 
-    {% with description=profile_change_form.description %}
-    <div class="form-group">
-      {{ description }}
-      {% if description.errors %}
-      {{ description.errors }}
-      {% endif %}
+      <div class="w-100"></div>
+
+      {# Profile description #}
+      {% with description=profile_change_form.description %}
+      <div class="col-4">
+        <h4>{{ description.label }}</h4>
+      </div>
+      <div class="col-6">
+        {{ description }}
+        {% include "includes/field_errors.html" with errors=description.errors only %}
+      </div>
+      {% endwith %}
     </div>
-    {% endwith %}
 
     <button
       type="submit"

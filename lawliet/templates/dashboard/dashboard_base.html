@@ -12,32 +12,9 @@
 
   {# Page content #}
   <div id="page-content-wrapper">
-
-      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-        <button class="btn btn-light sidebar-toggle" id="menu-toggle">
-          {% load static %}
-          <img class="sidebar-toggle-icon rounded-lg"
-            src="{% static 'svg/hamburger.svg' %}">
-        </button>
-
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'logout' %}">
-                Logout
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <div class="container-fluid">
-        {% block page-content %}{% endblock %}
-      </div>
+    {% include "dashboard/includes/navbar.html" %}
+    <div class="container-fluid">
+      {% block page-content %}{% endblock %}
     </div>
   </div>
 </div>

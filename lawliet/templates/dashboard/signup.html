@@ -3,10 +3,13 @@
 {% block title %}Sign Up | Lawliet{% endblock %}
 
 {% block body %}
+<h1 class="display-1">
+  {% include "includes/logo.html" %}
+</h1>
 <div class="container justify-content-md-center my-4">
   <form method="POST">
     {% csrf_token %}
-    <h2 class="text-center display-4">
+    <h2 class="text-center display-5">
       Sign up
     </h2>
 
@@ -30,17 +33,7 @@
         {% endif %}
         {{ field }}
 
-        {% if field.errors %}
-        <div class="form-error alert alert-danger mx-auto" role="alert">
-          {% if field.errors|length == 1 %}
-            {% for error in field.errors %}
-            {{ error|escape }}
-            {% endfor %}
-          {% else %}
-            {{ field.errors }}
-          {% endif %}
-        </div>
-        {% endif %}
+        {% include "includes/field_errors.html" with errors=field.errors only %}
 
       </div>
       {% endfor %}

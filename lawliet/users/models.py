@@ -69,7 +69,7 @@ class Profile(models.Model):
     )
 
     # User-supplied description of themselves
-    description = models.CharField(max_length=1000, default="")
+    description = models.CharField(max_length=1000, default="", blank=True)
 
     # Maximum number of environments a user can have running at any given time
     max_instances = models.PositiveSmallIntegerField(

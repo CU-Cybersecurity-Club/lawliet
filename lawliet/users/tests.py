@@ -1,10 +1,11 @@
 import os
 import random
 
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user
 from uuid import UUID
 
 from users.models import User
@@ -61,6 +62,29 @@ class UserTestCase(TestCase):
             }
             self.assertRaises(ValidationError, lambda: User.objects.create_user(*args))
             self.assertEqual(len(User.objects.all()), 0)
+
+    def test_can_disable_user(self):
+        """Should be able to disable users so that we can stop login."""
+        user = User.objects.create_user(
+            username=self.username, email=self.email, password=self.password
+        )
+        self.assertTrue(user.is_active)
+
+        # Should be able to login as the user
+        client = Client()
+        client.login(username=self.username, password=self.password)
+        self.assertTrue(get_user(client).is_authenticated)
+
+        # Deactivate the user. Open session should be closed, and it should
+        # be impossible to login as the disabled user.
+        user.is_active = False
+        user.save()
+
+        self.assertFalse(get_user(client).is_authenticated)
+        client.logout()
+
+        client.login(username=self.username, password=self.password)
+        self.assertFalse(get_user(client).is_authenticated)
 
 
 """

@@ -30,7 +30,7 @@ Sidebar for the dashboard
     {# Dashboard #}
     <a class="mt-1" href="{% url 'dashboard' %}">
       <button class="btn sidebar-button text-left">
-        <p class="my-2">Dashboard</p>
+        <p class="my-2 text-monospace">Dashboard</p>
       </button>
     </a>
 
@@ -43,7 +43,7 @@ Sidebar for the dashboard
           data-target="#lab-menu"
           aria-expanded="true"
           aria-controls="lab-menu">
-        <p class="my-2">Labs</p>
+        <p class="my-2 text-monospace">Labs</p>
       </button>
 
       <div
@@ -52,11 +52,17 @@ Sidebar for the dashboard
           aria-labelledby="lab-menu-header"
           data-parent="#sidebar-wrapper">
         <ul class="list-group">
-          <a class="list-group-item list-group-item-action bg-light" href="{% url 'available labs' %}">
+          {# Show labs that the user can access #}
+          <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'available labs' %}">
             Available labs
           </a>
-          <a class="list-group-item list-group-item-action bg-light" href="{% url 'active labs' %}">
+          {# Show what labs the user currently has running #}
+          <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'active labs' %}">
             Active labs
+          </a>
+          {# Upload form for new labs #}
+          <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'upload lab' %}">
+            Upload new
           </a>
         </ul>
       </div>
@@ -66,7 +72,7 @@ Sidebar for the dashboard
     {# Scoreboard #}
     <a class="mt-1" href="{% url 'scoreboard' %}">
       <button class="btn sidebar-button text-left">
-        <p class="my-2">Scoreboard</p>
+        <p class="my-2 text-monospace">Scoreboard</p>
       </button>
     </a>
     {% endcomment %}
@@ -74,7 +80,7 @@ Sidebar for the dashboard
     {# Settings #}
     <a class="mt-1" href="{% url 'user settings' %}">
       <button class="btn btn-dark sidebar-button text-left">
-        <p class="my-2">Settings</p>
+        <p class="my-2 text-monospace">Settings</p>
       </button>
     </a>
   </div>

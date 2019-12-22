@@ -33,6 +33,7 @@ urlpatterns = [
     url(r"^scoreboard$", dboard_views.scoreboard, name="scoreboard"),
     url(r"^settings$", dboard_views.user_settings, name="user settings"),
     # Lab API
+    url(r"^upload-lab$", dboard_views.upload_lab, name="upload lab"),
     url(r"^generate-lab$", dboard_views.generate_lab, name="generate lab"),
     url(r"^delete-lab$", dboard_views.delete_lab, name="delete lab"),
 ]

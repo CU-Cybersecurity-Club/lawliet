@@ -17,6 +17,5 @@ class LabEnvironment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4)
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=1000)
-    header_image = models.ImageField(
-        upload_to=os.path.join("labs", "img"), blank=True, null=True
-    )
+    url = models.URLField(max_length=100)
+    header_image = models.ImageField(upload_to=os.path.join("labs", "img"))

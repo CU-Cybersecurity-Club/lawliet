@@ -1,12 +1,17 @@
 import os
 import random
 
+from django.core.files.images import ImageFile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 from django.test import TestCase
 from dashboard.forms.auth import LoginForm, SignupForm
 from dashboard.forms.settings import PasswordChangeForm
+from dashboard.forms.labs import LabUploadForm
 from uuid import UUID
 
 from .utils import *
+from dashboard.models import LabEnvironment
 from users.models import User
 
 """
@@ -175,3 +180,67 @@ class PasswordChangeFormTests(TestCase):
             },
         )
         self.assertFalse(form.is_valid())
+
+
+"""
+---------------------------------------------------
+LabUploadForm tests
+---------------------------------------------------
+"""
+
+
+class LabUploadFormTestCase(TestCase):
+    def setUp(self):
+        self.rd = random.Random()
+        self.rd.seed(0)
+
+        # Staff user params
+        self.username, self.email, self.password = create_random_user(self.rd)
+        self.user = User.objects.create_user(
+            username=self.username,
+            email=self.email,
+            password=self.password,
+            is_staff=True,
+        )
+
+        # Lab params
+        self.lab_url = "https://hub.docker.com/r/wshand/cutter:latest"
+        self.lab_name = "Cutter"
+        self.lab_description = "Cutter lab environment"
+        self.lab_image_path = os.path.join(
+            settings.BASE_DIR, "assets", "img", "meepy.png"
+        )
+        with open(self.lab_image_path, "rb") as img:
+            filename = self.lab_image_path.split(os.sep)[-1]
+            self.lab_image = SimpleUploadedFile(
+                filename, img.read(), content_type="image/png"
+            )
+
+    def test_create_new_environment(self):
+        self.assertEqual(len(LabEnvironment.objects.all()), 0)
+        data = {
+            "name": self.lab_name,
+            "description": self.lab_description,
+            "url": self.lab_url,
+        }
+        file_data = {"header_image": self.lab_image}
+        form = LabUploadForm(data, file_data)
+        self.assertTrue(form.is_valid())
+
+        # Save the new environment to the database, and check its fields
+        # to ensure they were saved correctly.
+        form.save()
+        self.assertEqual(len(LabEnvironment.objects.all()), 1)
+        lab = LabEnvironment.objects.get(name=self.lab_name)
+        self.assertEqual(lab.description, self.lab_description)
+        self.assertEqual(lab.url, self.lab_url)
+        with open(self.lab_image_path, "rb") as img:
+            self.assertEqual(lab.header_image.read(), img.read())
+
+    def test_nonstaff_no_upload_lab(self):
+        # Non-staff users shouldn't be able to upload new labs
+        username, email, password = create_random_user(self.rd)
+        user = User.objects.create_user(
+            username=username, email=email, password=password, is_staff=False
+        )
+        self.fail("TODO")

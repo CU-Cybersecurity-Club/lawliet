@@ -2,7 +2,6 @@
   {% csrf_token %}
   <h2 class="mb-4">Make changes to your profile</h2>
 
-  {% comment %}
   {% if profile_change_form.non_field_errors %}
   <span class="d-flex justify-content-center">
     <div class="form-error alert alert-danger mx-auto" role="alert">
@@ -23,7 +22,6 @@
     </div>
   </span>
   {% endif %}
-  {% endcomment %}
 
   <div class="container float-left">
     <div class="row">
@@ -63,7 +61,7 @@
 
     <button
       type="submit"
-      class="btn btn-primary"
+      class="btn btn-primary my-4"
       id="profile-change-submit-button">
       Save
     </button>

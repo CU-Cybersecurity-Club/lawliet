@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 from dashboard.forms.auth import SignupForm, LoginForm
 from dashboard.forms.settings import PasswordChangeForm
+from dashboard.forms.labs import LabUploadForm
 from dashboard.models import LabEnvironment
 from users.models import User
 from users.forms import ProfileForm
@@ -135,6 +136,19 @@ def user_settings(request):
         pass
         # profile_change_form.save()
 
+    return render(request, template, context=context)
+
+
+"""
+Interface for handling lab environments
+"""
+
+
+@login_required
+def upload_lab(request):
+    template = os.path.join(TEMPLATES, "lab_upload.html")
+    lab_form = LabUploadForm(request.POST if request.POST else None)
+    context = {"lab_form": lab_form}
     return render(request, template, context=context)
 
 

@@ -27,7 +27,7 @@ class PasswordChangeForm(forms.Form):
     )
 
     new_password = forms.CharField(
-        widget=PasswordInput(attrs={"placeholder": "Enter current password"}),
+        widget=PasswordInput(attrs={"placeholder": "Enter new password"}),
         help_text="Enter the new password you want to use.",
         max_length=User.password.field.max_length,
         validators=User.password.field.validators,

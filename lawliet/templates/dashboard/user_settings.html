@@ -1,11 +1,11 @@
 {% extends 'dashboard/dashboard_base.html' %}
 
-{% block title %}Settings | Lawliet{% endblock %}
+{% block title %}Settings | {{ block.super }}{% endblock %}
 
 {% block page-content %}
 <h1 class="my-4">Settings</h1>
 
-<div class="row">
+<div class="row mb-4">
 
   {% comment %}
   List of tabs on the left-hand side. Each tab corresponds to a group of
@@ -48,7 +48,7 @@
         id="list-profile"
         role="tabpanel"
         aria-labelledby="list-profile-list">
-        {% include "dashboard/includes/profile_change.html" %}
+        {% include "./includes/profile_change.html" %}
       </div>
       {# {% endcomment %} #}
       <div
@@ -56,7 +56,7 @@
         id="list-passchange"
         role="tabpanel"
         aria-labelledby="list-passchange-list">
-        {% include "dashboard/includes/password_change.html" %}
+        {% include "./includes/password_change.html" %}
       </div>
 
     </div>

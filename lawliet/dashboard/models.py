@@ -14,8 +14,19 @@ LabEnvironment
 
 
 class LabEnvironment(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid4)
-    name = models.CharField(max_length=30)
+    # A unique identifier for the lab
+    id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
+
+    # The name of the lab. Set default=None to force an error if we try to
+    # save a LabEnvironment to the database without a name.
+    name = models.CharField(max_length=30, blank=False, default=None)
+
+    # Description of the lab
     description = models.CharField(max_length=1000)
-    url = models.URLField(max_length=100)
+
+    # URL of the Docker image for the lab. Set default=None to force an error
+    # if we try to save a LabEnvironment to the database without a url.
+    url = models.URLField(max_length=100, blank=False, default=None)
+
+    # The image that appears in the summary card for the environment
     header_image = models.ImageField(upload_to=os.path.join("labs", "img"))

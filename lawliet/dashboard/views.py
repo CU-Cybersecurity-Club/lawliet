@@ -147,8 +147,18 @@ Interface for handling lab environments
 @login_required
 def upload_lab(request):
     template = os.path.join(TEMPLATES, "lab_upload.html")
-    lab_form = LabUploadForm(request.POST if request.POST else None)
+
+    # Construct a LabUploadForm for the page
+    data = request.POST if request.POST else None
+    file_data = request.FILES if request.FILES else None
+    lab_form = LabUploadForm(data, file_data)
     context = {"lab_form": lab_form}
+
+    if request.POST and lab_form.is_valid():
+        lab = lab_form.save()
+        context["success"] = True
+        context["uploaded_id"] = lab.id
+
     return render(request, template, context=context)
 
 

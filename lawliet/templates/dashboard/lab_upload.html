@@ -9,54 +9,69 @@ Upload lab | {{ block.super }}
 {% endblock%}
 
 {% block page-content %}
-<h1 class="my-4">
+<h1 class="mt-4 mb-2">
   Upload new environment
 </h1>
 
-<form method="POST">
-  {% csrf_token %}
-  {% if lab_form.non_field_errors %}
+<div class="container">
+  {# Show alert after successful upload #}
+  {% if success %}
   <span class="d-flex justify-content-center">
-    <div class="form-error alert alert-danger mx-auto" role="alert">
-      {% if lab_form.non_field_errors|length == 1 %}
-
-      <div class="text-center">
-      {% for error in lab_form.non_field_errors %}
-      {{ error|escape }}
-      {% endfor %}
-      </div>
-
-      {% else %}
-
-      Unable to upload lab.
-      {{ lab_form.non_field_errors }}
-
+    <div class="form-error alert alert-success mx-auto" role="alert">
+      <p class="mb-0">Your environment was uploaded to the server!</p>
+      {% if uploaded_id %}
+      <p class="mb-0">Its ID is <span class="text-monospace">{{ uploaded_id }}</span>.</p>
       {% endif %}
     </div>
   </span>
   {% endif %}
 
-  <div class="container float-left">
+  {# Upload form #}
+  <form class="mt-4" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if lab_form.non_field_errors %}
+    <span class="d-flex justify-content-center">
+      <div class="alert alert-danger mx-auto" role="alert">
+        {% if lab_form.non_field_errors|length == 1 %}
 
-    <div class="row">
-      {% for field in lab_form %}
-      <div class="col-4 mb-3">
-        <p>{{ field.label }}</p>
+        <div class="text-center">
+        {% for error in lab_form.non_field_errors %}
+        {{ error|escape }}
+        {% endfor %}
+        </div>
+
+        {% else %}
+
+        Unable to upload lab.
+        {{ lab_form.non_field_errors }}
+
+        {% endif %}
       </div>
-      <div class="col-6 mb-3">
-        {{ field }}
-        {% include "includes/field_errors.html" with errors=field.errors only %}
+    </span>
+    {% endif %}
+
+    <div class="container float-left">
+
+      <div class="row">
+        {% for field in lab_form %}
+        <div class="col-4 mb-3">
+          <p>{{ field.label }}</p>
+        </div>
+        <div class="col-6 mb-3">
+          {{ field }}
+          {% include "includes/field_errors.html" with errors=field.errors only %}
+        </div>
+        <div class="w-100"></div>
+        {% endfor %}
       </div>
-      <div class="w-100"></div>
-      {% endfor %}
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        id="password-change-submit-button">
+        Save lab
+      </button>
     </div>
-
-    <button
-      type="submit"
-      class="btn btn-primary"
-      id="password-change-submit-button">
-      Save lab
-    </button>
-  </div>
-</form>
+  </form>
+</div>
 {% endblock %}

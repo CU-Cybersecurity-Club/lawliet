@@ -1,0 +1,39 @@
+{% load static %}
+{% get_media_prefix as MEDIA_PREFIX %}
+<div class="col mb-4">
+  <div class="card shadow">
+    <div class="border-bottom">
+      <img
+        class="card-img-top lab-img mx-auto"
+        src="{{ MEDIA_PREFIX }}{{ env.header_image }}">
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{ env.name }}</h5>
+      <p class="card-text">
+        {{ env.description }}
+      </p>
+      <a href="/generate-lab">
+        <button
+         class="btn btn-light lab-button">
+          <img
+            class="img-fluid lab-action-icon"
+            src="{% static 'svg/play.svg' %}">
+        </button>
+      </a>
+      <a href="/delete-lab">
+        <button
+          class="btn btn-light lab-button">
+          <img
+            class="img-fluid lab-action-icon"
+            src="{% static 'svg/rectangle.svg' %}">
+        </button>
+      </a>
+      <button
+       class="btn btn-light lab-button">
+      <img
+        class="img-fluid lab-action-icon"
+        src="{% static 'svg/settings.svg' %}">
+      </button>
+    </div>
+  </div>
+</div>

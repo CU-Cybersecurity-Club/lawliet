@@ -5,72 +5,10 @@
 {% block page-content %}
 <h1 class="my-4">Available labs</h1>
 
-<div class="row row-cols-3">
-
-  <div class="col card shadow lab-card">
-    <div class="card-body">
-      {% load static %}
-      <img
-        style="margin-bottom: 10px;"
-        class="card-img-top"
-        src="{% static 'img/cutter.svg' %}">
-      <h5 class="card-title">Cutter / Radare2</h5>
-      <p class="card-text">
-      Cutter + Radare2 reverse engineering environment.
-      </p>
-      <a href="/generate-lab">
-        <button
-         class="btn btn-light lab-button">
-            {% load static %}
-            <img
-              class="lab-action-icon"
-              src="{% static 'svg/play.svg' %}">
-        </button>
-      </a>
-      <a href="/delete-lab">
-        <button
-          class="btn btn-light lab-button">
-            {% load static %}
-            <img
-              class="lab-action-icon"
-              src="{% static 'svg/rectangle.svg' %}">
-        </button>
-      </a>
-      <button
-       class="btn btn-light lab-button">
-      {% load static %}
-      <img
-        class="lab-action-icon"
-        src="{% static 'svg/settings.svg' %}">
-      </button>
-    </div>
-  </div>
-
-{% cycle '<div class="row row-cols-3">' '' '' %}
+<div class="row row-cols-4">
   {% for env in environments %}
-  <div class="card shadow col lab-card">
-    <div class="card-body">
-      <h5 class="card-title">{{ env.name }}</h5>
-      <p class="card-text">
-        {{ env.description }}
-      </p>
-      <button
-         class="btn btn-light lab-button">
-        {% load static %}
-        <img
-          class="lab-action-icon"
-          src="{% static 'svg/play.svg' %}">
-      </button>
-      <button
-         class="btn btn-light lab-button">
-        {% load static %}
-        <img
-          class="lab-action-icon"
-          src="{% static 'svg/settings.svg' %}">
-      </button>
-    </div>
-  </div>
+  {% include "./includes/lab_card.html" with env=env only %}
   {% endfor %}
-{% cycle '</div>' '' '' %}
+</div>
 
 {% endblock %}

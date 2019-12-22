@@ -5,9 +5,13 @@ Various utilities for testing purposes
 from uuid import UUID
 
 # Methods for randomly generating fields for User instances
-random_username = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}"
-random_email = lambda rd: f"meepy-{UUID(int=rd.getrandbits(128)).hex[:10]}@colorado.edu"
-random_password = lambda rd: UUID(int=rd.getrandbits(128)).hex
+random_uuid = lambda rd: UUID(int=rd.getrandbits(128)).hex
+random_username = lambda rd: f"meepy-{random_uuid(rd)[:10]}"
+random_email = lambda rd: f"meepy-{random_uuid(rd)[:10]}@colorado.edu"
+random_password = lambda rd: random_uuid(rd)
+random_docker_image = (
+    lambda rd: "https://hub.docker.com/r/meepy/{random_uuid(rd)[:10]}:{random_uuid(rd)[:10]}"
+)
 
 # Generate all of the data for a new user, consisting of a username,
 # an email, and a password.

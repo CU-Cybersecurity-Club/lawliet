@@ -2,21 +2,6 @@
   max-width: 500px;
 }
 
-.lab-card {
-  margin-left: 20px;
-  margin-right: 20px;
-}
-
-.lab-button {
-  border-width: 0.15rem;
-  border-color: black;
-}
-
-.lab-action-icon {
-  max-height: 1rem;
-  max-width: 1rem;
-}
-
 a, a:hover, a:visited {
   text-decoration: none !important;
 }
@@ -39,6 +24,25 @@ input.remember-me {
 /* Styling for the site logo */
 .site-logo {
   font-family: lobster two, roboto, sans-serif !important;
+}
+
+/***********************************
+ * Lab card
+ ***********************************/
+.lab-img {
+  max-height: 100%;
+  max-width: 100%;
+  display: inline-block;
+}
+
+.lab-button {
+  border-width: 0.15rem;
+  border-color: black;
+}
+
+.lab-action-icon {
+  max-height: 1rem;
+  max-width: 1rem;
 }
 
 /***********************************

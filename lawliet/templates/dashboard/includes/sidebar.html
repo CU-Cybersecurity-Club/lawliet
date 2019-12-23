@@ -2,6 +2,8 @@
 Sidebar for the dashboard
 {% endcomment %}
 
+{% load static %}
+{% get_media_prefix as MEDIA_PREFIX %}
 <div class="accordion sidebar-wrapper" id="sidebar-wrapper">
   <div class="sidebar-heading">
     {% include "includes/logo.html" %}
@@ -11,20 +13,7 @@ Sidebar for the dashboard
 
     {# User profile #}
     <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action profile-card">
-      <div class="row row-cols-2">
-        <div class="col" >
-          <div class="rounded-lg" style="border-color: black; border-width: 10px;">
-            <img 
-              class="profile-card-image"
-              {% load static %}
-              {% get_media_prefix as MEDIA_PREFIX %}
-              src="{{ MEDIA_PREFIX }}{{ user.profile.profile_image.name }}">
-          </div>
-        </div>
-        <div class="col profile-card-username">
-          <p style="margin: auto;">{{ user.get_username }}</p>
-        </div>
-      </div>
+      {% include 'includes/profile_card.html' with user=user format="short" only %}
     </a>
 
     {# Dashboard #}

@@ -3,7 +3,22 @@
 {% block title %}Dashboard | {{ block.super }}{% endblock %}
 
 {% block page-content %}
+
+{% load static %}
+{% get_media_prefix as MEDIA_PREFIX %}
+
 <h1 class="mt-4">Dashboard</h1>
+
+{% comment %}
+Display the user profile. Show details such as
+- Profile image
+- Username
+- Current rank
+{% endcomment %}
+<div class="jumbotron">
+  {% include 'includes/profile_card.html' with user=user format="long" only %}
+</div>
+
 <h4 class="mt-4">Latest news</h3>
 <p>Latest updates about the service go here.</p>
 

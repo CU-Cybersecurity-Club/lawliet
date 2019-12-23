@@ -59,6 +59,17 @@ Profile
 ---------------------------------------------------
 """
 
+# Mapping of integer ranks to rank names
+USER_RANKS = {0: "Beginner"}
+
+# Name to use for integer ranks whose corresponding names haven't been defined
+UNKNOWN_RANK = "Unknowable Void"
+
+
+def integer_rank_to_string(rank):
+    """Function to convert a Profile's integer rank to the corresponding rank's name"""
+    return USER_RANKS.get(rank, UNKNOWN_RANK)
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -67,6 +78,10 @@ class Profile(models.Model):
     profile_image = models.ImageField(
         upload_to=os.path.join("profiles", "img"), blank=True, null=True
     )
+
+    # User's current score and rank
+    score = models.PositiveIntegerField(default=0, blank=False)
+    rank = models.PositiveSmallIntegerField(default=0, blank=False)
 
     # User-supplied description of themselves
     description = models.CharField(max_length=1000, default="", blank=True)
@@ -81,6 +96,13 @@ class Profile(models.Model):
 
     # Whether or not the user's email has been validated yet
     email_verified = models.BooleanField(default=False)
+
+    """
+    Helper functions
+    """
+
+    def get_rank(self):
+        return integer_rank_to_string(self.rank)
 
 
 # Helper functions for the Profile model

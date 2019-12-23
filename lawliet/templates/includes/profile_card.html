@@ -1,0 +1,47 @@
+{% comment %}
+A template that you can {% include %} into a page to insert a user's profile
+information into various components of a page.
+{% endcomment %}
+
+{% load static %}
+{% get_media_prefix as MEDIA_PREFIX %}
+<div class="row">
+  {# Profile image #}
+  <div class="my-auto col-4">
+    <img
+      class="border profile-image rounded-circle"
+      src="{{ MEDIA_PREFIX }}{{ user.profile.profile_image.name }}">
+  </div>
+
+  {# User info #}
+  <div class="col-6 m-auto text-nowrap text-monospace">
+
+    <div class="resize-parent profile-info-block">
+      {% comment %}
+      If the 'long' parameter is specified, show longer user description
+      {% endcomment %}
+      {% if format|default:"long" == "long" %}
+      <div class="text-left">
+        <span class="profile-info-header resize-child">{{ user.get_username }}</span>
+        <br>
+        {% if user.is_staff %}
+        <span class="staff-badge profile-info-subheader resize-child">
+          <span class="p-3">Staff member</span>
+        </span>
+        <br>
+        {% endif %}
+        <span class="profile-info-subheader resize-child text-muted">Rank: {{ user.profile.get_rank }}</span>
+      </div>
+
+      {% comment %}
+      Show shorter user description if 'long' not specified
+      {% endcomment %}
+      {% else %}
+      <div style="font-size: 1.25rem;" class="text-center my-2">
+        <span class="profile-info resize-child">{{ user.get_username }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>

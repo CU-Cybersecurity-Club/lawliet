@@ -98,7 +98,7 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         widget=TextInput(attrs={"placeholder": "Username"}),
         help_text="Enter the username you registered with.",
-        min_length=MIN_PASSWORD_LENGTH,
+        min_length=MIN_USERNAME_LENGTH,
     )
 
     password = forms.CharField(

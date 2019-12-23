@@ -50,9 +50,7 @@
       {% if field.name != "remember_user" %}
       <div class="form-group">
         {{ field }}
-        {% if field.errors %}
-        {{ field.errors }}
-        {% endif %}
+        {% include 'includes/field_errors.html' with errors=field.errors only %}
       </div>
       {% endif %}
       {% endfor %}

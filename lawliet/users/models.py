@@ -5,12 +5,27 @@ from django.conf import settings
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.files.images import ImageFile
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinLengthValidator
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
 
 from .managers import UserManager
+
+"""
+Settings for the User and Profile models
+"""
+"""User options"""
+MAX_EMAIL_ADDRESS_LENGTH = 150
+MAX_USERNAME_LENGTH = 20
+MIN_USERNAME_LENGTH = 3
+
+"""Profile options"""
+DEFAULT_PROFILE_IMAGE = os.path.join(settings.BASE_DIR, "assets", "img", "meepy.png")
+
+# Default maximum number of lab environments that a user can run
+# at a given time.
+DEFAULT_MAX_INSTANCES = 1
 
 """
 ---------------------------------------------------
@@ -21,7 +36,7 @@ Custom User model
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
-        max_length=settings.MAX_USERNAME_LENGTH,
+        max_length=MAX_USERNAME_LENGTH,
         unique=True,
         validators=[
             RegexValidator(
@@ -30,11 +45,12 @@ class User(AbstractBaseUser, PermissionsMixin):
                     "Your username may only contain letters, numbers, periods "
                     "(.), dashes (-), and underscores (_)."
                 ),
-            )
+            ),
+            MinLengthValidator(MIN_USERNAME_LENGTH),
         ],
     )
 
-    email = models.EmailField(max_length=settings.MAX_EMAIL_ADDRESS_LENGTH, unique=True)
+    email = models.EmailField(max_length=MAX_EMAIL_ADDRESS_LENGTH, unique=True)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -87,9 +103,7 @@ class Profile(models.Model):
     description = models.CharField(max_length=1000, default="", blank=True)
 
     # Maximum number of environments a user can have running at any given time
-    max_instances = models.PositiveSmallIntegerField(
-        default=settings.DEFAULT_MAX_INSTANCES
-    )
+    max_instances = models.PositiveSmallIntegerField(default=DEFAULT_MAX_INSTANCES)
 
     # Number of instances that the user has up and running
     active_instances = models.PositiveSmallIntegerField(default=0)
@@ -113,7 +127,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         user = instance
 
         # Use meepy.png for default profile picture
-        path = settings.DEFAULT_PROFILE_IMAGE
+        path = DEFAULT_PROFILE_IMAGE
         filename = path.split(os.sep)[-1]
         with open(path, "rb") as f:
             img = ImageFile(f, name=filename)

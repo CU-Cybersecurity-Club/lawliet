@@ -23,20 +23,20 @@ class PasswordChangeForm(forms.Form):
     old_password = forms.CharField(
         widget=PasswordInput(attrs={"placeholder": "Enter current password"}),
         help_text="Enter the current password you use to login to this account.",
-        max_length=User.password.field.max_length,
+        min_length=MIN_PASSWORD_LENGTH,
     )
 
     new_password = forms.CharField(
         widget=PasswordInput(attrs={"placeholder": "Enter new password"}),
         help_text="Enter the new password you want to use.",
-        max_length=User.password.field.max_length,
         validators=User.password.field.validators,
+        min_length=MIN_PASSWORD_LENGTH,
     )
 
     new_repassword = forms.CharField(
         widget=PasswordInput(attrs={"placeholder": "Enter new password again"}),
         help_text="Re-enter the new password you want to use.",
-        max_length=User.password.field.max_length,
+        min_length=MIN_PASSWORD_LENGTH,
     )
 
     def __init__(self, user, *args, **kwargs):

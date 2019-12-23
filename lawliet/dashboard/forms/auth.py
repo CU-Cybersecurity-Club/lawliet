@@ -10,10 +10,12 @@ from django.utils.translation import gettext as _
 from .fields import TextInput, PasswordInput
 from users.models import User
 
-MAX_EMAIL_ADDRESS_LENGTH = settings.MAX_EMAIL_ADDRESS_LENGTH
-MAX_USERNAME_LENGTH = settings.MAX_USERNAME_LENGTH
-MIN_USERNAME_LENGTH = settings.MIN_USERNAME_LENGTH
-MAX_PASSWORD_LENGTH = settings.MAX_PASSWORD_LENGTH
+import users.models as umodels
+
+MAX_EMAIL_ADDRESS_LENGTH = umodels.MAX_EMAIL_ADDRESS_LENGTH
+MAX_USERNAME_LENGTH = umodels.MAX_USERNAME_LENGTH
+MIN_USERNAME_LENGTH = umodels.MIN_USERNAME_LENGTH
+MAX_PASSWORD_LENGTH = User.password.field.max_length
 MIN_PASSWORD_LENGTH = settings.MIN_PASSWORD_LENGTH
 
 
@@ -96,13 +98,13 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         widget=TextInput(attrs={"placeholder": "Username"}),
         help_text="Enter the username you registered with.",
-        max_length=User.username.field.max_length,
+        min_length=MIN_PASSWORD_LENGTH,
     )
 
     password = forms.CharField(
         widget=PasswordInput(attrs={"placeholder": "Password"}),
         help_text="Enter the password you used to sign up.",
-        max_length=User.password.field.max_length,
+        min_length=MIN_PASSWORD_LENGTH,
     )
 
     remember_user = forms.BooleanField(

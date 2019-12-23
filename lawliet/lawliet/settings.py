@@ -138,7 +138,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
@@ -154,13 +157,9 @@ PASSWORD_HASHERS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # Directory in which to store user files
@@ -180,13 +179,5 @@ LOGIN_URL = "/login"
 
 # Additional parameters
 
-MAX_EMAIL_ADDRESS_LENGTH = int(os.getenv("MAX_EMAIL_ADDRESS_LENGTH", 150))
-MAX_USERNAME_LENGTH = int(os.getenv("MAX_USERNAME_LENGTH", 20))
-MIN_USERNAME_LENGTH = int(os.getenv("MIN_USERNAME_LENGTH", 3))
 MAX_PASSWORD_LENGTH = int(os.getenv("MAX_PASSWORD_LENGTH", 64))
 MIN_PASSWORD_LENGTH = int(os.getenv("MIN_PASSWORD_LENGTH", 8))
-
-DEFAULT_PROFILE_IMAGE = os.getenv(
-    "DEFAULT_PROFILE_IMAGE", os.path.join(BASE_DIR, "assets", "img", "meepy.png")
-)
-DEFAULT_MAX_INSTANCES = int(os.getenv("DEFAULT_MAX_INSTANCES", 1))

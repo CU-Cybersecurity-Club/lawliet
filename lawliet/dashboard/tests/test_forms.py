@@ -217,28 +217,36 @@ class LabUploadFormTestCase(TestCase):
             )
 
     def test_create_new_environment(self):
+        """
+        Use the LabUploadForm to create a new lab environment, and check
+        that the environment was constructed correctly.
+        """
         self.assertEqual(len(LabEnvironment.objects.all()), 0)
         data = {
             "name": self.lab_name,
             "description": self.lab_description,
             "url": self.lab_url,
+            "has_web_interface": True,
         }
         file_data = {"header_image": self.lab_image}
         form = LabUploadForm(data, file_data)
         self.assertTrue(form.is_valid())
 
-        # Save the new environment to the database, and check its fields
-        # to ensure they were saved correctly.
+        # Save the new environment to the database
         form.save()
         self.assertEqual(len(LabEnvironment.objects.all()), 1)
+
         lab = LabEnvironment.objects.get(name=self.lab_name)
         self.assertEqual(lab.description, self.lab_description)
         self.assertEqual(lab.url, self.lab_url)
+        self.assertTrue(lab.has_web_interface)
         with open(self.lab_image_path, "rb") as img:
             self.assertEqual(lab.header_image.read(), img.read())
 
     def test_nonstaff_no_upload_lab(self):
-        # Non-staff users shouldn't be able to upload new labs
+        """
+        Non-staff users shouldn't be able to upload new labs.
+        """
         username, email, password = create_random_user(self.rd)
         user = User.objects.create_user(
             username=username, email=email, password=password, is_staff=False

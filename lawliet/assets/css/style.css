@@ -141,3 +141,10 @@ div.profile-card {
   font-display: swap;
   src: local('Lobster Two'), local('LobsterTwo'), url("/static/fonts/LobsterTwo/LobsterTwo.ttf") format('truetype');
 }
+
+/***********************************
+ * Miscellaneous
+ ***********************************/
+input.boolean-selection {
+  transform: scale(2);
+}

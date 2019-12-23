@@ -30,3 +30,6 @@ class LabEnvironment(models.Model):
 
     # The image that appears in the summary card for the environment
     header_image = models.ImageField(upload_to=os.path.join("labs", "img"))
+
+    # Boolean field that specifies whether or not the lab has a web interface
+    has_web_interface = models.BooleanField(default=True)

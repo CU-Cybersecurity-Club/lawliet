@@ -36,9 +36,12 @@ class LabEnvironmentTestCase(TestCase):
             url=random_docker_image(self.rd),
             header_image=self.cutter_image,
         )
-        print(labenv.url)
 
     def test_can_retrieve_basic_environment(self):
+        """
+        Retrieve the environment created in the setUp stage and test whether the
+        environment was constructed correctly.
+        """
         cutter_lab = LabEnvironment.objects.get(name="Cutter + Radare2")
         path = cutter_lab.header_image.path
         self.assertEqual(cutter_lab.description, "Cutter & Radare2 desktop")
@@ -46,3 +49,4 @@ class LabEnvironmentTestCase(TestCase):
         self.assertTrue(
             path.startswith(os.path.join(settings.MEDIA_ROOT, "labs", "img"))
         )
+        self.assertTrue(cutter_lab.has_web_interface)  # True by default

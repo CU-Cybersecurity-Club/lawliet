@@ -40,12 +40,15 @@ class SignupForm(forms.ModelForm):
 
     class Meta:
         model = User
+
         fields = ("email", "username", "password")
+
         widgets = {
             "email": TextInput(attrs={"placeholder": "Enter your email address"}),
             "username": TextInput(attrs={"placeholder": "Select a username"}),
             "password": PasswordInput(attrs={"placeholder": "Choose a password"}),
         }
+
         help_texts = {
             "email": (
                 "Enter email. Your email address must be less than "
@@ -98,7 +101,6 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         widget=TextInput(attrs={"placeholder": "Username"}),
         help_text="Enter the username you registered with.",
-        min_length=MIN_USERNAME_LENGTH,
     )
 
     password = forms.CharField(
@@ -123,7 +125,7 @@ class LoginForm(forms.Form):
 
         if not User.objects.filter(username=username).exists():
             raise forms.ValidationError(
-                _("The username '%(username)s' could not be found."),
+                _("The user with username '%(username)s' could not be found."),
                 params={"username": username},
                 code="nonexistent",
             )

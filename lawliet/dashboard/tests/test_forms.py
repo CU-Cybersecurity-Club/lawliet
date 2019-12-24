@@ -11,7 +11,7 @@ from dashboard.forms.labs import LabUploadForm
 from uuid import UUID
 
 from .utils import *
-from dashboard.models import LabEnvironment
+from labs.models import LabEnvironment
 from users.models import User
 
 """

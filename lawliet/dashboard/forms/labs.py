@@ -4,8 +4,9 @@ Forms for handling labs (creation, deletion, etc.)
 
 from django import forms
 from django.forms import ModelForm
-from dashboard.models import LabEnvironment
+
 from dashboard.forms.fields import TextInput, Textarea
+from labs.models import LabEnvironment
 
 """
 ---------------------------------------------------

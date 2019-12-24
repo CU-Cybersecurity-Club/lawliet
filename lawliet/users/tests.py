@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user
 from uuid import UUID
 
-from users.models import User
+from users.models import *
 
 # Helper functions
 
@@ -97,7 +97,7 @@ Profile tests
 class ProfileTestCase(TestCase):
     def setUp(self):
         # New users should use the default profile image
-        path = settings.DEFAULT_PROFILE_IMAGE
+        path = DEFAULT_PROFILE_IMAGE
         filename = path.split(os.sep)[-1]
         with open(path, "rb") as img:
             self.profile_image = SimpleUploadedFile(
@@ -120,10 +120,10 @@ class ProfileTestCase(TestCase):
         user = User.objects.get(username=self.username)
         profile_image = user.profile.profile_image
         self.assertEqual(user.email, self.email)
-        self.assertEqual(user.profile.max_instances, settings.DEFAULT_MAX_INSTANCES)
+        self.assertEqual(user.profile.max_instances, DEFAULT_MAX_INSTANCES)
         self.assertEqual(user.profile.active_instances, 0)
         self.assertTrue(profile_image.name.startswith(os.path.join("profiles", "img")))
 
-        with open(settings.DEFAULT_PROFILE_IMAGE, "rb") as f:
+        with open(DEFAULT_PROFILE_IMAGE, "rb") as f:
             img = f.read()
             self.assertEqual(img, profile_image.read())

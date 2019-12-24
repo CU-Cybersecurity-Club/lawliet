@@ -1,14 +1,19 @@
-/* Custom JavaScript for the site */
+/* JavaScript for the site dashboard. */
 
-var resize_parents;
+/***************************************
+ * Dashboard sidebar toggle
+ ***************************************/
+$("#sidebar-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+});
 
-/*
- * Resize text in elements
- */
+/***************************************
+ * Text autosizing to fit in enclosing containers.
+ ***************************************/
+// Resize text in elements
 function scale_font_by_factor(el, shrink_factor) {
-    /*
-     * Scale the font size of a CSS element by a provided factor
-     */
+     // Scale the font size of a CSS element by a provided factor
     const initial_font_size = parseInt(el.css("font-size"), 10);
     const scaled_font_size = initial_font_size * shrink_factor;
     el.css("font-size", scaled_font_size + "px");
@@ -51,6 +56,9 @@ function autosize_text() {
     });
 }
 
+/***************************************
+ * Code to run when the page loads.
+ ***************************************/
 $(document).ready(function() {
     autosize_text();
 });

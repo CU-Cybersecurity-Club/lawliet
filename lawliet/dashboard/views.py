@@ -1,5 +1,4 @@
 import os
-import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -7,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from dashboard.forms.auth import SignupForm, LoginForm
 from dashboard.forms.settings import PasswordChangeForm
 from dashboard.forms.labs import LabUploadForm
-from dashboard.models import LabEnvironment
+from labs.models import LabEnvironment
 from users.models import User
 from users.forms import ProfileForm
 
@@ -160,17 +159,3 @@ def upload_lab(request):
         context["uploaded_id"] = lab.id
 
     return render(request, template, context=context)
-
-
-@login_required
-def generate_lab(request):
-    api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
-    requests.put(url=api_server_host)
-    return redirect("dashboard")
-
-
-@login_required
-def delete_lab(request):
-    api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
-    requests.delete(url=api_server_host)
-    return redirect("dashboard")

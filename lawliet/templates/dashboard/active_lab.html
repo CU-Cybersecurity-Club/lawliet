@@ -5,11 +5,80 @@
 {% block page-content %}
 <h1 class="my-4">Active lab</h1>
 
-<div style="overflow: hidden; padding-top: 56.25%; position: relative">
+{% comment %}
+Status card to display when the user doesn't have any running labs.
+{% endcomment %}
+<div id="no-active-lab" class="mx-auto card lab-status-card">
+  <div class="card-body">
+    <h2 class="text-center">
+      No active environments found
+    </h2>
+    <p>
+      Start a new environment from the list of labs, or refresh the page to check whether an active environment already exists.
+    </p>
+
+    <div class="row mt-4 mb-1">
+      <div class="col">
+        <button
+          class="btn btn-primary float-right"
+          type="button"
+          onClick="window.location.replace('{% url "available labs" %}');">
+          <span class="lead">View available labs</span>
+        </button>
+      </div>
+      <div class="col">
+        <button
+          class="btn btn-primary float-right"
+          type="button"
+          value="Refresh page"
+          onClick="window.location.reload();">
+          <span class="lead">
+            {% load static %}
+            <img
+              align="middle"
+              class="lab-action-icon"
+              src="{% static 'svg/refresh.svg' %}">
+            Refresh page
+        </button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %}
+Status card to display when we're waiting for a lab to start.
+{% endcomment %}
+<div id="lab-loading" class="mx-auto card lab-status-card">
+  <div class="card-body">
+    <h2 class="text-center">
+      Waiting for the lab to start...
+    </h2>
+    <p>
+      We're currently waiting for your environment to load. You will be notified when the lab is ready.
+    </p>
+    <button class="btn btn-primary" type="button" disabled>
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </button>
+  </div>
+</div>
+
+{% comment %}
+iframe providing access to a lab environment's web interface.
+{% endcomment %}
+<div id="lab-interface" style="display: none; overflow: hidden; padding-top: 56.25%; position: relative">
   <iframe
     src="/vnc/{{ user.get_username }}/vnc.html"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 90%;"
     allowfullscreen="true">
   </iframe>
 </div>
+
+{% block javascripts %}
+{{ block.super }}
+{% load static %}
+<script src="{% static 'js/labs.js' %}"></script>
+{% endblock %}
+
 {% endblock %}

@@ -4,8 +4,8 @@ import random
 from django.test import TestCase
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from dashboard.models import LabEnvironment
 
+from labs.models import LabEnvironment
 from dashboard.tests.utils import random_docker_image
 
 BASE_DIR = settings.BASE_DIR

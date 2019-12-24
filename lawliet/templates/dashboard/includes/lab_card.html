@@ -12,27 +12,25 @@
       <p class="card-text">
         {{ env.description }}
       </p>
-      <a href="/generate-lab">
-        <button
-         class="btn btn-light lab-button">
-          <img
-            class="img-fluid lab-action-icon"
-            src="{% static 'svg/play.svg' %}">
-        </button>
-      </a>
-      <a href="/delete-lab">
-        <button
-          class="btn btn-light lab-button">
-          <img
-            class="img-fluid lab-action-icon"
-            src="{% static 'svg/rectangle.svg' %}">
-        </button>
-      </a>
       <button
-       class="btn btn-light lab-button">
-      <img
-        class="img-fluid lab-action-icon"
-        src="{% static 'svg/settings.svg' %}">
+        class="btn btn-light lab-button"
+        onClick="window.location.replace('{% url "generate lab" %}')">
+        <img
+          class="img-fluid lab-action-icon"
+          src="{% static 'svg/play.svg' %}">
+      </button>
+      <button
+        class="btn btn-light lab-button"
+        onClick="window.location.replace('{% url "delete lab" %}')">
+        <img
+          class="img-fluid lab-action-icon"
+          src="{% static 'svg/rectangle.svg' %}">
+      </button>
+      <button
+        class="btn btn-light lab-button">
+        <img
+          class="img-fluid lab-action-icon"
+          src="{% static 'svg/settings.svg' %}">
       </button>
     </div>
   </div>

@@ -27,7 +27,7 @@ input.remember-me {
 }
 
 /***********************************
- * Lab card
+ * CSS for lab environments
  ***********************************/
 .lab-img {
   max-height: 100%;
@@ -43,6 +43,12 @@ input.remember-me {
 .lab-action-icon {
   max-height: 1rem;
   max-width: 1rem;
+  display: inline-block;
+}
+
+.lab-status-card {
+  display: none;  /* Should hide the card by default */
+  max-width: 30rem;
 }
 
 /***********************************

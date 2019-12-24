@@ -18,6 +18,7 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from dashboard import views as dboard_views
+from labs import urls as lab_urls
 
 urlpatterns = [
     url(r"^$", dboard_views.index_page, name="index"),
@@ -32,10 +33,9 @@ urlpatterns = [
     url(r"^active-lab$", dboard_views.active_lab, name="active labs"),
     url(r"^scoreboard$", dboard_views.scoreboard, name="scoreboard"),
     url(r"^settings$", dboard_views.user_settings, name="user settings"),
-    # Lab API
     url(r"^upload-lab$", dboard_views.upload_lab, name="upload lab"),
-    url(r"^generate-lab$", dboard_views.generate_lab, name="generate lab"),
-    url(r"^delete-lab$", dboard_views.delete_lab, name="delete lab"),
+    # Lab API
+    url(r"^labs/", include(lab_urls)),
 ]
 
 if settings.DEBUG:

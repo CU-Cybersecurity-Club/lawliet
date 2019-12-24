@@ -1,33 +1,8 @@
 {% comment %}
 Navigation bar for the dashboard.
 {% endcomment %}
-
-{% comment %}
-<nav class="navbar navbar-expand-lg navbar-light dashboard-navbar">
-  <button class="btn btn-light sidebar-toggle" id="menu-toggle">
-    {% load static %}
-    <img class="sidebar-toggle-icon rounded-lg"
-      src="{% static 'svg/hamburger.svg' %}">
-  </button>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'logout' %}">
-          Logout
-        </a>
-      </li>
-    </ul>
-  </div>
-</nav>
-{% endcomment %}
-
 <nav class="navbar dashboard-navbar navbar-expand-lg">
-  <button class="btn p-2 btn-light rounded-circle" id="menu-toggle">
+  <button class="btn p-2 btn-light rounded-circle" id="sidebar-toggle">
     {% load static %}
     <img class="sidebar-toggle-icon rounded-circle"
       src="{% static 'svg/hamburger.svg' %}">

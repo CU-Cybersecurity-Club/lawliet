@@ -1,4 +1,4 @@
-FROM alpine:3.10
+FROM nginx:alpine
 
 COPY requirements.txt /tmp
 RUN apk update \
@@ -31,21 +31,18 @@ RUN apk update \
         libffi-dev \
         python3-dev
 
-# Add the webserver files (assets, templates, paths, etc.)
-ENV SITE_DIRECTORY=/var/www \
-    SERVER_USER=www-data
-RUN mkdir -p ${SITE_DIRECTORY}
-
-# Add the .env file
 COPY .env "${SITE_DIRECTORY}/.env"
+ADD lawliet /var/www
 
 # Add a user to run the server
-RUN addgroup ${SERVER_USER} \
-    && adduser -D -s /bin/false -H -G ${SERVER_USER} ${SERVER_USER} \
-    && chown -R ${SERVER_USER}:${SERVER_USER} ${SITE_DIRECTORY}
+RUN adduser -D -s /bin/false -H -G www-data www-data \
+    && chown -R www-data:www-data /var/www
 
-ADD lawliet ${SITE_DIRECTORY}
+#
+# Configure Nginx
+#
+COPY deploy_tools/webserver/nginx-config /etc/nginx
 
-WORKDIR ${SITE_DIRECTORY}
+WORKDIR /var/www
 COPY deploy_tools/webserver/run.sh .
 CMD [ "./run.sh" ]

@@ -32,8 +32,11 @@ EOECHO
     exit 1
 fi
 
+# Run nginx
+mkdir -p /data/nginx/cache
+nginx
+
 # Run webserver
 gunicorn lawliet.wsgi \
     --bind 0.0.0.0:8000 \
-    --chdir ${SITE_DIRECTORY} \
     --workers 2

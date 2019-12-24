@@ -1,0 +1,27 @@
+upstream gunicorn-server {
+    server localhost:8000;
+}
+
+server {
+    listen 80 default_server;
+    server_name _;
+
+    root /var/www;
+
+    expires 7d;
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_redirect off;
+        proxy_buffering off;
+
+        proxy_pass http://gunicorn-server;
+    }
+
+    # Serve static files through Nginx
+    location /(static|media) {
+        try_files $uri $uri/ =404;
+    }
+}
+

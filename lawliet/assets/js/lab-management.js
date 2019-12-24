@@ -82,36 +82,38 @@ function get_notification_colors(type) {
     }
 }
 
-function fadeOut(node, interval) {
+function delete_notification(node, interval) {
+    // Delete a notification node over a given interval
+    // We fade out the notification at a rate of 50 steps / second
+    let fade_out_steps = Math.ceil(interval / 1000 * 50);
+
+    if ( !node.style.opacity ) {
+        node.style.opacity = 1;
+    }
+    let opacity_step = node.style.opacity / fade_out_steps;
+    let time_step = interval / fade_out_steps;
+
+    let handler = setInterval(function () {
+        node.style.opacity -= opacity_step;
+    }, time_step);
+
+    // At the end of the interval, remove the node entirely. We add
+    // a few extra time steps just to ensure that we get enough time
+    // to completely remove the notification.
     setTimeout(function () {
-        node.style.WebKitTransition = "opacity 1s ease-in-out";
-        node.style.opacity = "0";
-    }, interval);
+        node.remove();
+        clearInterval(handler);
+    }, interval + 5 * time_step);
 }
 
 function clean_notifications() {
     // Remove notifications once we get past the maximum number of
     // allowed notifications.
-    const FADE_OUT_INTERVAL = 500; // ms
-    const FADE_OUT_STEPS = 25;
     let notification_list = document.querySelector("#notification-list");
 
     for ( let ii = MAX_NOTIFICATIONS; ii < notification_list.children.length; ++ii ) {
         let child = notification_list.children[ii];
-        if ( child.style.opacity ) {
-            child.style.opacity = 1;
-        }
-        let opacity_step = child.style.opacity / FADE_OUT_STEPS;
-
-        // Fade out over 500ms
-        setInterval(function () {
-            child.style.opacity -= opacity_step;
-        }, FADE_OUT_INTERVAL / 50);
-
-        // Remove completely after 500ms
-        setTimeout(function () {
-            child.remove();
-        }, FADE_OUT_INTERVAL);
+        delete_notification(child, 300);
     }
 }
 
@@ -142,6 +144,12 @@ function create_notification(msg, type) {
 
     let notification_list = document.querySelector("#notification-list");
     notification_list.prepend(clone);
+
+    // Delete the notification after one minute
+    let child = notification_list.firstElementChild;
+    setTimeout(function () {
+        delete_notification(child, 300);
+    }, 1000 * 60);
 
     $(".toast").toast("show");
     clean_notifications();

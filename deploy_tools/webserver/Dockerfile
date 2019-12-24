@@ -31,7 +31,6 @@ RUN apk update \
         libffi-dev \
         python3-dev
 
-COPY .env "${SITE_DIRECTORY}/.env"
 ADD lawliet /var/www
 
 # Add a user to run the server

@@ -8,29 +8,57 @@
         src="{{ MEDIA_PREFIX }}{{ env.header_image }}">
     </div>
     <div class="card-body">
-      <h5 class="card-title">{{ env.name }}</h5>
+      <h5 class="card-title mb-1">{{ env.name }}</h5>
       <p class="card-text">
         {{ env.description }}
       </p>
+
+      {% comment %}
+      Tell user whether or not the lab environment has a web interface
+      with which they can access the lab.
+      {% endcomment %}
+      <div class="row mx-0 mt-2 mb-4 text-muted">
+        <div class="col-sm-auto px-0">
+          <img
+            {% if env.has_web_interface %}
+            src="{% static 'svg/ikonate/ok-circle.svg' %}"
+            {% else %}
+            src="{% static 'svg/ikonate/cancel.svg' %}"
+            {% endif %}
+            class="img-fluid lab-action-icon">
+        </div>
+        <div class="col pl-2 pr-0">
+          {% if env.has_web_interface %}
+          Has a web interface
+          {% else %}
+          Doesn't have a web interface
+          {% endif %}
+        </div>
+      </div>
+
+      {% comment %}
+      A row of buttons with different actions the user can take on the
+      lab environment.
+      {% endcomment %}
       <button
         class="btn btn-light lab-button"
         onClick="window.location.replace('{% url "generate lab" %}')">
         <img
           class="img-fluid lab-action-icon"
-          src="{% static 'svg/play.svg' %}">
+          src="{% static 'svg/ikonate/play.svg' %}">
       </button>
       <button
         class="btn btn-light lab-button"
         onClick="window.location.replace('{% url "delete lab" %}')">
         <img
           class="img-fluid lab-action-icon"
-          src="{% static 'svg/rectangle.svg' %}">
+          src="{% static 'svg/ikonate/rectangle.svg' %}">
       </button>
       <button
         class="btn btn-light lab-button">
         <img
           class="img-fluid lab-action-icon"
-          src="{% static 'svg/settings.svg' %}">
+          src="{% static 'svg/ikonate/settings.svg' %}">
       </button>
     </div>
   </div>

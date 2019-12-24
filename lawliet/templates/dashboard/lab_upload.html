@@ -4,15 +4,10 @@
 Interface for uploading new lab environments to Lawliet.
 {% endcomment %}
 
-{% block title %}
-Upload lab | {{ block.super }}
-{% endblock%}
+{% block title %}Upload lab | {{ block.super }}{% endblock %}
+{% block page_header %}Upload new lab environment{% endblock %}
 
 {% block page-content %}
-<h1 class="mt-4 mb-2">
-  Upload new environment
-</h1>
-
 <div class="container">
   {# Show alert after successful upload #}
   {% if success %}

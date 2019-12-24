@@ -2,12 +2,13 @@
 
 {% block title %}Dashboard | {{ block.super }}{% endblock %}
 
+{# Don't include a header at the top of the page #}
+{% block no_page_header %}{% endblock %}
+
 {% block page-content %}
 
 {% load static %}
 {% get_media_prefix as MEDIA_PREFIX %}
-
-<h1 class="mt-4">Dashboard</h1>
 
 {% comment %}
 Display the user profile. Show details such as
@@ -15,7 +16,7 @@ Display the user profile. Show details such as
 - Username
 - Current rank
 {% endcomment %}
-<div class="jumbotron">
+<div class="jumbotron mt-3">
   {% include 'includes/profile_card.html' with user=user format="long" only %}
 </div>
 

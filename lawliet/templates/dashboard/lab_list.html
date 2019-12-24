@@ -1,14 +1,26 @@
 {% extends 'dashboard/dashboard_base.html' %}
 
 {% block title %}Labs | {{ block.super }}{% endblock %}
+{% block page_header %}Available labs{% endblock %}
 
 {% block page-content %}
-<h1 class="my-4">Available labs</h1>
-
+{% if environments|length == 0 %}
+<div class="card mx-auto" style="margin-top: 5vh; max-width: 500px;">
+  <div class="card-body">
+    <h1 class="card-title disply-3">Uh-oh!</p>
+    <h3 class="card-subtitle">We couldn't find any lab environments for you to run.</h3>
+    <hr>
+    <p class="mt-2 lead card-text">
+      Please contact your site administrator if you believe this to be an error.
+    </p>
+  </div>
+</div>
+{% else %}
 <div class="row row-cols-4">
   {% for env in environments %}
   {% include "./includes/lab_card.html" with env=env only %}
   {% endfor %}
 </div>
+{% endif %}
 
 {% endblock %}

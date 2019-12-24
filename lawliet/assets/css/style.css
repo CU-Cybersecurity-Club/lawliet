@@ -1,3 +1,7 @@
+body {
+  overflow-x: hidden;
+}
+
 .auth-form {
   max-width: 500px;
 }
@@ -41,14 +45,21 @@ input.remember-me {
 }
 
 .lab-action-icon {
-  max-height: 1rem;
-  max-width: 1rem;
+  height: 100%;
+  max-width: 1em;
   display: inline-block;
 }
 
 .lab-status-card {
   display: none;  /* Should hide the card by default */
   max-width: 30rem;
+}
+
+.active-lab-waiting-spinner {
+  display: block;
+  height: 10vmin;
+  width: 10vmin;
+  border-size: 10px;
 }
 
 /***********************************
@@ -122,6 +133,42 @@ div.profile-card {
 
 .resize-child {
   color: transparent !important;
+}
+
+#sidebar-wrapper {
+  min-height: 100vh;
+  margin-left: -15rem;
+  -webkit-transition: margin .25s ease-out;
+  -moz-transition: margin .25s ease-out;
+  -o-transition: margin .25s ease-out;
+  transition: margin .25s ease-out;
+}
+
+#sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
 }
 
 /***********************************

@@ -25,9 +25,9 @@ class LabEnvironmentTestCase(TestCase):
         self.rd = random.Random()
         self.rd.seed(0)
 
-        with open(os.path.join(STATIC_IMG_PATH, "cutter.svg"), "rb") as img:
+        with open(os.path.join(STATIC_IMG_PATH, "meepy.png"), "rb") as img:
             self.cutter_image = SimpleUploadedFile(
-                name="cutter.svg", content=img.read(), content_type="image/svg"
+                name="cutter.png", content=img.read(), content_type="image/png"
             )
 
         labenv = LabEnvironment.objects.create(

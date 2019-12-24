@@ -1,9 +1,9 @@
 {% extends 'dashboard/dashboard_base.html' %}
 
 {% block title %}Active lab | {{ block.super }}{% endblock %}
+{% block page_header %}Active lab{% endblock %}
 
 {% block page-content %}
-<h1 class="my-4">Active lab</h1>
 
 {% comment %}
 Status card to display when the user doesn't have any running labs.
@@ -37,10 +37,9 @@ Status card to display when the user doesn't have any running labs.
             <img
               align="middle"
               class="lab-action-icon"
-              src="{% static 'svg/refresh.svg' %}">
+              src="{% static 'svg/ikonate/refresh.svg' %}">
             Refresh page
         </button>
-        </a>
       </div>
     </div>
   </div>
@@ -75,10 +74,14 @@ iframe providing access to a lab environment's web interface.
   </iframe>
 </div>
 
+{# end verticle margins #}
+</div>
+
 {% block javascripts %}
 {{ block.super }}
 {% load static %}
-<script src="{% static 'js/labs.js' %}"></script>
+<script type="application/javascript"
+  src="{% static 'js/active-labs.js' %}"></script>
 {% endblock %}
 
 {% endblock %}

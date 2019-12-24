@@ -14,6 +14,23 @@
   <div id="page-content-wrapper">
     {% include "./includes/navbar.html" %}
     <div class="mb-4 container-fluid">
+
+      {% comment %}
+      Define the no_page_header and page_header blocks. On pages with
+      the page_header block defined, we format the header at the top
+      of the page in a consistent format. If a user wants to generate
+      a template that doesn't have a page header (e.g. see
+      dashboard.html), they should insert
+
+        {% block no_page_header %}{% endblock %}
+
+      into their template.
+      {% endcomment %}
+      {% block no_page_header %}
+      <h1 class="mt-4">{% block page_header %}{% endblock %}</h1>
+      <hr>
+      {% endblock %}
+
       {% block page-content %}{% endblock %}
     </div>
   </div>
@@ -22,5 +39,6 @@
 
 {% block javascripts %}
 {% load static %}
-<script src="{% static 'js/dashboard.js' %}"></script>
+<script type="application/javascript"
+  src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

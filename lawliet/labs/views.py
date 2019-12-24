@@ -5,16 +5,20 @@ from django.http import HttpResponse, JsonResponse
 
 @login_required
 def generate_lab(request):
-    api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
-    requests.put(url=api_server_host)
-    return redirect("dashboard")
+    # api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
+    # requests.put(url=api_server_host)
+    # return redirect("dashboard")
+    response = {"created": False, "error": "TODO"}
+    return JsonResponse(response)
 
 
 @login_required
 def delete_lab(request):
-    api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
-    requests.delete(url=api_server_host)
-    return redirect("dashboard")
+    # api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
+    # requests.delete(url=api_server_host)
+    # return redirect("dashboard")
+    response = {"deleted": False, "error": "TODO"}
+    return JsonResponse(response)
 
 
 @login_required

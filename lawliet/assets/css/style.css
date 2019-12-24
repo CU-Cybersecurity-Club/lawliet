@@ -31,6 +31,14 @@ input.remember-me {
 }
 
 /***********************************
+ * Pop-up notifications
+ ***********************************/
+.notification {
+  min-width: 20vw;
+  font-size: 1.25em;
+}
+
+/***********************************
  * CSS for lab environments
  ***********************************/
 .lab-img {

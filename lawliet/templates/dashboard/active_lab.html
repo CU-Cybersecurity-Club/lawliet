@@ -5,6 +5,21 @@
 
 {% block page-content %}
 
+{# Add upper and lower vertical margins over the interface #}
+<div style="margin-top: 10vh; margin-bottom: 10vh;">
+
+{% comment %}
+Show a spinner while we're waiting to see whether the user has started
+any lab environments and, if so, whether or not they're already up and
+running.
+{% endcomment %}
+<div
+  id="active-lab-waiting"
+  role="status"
+  class="mx-auto spinner-border active-lab-waiting-spinner">
+  <div class="sr-only">Loading...</div>
+</div>
+
 {% comment %}
 Status card to display when the user doesn't have any running labs.
 {% endcomment %}

@@ -5,6 +5,7 @@
 
 {% block page-content %}
 {% if environments|length == 0 %}
+
 <div class="card mx-auto" style="margin-top: 5vh; max-width: 500px;">
   <div class="card-body">
     <h1 class="card-title disply-3">Uh-oh!</p>
@@ -15,12 +16,28 @@
     </p>
   </div>
 </div>
+
 {% else %}
-<div class="row row-cols-4">
-  {% for env in environments %}
-  {% include "./includes/lab_card.html" with env=env only %}
-  {% endfor %}
+
+{# Flexbox container for aligning toasts #}
+<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+
+  {# Place toasts within flexbox container #}
+  {% include "./includes/update_overlay.html" %}
+
+  {# List all of the lab environments #}
+  {% csrf_token %}
+  <div class="row row-cols-4">
+    {% for env in environments %}
+    {% include "./includes/lab_card.html" with env=env only %}
+    {% endfor %}
+  </div>
 </div>
 {% endif %}
+{% endblock %}
 
+{% block javascripts %}
+{% load static %}
+<script
+  src="{% static 'js/lab-management.js' %}"></script>
 {% endblock %}

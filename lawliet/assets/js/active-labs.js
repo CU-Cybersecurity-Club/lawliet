@@ -22,10 +22,8 @@ function check_lab_status(status_url) {
 }
 
 function show_no_active_labs() {
-    /*
-     * Tell the user that there are currently no lab environments
-     * up and running.
-     */
+    /* Tell the user that there are currently no lab environments
+     * up and running. */
     let spinner = document.getElementById("active-lab-waiting");
 
     // Fade the spinner out, and replace it with the status card saying
@@ -36,6 +34,11 @@ function show_no_active_labs() {
     });
 }
 
-$(document).ready(function () {
-    check_lab_status("/labs/lab-status");
-});
+/*
+ * Wait until jQuery is loaded. Once it is, start running Javascript.
+ */
+window.onload = function () {
+    $(document).ready(function () {
+        check_lab_status("/labs/lab-status");
+    });
+}

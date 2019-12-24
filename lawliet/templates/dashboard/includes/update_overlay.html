@@ -1,0 +1,43 @@
+{% comment %}
+Inserts a div overlaying the page on which we can display notifications using Bootstrap
+toasts. Includes a template (defined within <template></template> tags) for new
+alerts.
+{% endcomment %}
+<div style="position: fixed; top: 3vh; right: 3vw; z-index: 1001;">
+  {% comment %}
+  Template that can be used by JavaScript to create new alerts.
+  {% endcomment %}
+  <template id="notification-template">
+    <div data-autohide="false" class="notification toast">
+      <div class="toast-header" style="color: black;">
+        {# Update header #}
+        <strong class="notification-header mr-auto">
+          hello, world
+          {# Display message header here #}
+        </strong>
+
+        {# Time that the message was generated #}
+        <small class="notification-time">
+          {# Display time here #}
+        </small>
+
+        {# Button to close the notification #}
+        <button
+          type="button"
+          class="ml-2 mb-1 close notification-close-button"
+          data-dismiss="toast"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+      {# Message body #}
+      <div class="notification-body toast-body">
+        {# Display message here #}
+      </div>
+
+    </div>
+  </template>
+  <div id="notification-list">
+  </div>
+</div>

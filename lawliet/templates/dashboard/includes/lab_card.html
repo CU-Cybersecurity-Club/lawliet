@@ -42,14 +42,14 @@
       {% endcomment %}
       <button
         class="btn btn-light lab-button"
-        onClick="window.location.replace('{% url "generate lab" %}')">
+        onClick="create_lab('{% url "generate lab" %}')">
         <img
           class="img-fluid lab-action-icon"
           src="{% static 'svg/ikonate/play.svg' %}">
       </button>
       <button
         class="btn btn-light lab-button"
-        onClick="window.location.replace('{% url "delete lab" %}')">
+        onClick="delete_lab('{% url "delete lab" %}')">
         <img
           class="img-fluid lab-action-icon"
           src="{% static 'svg/ikonate/rectangle.svg' %}">

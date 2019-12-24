@@ -37,6 +37,7 @@
 {% endblock %}
 
 {% block javascripts %}
+{{ block.super }}
 {% load static %}
 <script
   src="{% static 'js/lab-management.js' %}"></script>

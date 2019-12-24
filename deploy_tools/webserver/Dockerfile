@@ -3,11 +3,14 @@ FROM alpine:3.10
 COPY requirements.txt /tmp
 RUN apk update \
     && apk upgrade \
-    && apk add \
+    && apk add --no-cache \
         # Compilation tools
         gcc \
         musl-dev \
         jpeg \
+        jpeg-dev \
+        libffi \
+        libffi-dev \
         # Python and scripting
         bash \
         python3 \
@@ -17,8 +20,16 @@ RUN apk update \
     && ln -s $(which python3) $(dirname $(which python3))/python \
     && python3 -m pip install \
         --no-cache-dir \
-        -r /tmp/requirements.txt \ 
-    && rm /tmp/requirements.txt
+        -r /tmp/requirements.txt \
+#
+# Cleanup
+    && rm /tmp/requirements.txt \
+    && apk del \
+        gcc \
+        musl-dev \
+        jpeg-dev \
+        libffi-dev \
+        python3-dev
 
 # Add the webserver files (assets, templates, paths, etc.)
 ENV SITE_DIRECTORY=/var/www \

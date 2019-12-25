@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Sign Up | {{ block.super }}{% endblock %}
+{% block title %}Sign up | {{ block.super }}{% endblock %}
 
 {% block body %}
 <h1 class="display-1">
@@ -43,13 +43,13 @@
           <button
             type="submit"
             class="btn btn-primary float-left"
-            id="login-submit-button">
+            id="signup-button">
             Sign up
           </button>
         </div>
         <div class="col">
           <a href="{% url 'login' %}">
-            <button class="btn btn-primary float-right">
+            <button id="login-redirect-button" class="btn btn-primary float-right">
               Return to login page
             </button>
           </a>

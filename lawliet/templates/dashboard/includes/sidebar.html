@@ -16,13 +16,6 @@ Sidebar for the dashboard
       {% include 'includes/profile_card.html' with user=user format="short" only %}
     </a>
 
-    {# Dashboard #}
-    <a class="mt-1" href="{% url 'dashboard' %}">
-      <button class="btn sidebar-button text-left">
-        <p class="my-2 text-monospace">Dashboard</p>
-      </button>
-    </a>
-
     {# Lab environment access #}
     <div class="mt-1">
       <button

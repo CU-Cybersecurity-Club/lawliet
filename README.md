@@ -1,48 +1,19 @@
-## Testing and deployment
-In order to run `lawliet-dashboard`, you must either create a `.env` file or a `secrets.yml` file to store environmental variables.
+# Lawliet
+The universal lab environment deployment system.
 
-- `.env`: You need a `.env` file if you're going to test the project locally with `lawliet/manage.py` or `docker-compose`. Create one by modifying `env.dist` with the options that you want to use and renaming it to `.env`.
-- `secrets.yml`: You'll need a `secrets.yml` file if you're going to deploy `lawliet-dashboard` with Kubernetes. The file `deploy_tools/k8s/secrets.yml.dist` has a template for what the `secrets.yml` file should look like.
+## What's Lawliet?
+Lawliet is a system for quickly creating and deploying lab environments. It is similar to [JupyterHub](https://jupyter.org/hub), and in fact can largely replicate JupyterHub's functionality by deploying Jupyter Notebook servers very easily. However, Lawliet's functionality is meant to be a strict superset of JupyterHub's in that it can deploy a much, much wider variety of environments than just Jupyter Notebooks.
 
-### Options for running `lawliet-dashboard`
-#### Run locally with `manage.py`
-Create a `.env` file in the repository's root directory or in `lawliet/`. Create a virtual environment with the project dependencies using
+## What motivated you to create this project?
+This project was started by members of the leadership for the [CU Cybersecurity Club](https://cucybersecurityclub.com) at the University of Colorado Boulder. Over time, as the Cyber Club has tried to teach hands-on workshops and started teams for security competitions (which entails preparing labs to teach newer team members various concepts), we've noticed a few patterns:
 
-```
-python3 -m venv venv \
-  && source venv/bin/activate \
-  && pip install -r requirements.txt
-```
+- Students have difficulty installing software themselves due to complicated installation instructions, large downloads, and so on.
+- Creating training materials is very time-consuming, especially if you want to hit a wide variety of topics at multiple skill levels.
 
-If you're testing locally, then you'll probably want to use a SQLite database, in which case you'll want to set `DATABASE_ENGINE=sqlite3` in your `.env` file or run `export DATABASE_ENGINE=sqlite3`. Then you can `cd` into the `lawliet/` directory and run `manage.py` to create the database, run the webserver, and more.
+To solve these problems, we started to create some virtualized environments that gave students access to all of the tools and learning materials that they needed. But this came with its own problems:
 
-#### Run with `docker-compose`
-If you want to use [docker-compose](https://docs.docker.com/compose/) to test the project, create a `.env` file from `env.dist` and run
+- There isn't an easy way to provide students with access to most kinds of environments we'd be interested in (e.g. desktops).
+- It's even harder to spawn groups of machines that have to interact with each other (a pre-requisite for us to run attack-defend exercises and certain kinds of CTFs).
+- We need a way to automate deployment of lab environments for large groups of students.
 
-```
-docker-compose up --build
-```
-
-#### Run with Kubernetes
-In order to run the project using Kubernetes, you should first create a `secrets.yml` file with the environmental variables that you would like to use. Create a new [Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/) using
-
-```
-kubectl apply -f secrets.yml
-```
-
-Then run
-
-```
-kubectl apply -f deploy_tools/k8s/dashboard.yml
-```
-
-to pull and deploy the container images required to run the project. If you want to test running the project with Kubernetes locally, we suggest using [minikube](https://github.com/kubernetes/minikube) to run a local Kubernetes cluster.
-
-### Unit testing
-This repository comes with unit tests for `lawliet-dashboard` to run during development. To run the unit tests, follow the steps in the ["run locally with `manage.py`"](https://github.com/CU-Cybersecurity-Club/lawliet-dashboard#run-locally-with-managepy) section, and then run
-
-```
-source venv/bin/activate
-cd lawliet
-./manage.py test
-```
+We developed Lawliet as our solution to these problems. Lawliet uses Kubernetes to spawn and import new labs, and to scale up and down for the number of users we have at a given time. It provides a web interface for accessing lab environments, so that all students need to get up and running is a browser.

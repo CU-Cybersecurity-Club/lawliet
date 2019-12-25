@@ -4,7 +4,7 @@ The universal lab environment deployment system.
 ## What's Lawliet?
 Lawliet is a system for quickly creating and deploying lab environments. It is similar to [JupyterHub](https://jupyter.org/hub), and in fact can largely replicate JupyterHub's functionality by deploying Jupyter Notebook servers very easily. However, Lawliet's functionality is meant to be a strict superset of JupyterHub's in that it can deploy a much, much wider variety of environments than just Jupyter Notebooks.
 
-## What motivated you to create this project?
+## What motivated this project?
 This project was started by members of the leadership for the [CU Cybersecurity Club](https://cucybersecurityclub.com) at the University of Colorado Boulder. Over time, as the Cyber Club has tried to teach hands-on workshops and started teams for security competitions (which entails preparing labs to teach newer team members various concepts), we've noticed a few patterns:
 
 - Students have difficulty installing software themselves due to complicated installation instructions, large downloads, and so on.

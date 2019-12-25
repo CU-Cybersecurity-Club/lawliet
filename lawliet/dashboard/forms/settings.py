@@ -4,6 +4,7 @@ Forms for changing user settings.
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 from .fields import PasswordInput
 from users.models import User
@@ -46,6 +47,9 @@ class PasswordChangeForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
 
+        if len(self.errors) > 0:
+            return cleaned_data
+
         old_password = cleaned_data.get("old_password")
         new_password = cleaned_data.get("new_password")
         new_repassword = cleaned_data.get("new_repassword")
@@ -54,6 +58,7 @@ class PasswordChangeForm(forms.Form):
         if not self.user.check_password(old_password):
             error = forms.ValidationError(_("The password you entered was incorrect."))
             self.add_error("old_password", error)
+            return cleaned_data
 
         # Check whether the two entered passwords don't match up
         if new_password != new_repassword:
@@ -61,5 +66,11 @@ class PasswordChangeForm(forms.Form):
                 _("The new passwords you've entered don't match. Please try again.")
             )
             self.add_error("new_repassword", error)
+
+        try:
+            validate_password(new_password)
+        except forms.ValidationError as error:
+            self.add_error("new_password", error)
+            return cleaned_data
 
         return cleaned_data

@@ -4,7 +4,8 @@ Tests for the views offered by the dashboard app.
 import os
 import random
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, tag
+from django.conf import settings
 from django.contrib.auth import get_user, login, logout
 from django.urls import reverse
 from uuid import UUID
@@ -18,7 +19,16 @@ Signup tests
 ---------------------------------------------------
 """
 
+MIN_PASSWORD_LENGTH = settings.MIN_PASSWORD_LENGTH
 
+"""
+---------------------------------------------------
+Signup tests
+---------------------------------------------------
+"""
+
+
+@tag("auth", "views")
 class SignupViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -30,38 +40,89 @@ class SignupViewTestCase(TestCase):
         self.form_data = signup_form_data(self.username, self.email, self.password)
 
     def test_signup(self):
-        # Create a new user and check that they were
-        # registered in the database.
-        response = self.client.post("/signup", self.form_data)
+        """
+        Create a new user and check that they were registered in the database.
+        """
+        response = self.client.get(reverse("signup"))
+        self.assertTemplateUsed(response, "base.html")
+        self.assertTemplateUsed(response, os.path.join("dashboard", "signup.html"))
+
+        response = self.client.post(reverse("signup"), self.form_data)
 
         user = User.objects.get(username=self.username)
         self.assertEqual(len(User.objects.all()), 1)
         self.assertEqual(user.email, self.email)
         self.assertTrue(user.check_password(self.password))
 
-    def test_invalid_signups(self):
-        # An invalid signup shouldn't modify the database
-        # 1. Add a valid user
-        self.client.post("/signup", self.form_data)
-        self.assertEqual(len(User.objects.all()), 1)
-        users = list(User.objects.all())
+    def test_signup_as_registered_email_or_user(self):
+        """
+        Attempt to sign up as new user with registered email address or username.
+        """
+        # Start by adding a new user to the database
+        user = User.objects.create_user(
+            email=self.email, username=self.username, password=self.password
+        )
 
-        # 2-4: attempt to sign up with the following invalidating
-        #      conditions:
-        #      - Username already taken
-        #      - Provided email already registered
-        #      - Passwords don't match
-        kv_pairs = [
-            ("username", self.username),
-            ("email", self.email),
-            ("password", random_password(self.rd)),
-        ]
-        for (key, val) in kv_pairs:
-            form_data = random_signup_form(self.rd)
-            form_data[key] = val
-            response = self.client.post("/signup", form_data)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(users, list(User.objects.all()))
+        # Attempt to sign up a user with the same email
+        form_data = random_signup_form(self.rd)
+        form_data["email"] = self.email
+        response = self.client.post(reverse("signup"), form_data)
+
+        self.assertEqual(len(User.objects.all()), 1)
+        self.assertEqual(user, User.objects.get(email=self.email))
+        self.assertFormError(
+            response, "form", "email", "User with this Email already exists."
+        )
+
+        # Attempt to sign up a user with the same username
+        form_data = random_signup_form(self.rd)
+        form_data["username"] = self.username
+        response = self.client.post(reverse("signup"), form_data)
+
+        self.assertEqual(len(User.objects.all()), 1)
+        self.assertEqual(user, User.objects.get(username=self.username))
+        self.assertFormError(
+            response, "form", "username", "User with this Username already exists."
+        )
+
+    def test_sign_up_with_nonmatching_passwords(self):
+        """
+        Attempt to sign up with different data in the two password fields.
+        """
+        self.form_data["repassword"] = random_password(self.rd)
+        response = self.client.post(reverse("signup"), self.form_data)
+        self.assertEqual(len(User.objects.all()), 0)
+        self.assertFormError(
+            response,
+            "form",
+            "password",
+            "The passwords you've entered don't match. Please try again.",
+        )
+
+    def test_sign_up_with_invalid_password(self):
+        """
+        Attempt to sign up with passwords that fail to pass the validators.
+        """
+        # Try to sign up with a password that's too short
+        self.form_data["password"] = self.password[:6]
+        self.form_data["repassword"] = self.password[:6]
+        response = self.client.post(reverse("signup"), self.form_data)
+        self.assertEqual(len(User.objects.all()), 0)
+        self.assertFormError(
+            response,
+            "form",
+            "password",
+            f"This password is too short. It must contain at least {MIN_PASSWORD_LENGTH} characters.",
+        )
+
+        # Try to sign up with a password that's too common
+        self.form_data["password"] = "password"
+        self.form_data["repassword"] = "password"
+        response = self.client.post(reverse("signup"), self.form_data)
+        self.assertEqual(len(User.objects.all()), 0)
+        self.assertFormError(
+            response, "form", "password", "This password is too common."
+        )
 
 
 """
@@ -71,6 +132,7 @@ Login tests
 """
 
 
+@tag("auth", "views")
 class LoginViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -88,6 +150,10 @@ class LoginViewTestCase(TestCase):
 
     def test_login(self):
         # Attempt to login as a valid user and test that login succeeded
+        response = self.client.get(reverse("login"))
+        self.assertTemplateUsed(response, "base.html")
+        self.assertTemplateUsed(response, os.path.join("dashboard", "login.html"))
+
         self.client.post(reverse("login"), self.login_data)
         user = get_user(self.client)
         self.assertTrue(user.is_authenticated)
@@ -98,7 +164,7 @@ class LoginViewTestCase(TestCase):
         password = random_password(self.rd)
         login_data = {"username": username, "password": password}
 
-        # Ensure we can't login programmatically
+        # Ensure we can't login
         self.client.login(username=username, password=password)
         self.assertFalse(get_user(self.client).is_authenticated)
         logout(self.client)
@@ -156,6 +222,7 @@ Logout tests
 """
 
 
+@tag("auth", "views")
 class LogoutViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -193,6 +260,7 @@ Settings tests
 """
 
 
+@tag("user-settings", "views")
 class SettingsViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -201,13 +269,24 @@ class SettingsViewTestCase(TestCase):
 
         self.client = Client()
         self.username, self.email, self.password = create_random_user(self.rd)
-        User.objects.create_user(
+        self.user = User.objects.create_user(
             username=self.username, email=random_email(self.rd), password=self.password
         )
 
         # Log the client into the test account by default
         self.client.force_login(User.objects.get(username=self.username))
 
+    def test_user_settings_template(self):
+        response = self.client.get(reverse("user settings"))
+        self.assertTemplateUsed(response, "base.html")
+        self.assertTemplateUsed(
+            response, os.path.join("dashboard", "dashboard_base.html")
+        )
+        self.assertTemplateUsed(
+            response, os.path.join("dashboard", "user_settings.html")
+        )
+
+    @tag("user")
     def test_change_password(self):
         new_password = random_password(self.rd)
         form_data = {
@@ -220,28 +299,87 @@ class SettingsViewTestCase(TestCase):
         self.assertFalse(user.check_password(self.password))
         self.assertTrue(user.check_password(new_password))
 
-    def test_invalid_change_password(self):
-        # Attempt to change password with invalid form data
+    @tag("user")
+    def test_change_password_with_incorrect_old_password(self):
+        """Attempt to change password with an invalid old password."""
         new_password = random_password(self.rd)
-
-        # 1. Old password is incorrect
         form_data = {
             "old_password": random_password(self.rd),
             "new_password": new_password,
             "new_repassword": new_password,
         }
-        self.client.post(reverse("user settings"), form_data)
+        response = self.client.post(reverse("user settings"), form_data)
         user = User.objects.get(username=self.username)
         self.assertTrue(user.check_password(self.password))
         self.assertFalse(user.check_password(new_password))
+        self.assertFormError(
+            response,
+            "password_change_form",
+            "old_password",
+            "The password you entered was incorrect.",
+        )
 
-        # 2. New passwords don't match
+    @tag("user")
+    def test_change_password_with_nonmatching_repassword(self):
+        """Attempt to change password with nonmatching new passwords."""
+        new_password = random_password(self.rd)
         form_data = {
             "old_password": self.password,
-            "new_password": random_password(self.rd),
+            "new_password": new_password,
             "new_repassword": random_password(self.rd),
         }
-        self.client.post(reverse("user settings"), form_data)
+        response = self.client.post(reverse("user settings"), form_data)
         user = User.objects.get(username=self.username)
         self.assertTrue(user.check_password(self.password))
         self.assertFalse(user.check_password(new_password))
+        self.assertFormError(
+            response,
+            "password_change_form",
+            "new_repassword",
+            "The new passwords you've entered don't match. Please try again.",
+        )
+
+    @tag("user")
+    def test_change_password_with_invalid_password(self):
+        """
+        Attempt to change the user's password to a password that fails
+        the password validators.
+        """
+        initial_pass = self.user.password
+
+        # Password length is too short
+        new_password = random_password(self.rd)[:6]
+        form_data = {
+            "old_password": self.password,
+            "new_password": new_password,
+            "new_repassword": new_password,
+        }
+        response = self.client.post(reverse("user settings"), form_data)
+        self.assertEqual(self.user.password, initial_pass)
+        self.assertFormError(
+            response,
+            "password_change_form",
+            "new_password",
+            f"Ensure this value has at least {MIN_PASSWORD_LENGTH} characters (it has {len(new_password)}).",
+        )
+        self.assertFormError(
+            response,
+            "password_change_form",
+            "new_repassword",
+            f"Ensure this value has at least {MIN_PASSWORD_LENGTH} characters (it has {len(new_password)}).",
+        )
+
+        # Password is too common
+        form_data = {
+            "old_password": self.password,
+            "new_password": "password",
+            "new_repassword": "password",
+        }
+        response = self.client.post(reverse("user settings"), form_data)
+        self.assertEqual(self.user.password, initial_pass)
+        self.assertFormError(
+            response,
+            "password_change_form",
+            "new_password",
+            "This password is too common.",
+        )

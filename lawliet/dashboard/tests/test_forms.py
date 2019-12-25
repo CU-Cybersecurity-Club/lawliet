@@ -4,7 +4,7 @@ import random
 from django.core.files.images import ImageFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, tag
 from dashboard.forms.auth import LoginForm, SignupForm
 from dashboard.forms.settings import PasswordChangeForm
 from dashboard.forms.labs import LabUploadForm
@@ -21,6 +21,7 @@ SignupForm tests
 """
 
 
+@tag("forms", "auth")
 class SignupFormTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -38,10 +39,18 @@ class SignupFormTestCase(TestCase):
         }
 
     def test_signup(self):
+        """
+        Submit some valid data to the SignUp form, and ensure that the
+        form validates it.
+        """
         signup_form = SignupForm(data=self.form_data)
         self.assertTrue(signup_form.is_valid())
 
     def test_cannot_sign_up_existing_username_or_email(self):
+        """
+        Users should be unable to sign up with a username or email that's
+        already been registered.
+        """
         signup_form = SignupForm(data=self.form_data)
         self.assertTrue(signup_form.is_valid())
 
@@ -72,12 +81,43 @@ class SignupFormTestCase(TestCase):
         self.assertFalse(signup_form.is_valid())
 
     def test_password_and_repassword_must_match(self):
+        """
+        In the signup form, the two passwords that the user enters
+        must match with one another.
+        """
         signup_form = SignupForm(
             data={
                 "username": self.username,
                 "email": self.email,
                 "password": random_password(self.rd),
                 "repassword": random_password(self.rd),
+            }
+        )
+        self.assertFalse(signup_form.is_valid())
+
+    def test_sign_up_with_invalid_password(self):
+        """
+        Ensure that the SignupForm enforces the correct restrictions on
+        passwords.
+        """
+        # Test: passwords must meet the minimum password length
+        signup_form = SignupForm(
+            data={
+                "username": self.username,
+                "email": self.email,
+                "password": self.password[:6],
+                "repassword": self.password[:6],
+            }
+        )
+        self.assertFalse(signup_form.is_valid())
+
+        # Test: passwords must not be too common
+        signup_form = SignupForm(
+            data={
+                "username": self.username,
+                "email": self.email,
+                "password": "password",
+                "repassword": "password",
             }
         )
         self.assertFalse(signup_form.is_valid())

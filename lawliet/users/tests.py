@@ -1,7 +1,7 @@
 import os
 import random
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, tag
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
@@ -21,6 +21,7 @@ User tests (for custom User model)
 """
 
 
+@tag("users", "auth")
 class UserTestCase(TestCase):
     def setUp(self):
         self.rd = random.Random()
@@ -40,6 +41,7 @@ class UserTestCase(TestCase):
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
 
+    @tag("admin")
     def test_can_create_superuser(self):
         user = User.objects.create_superuser(
             username=self.username, email=self.email, password=self.password

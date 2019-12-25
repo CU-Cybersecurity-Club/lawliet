@@ -5,6 +5,7 @@ Forms to provide authentication functionality.
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
 from .fields import TextInput, PasswordInput
@@ -36,6 +37,7 @@ class SignupForm(forms.ModelForm):
         label="",
         help_text="Re-enter the password you entered in the previous box.",
         max_length=User.password.field.max_length,
+        min_length=MIN_PASSWORD_LENGTH,
     )
 
     class Meta:
@@ -46,7 +48,12 @@ class SignupForm(forms.ModelForm):
         widgets = {
             "email": TextInput(attrs={"placeholder": "Enter your email address"}),
             "username": TextInput(attrs={"placeholder": "Select a username"}),
-            "password": PasswordInput(attrs={"placeholder": "Choose a password"}),
+            "password": PasswordInput(
+                attrs={
+                    "minlength": MIN_PASSWORD_LENGTH,
+                    "placeholder": "Choose a password",
+                }
+            ),
         }
 
         help_texts = {
@@ -75,6 +82,12 @@ class SignupForm(forms.ModelForm):
         # Validate password and re-entered password
         password = cleaned_data.get("password")
         repassword = cleaned_data.get("repassword")
+
+        try:
+            validate_password(password)
+        except forms.ValidationError as error:
+            self.add_error("password", error)
+            return cleaned_data
 
         if password != repassword:
             error = forms.ValidationError(

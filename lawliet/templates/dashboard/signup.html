@@ -7,11 +7,12 @@
   {% include "includes/logo.html" %}
 </h1>
 <div class="container justify-content-md-center my-4">
+  <h2 class="text-center display-5">
+    Sign up
+  </h2>
+
   <form method="POST">
     {% csrf_token %}
-    <h2 class="text-center display-5">
-      Sign up
-    </h2>
 
     {% if form.non_field_errors %}
     <span class="d-flex justify-content-center">
@@ -49,7 +50,7 @@
         </div>
         <div class="col">
           <a href="{% url 'login' %}">
-            <button id="login-redirect-button" class="btn btn-primary float-right">
+            <button type="button" id="login-redirect-button" class="btn btn-primary float-right">
               Return to login page
             </button>
           </a>

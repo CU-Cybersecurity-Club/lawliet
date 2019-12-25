@@ -147,8 +147,9 @@ class InvalidSignupTestCase(FunctionalTest):
         # Somebody else comes along and creates a user with the username and
         # email address that Meepy wants to sign up with.
         user = User.objects.create_user(
-            email=self.email, username=self.username, password=self.password
+            email=self.email, username=self.username, password=random_password(self.rd)
         )
+        user_password = user.password
 
         # Meepy tries to sign up for the site. First, she tries to sign up with
         # an email address that already has an account.
@@ -160,6 +161,9 @@ class InvalidSignupTestCase(FunctionalTest):
         self.assertEqual(len(alerts), 1)
         self.assertEqual(alerts[0].text, "User with this Email already exists.")
 
+        # (Existing user's password should not have been modified)
+        self.assertEqual(User.objects.get(email=self.email).password, user_password)
+
         # Failing that, Meepy tries to sign up with a username that's already
         # been registered.
         self.sign_up(random_email(self.rd), self.username, self.password)
@@ -168,3 +172,38 @@ class InvalidSignupTestCase(FunctionalTest):
         alerts = self.browser.find_elements_by_class_name("form-error")
         self.assertEqual(len(alerts), 1)
         self.assertEqual(alerts[0].text, "User with this Username already exists.")
+
+        # (Existing user's password should not have been modified)
+        self.assertEqual(
+            User.objects.get(username=self.username).password, user_password
+        )
+
+    def test_signup_with_invalid_password(self):
+        # Meepy tries to sign up with a password that's too short.
+        self.assertEqual(len(User.objects.all()), 0)
+        self.sign_up(self.email, self.username, random_password(self.rd)[:6])
+        self.assertEqual(len(User.objects.all()), 0)
+
+        # Note: signup button should be disabled, there should be a min length
+        # attribute on the password and repassword inputs.
+
+        # Meepy tries to sign up with a password that's too basic
+        self.sign_up(self.email, self.username, "password")
+        self.assertEqual(len(User.objects.all()), 0)
+
+        alerts = self.browser.find_elements_by_class_name("form-error")
+        self.assertEqual(len(alerts), 1)
+        self.assertEqual(alerts[0].text, "This password is too common.")
+
+    def test_return_to_login_with_filled_fields(self):
+        # Meepy fills in all the fields of the signup form, but decides to
+        # return to the login form.
+        self.assertEqual(len(User.objects.all()), 0)
+        self.browser.get(self.live_server_url)
+        self.browser.find_element_by_id("signup-redirect-button").click()
+        self.browser.find_element_by_id("id_email").send_keys(self.email)
+        self.browser.find_element_by_id("id_username").send_keys(self.username)
+        self.browser.find_element_by_id("id_password").send_keys(self.password)
+        self.browser.find_element_by_id("id_repassword").send_keys(self.password)
+        self.browser.find_element_by_id("login-redirect-button").click()
+        self.assertEqual(len(User.objects.all()), 0)

@@ -21,7 +21,7 @@ SignupForm tests
 """
 
 
-@tag("forms", "auth")
+@tag("auth", "forms", "unit-tests")
 class SignupFormTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -130,6 +130,7 @@ LoginForm tests
 """
 
 
+@tag("auth", "forms", "unit-tests")
 class LoginFormTestCase(TestCase):
     def setUp(self):
         # Seed RNG for reproducible results
@@ -170,6 +171,7 @@ PasswordChangeForm tests
 """
 
 
+@tag("auth", "forms", "unit-tests", "user-settings")
 class PasswordChangeFormTests(TestCase):
     def setUp(self):
         self.rd = random.Random()
@@ -229,6 +231,7 @@ LabUploadForm tests
 """
 
 
+@tag("forms", "labs", "unit-tests")
 class LabUploadFormTestCase(TestCase):
     def setUp(self):
         self.rd = random.Random()
@@ -283,6 +286,7 @@ class LabUploadFormTestCase(TestCase):
         with open(self.lab_image_path, "rb") as img:
             self.assertEqual(lab.header_image.read(), img.read())
 
+    @tag("admin", "auth")
     def test_nonstaff_no_upload_lab(self):
         """
         Non-staff users shouldn't be able to upload new labs.

@@ -2,13 +2,14 @@ import dotenv
 import os
 import random
 
-from django.test import Client
+from django.test import Client, tag
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from .utils import *
 from users.models import User
 
 
+@tag("functional-tests")
 class FunctionalTest(StaticLiveServerTestCase):
     """
     Base class for functional tests.

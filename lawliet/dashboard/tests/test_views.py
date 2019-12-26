@@ -28,7 +28,7 @@ Signup tests
 """
 
 
-@tag("auth", "views")
+@tag("auth", "views", "unit-tests")
 class SignupViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -132,7 +132,7 @@ Login tests
 """
 
 
-@tag("auth", "views")
+@tag("auth", "views", "unit-tests")
 class LoginViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -222,7 +222,7 @@ Logout tests
 """
 
 
-@tag("auth", "views")
+@tag("auth", "views", "unit-tests")
 class LogoutViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results
@@ -260,7 +260,7 @@ Settings tests
 """
 
 
-@tag("user-settings", "views")
+@tag("user-settings", "views", "unit-tests")
 class SettingsViewTestCase(TestCase):
     def setUp(self):
         # Set up RNG to get reproducible results

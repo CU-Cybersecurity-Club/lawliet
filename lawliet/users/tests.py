@@ -21,7 +21,7 @@ User tests (for custom User model)
 """
 
 
-@tag("users", "auth")
+@tag("auth", "unit-tests", "users")
 class UserTestCase(TestCase):
     def setUp(self):
         self.rd = random.Random()
@@ -96,6 +96,7 @@ Profile tests
 """
 
 
+@tag("auth", "profile", "unit-tests", "users")
 class ProfileTestCase(TestCase):
     def setUp(self):
         # New users should use the default profile image

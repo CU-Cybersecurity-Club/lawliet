@@ -20,6 +20,7 @@ LabEnvironment tests
 """
 
 
+@tag("labs", "unit-tests")
 class LabEnvironmentTestCase(TestCase):
     def setUp(self):
         self.rd = random.Random()

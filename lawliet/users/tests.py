@@ -12,7 +12,7 @@ from users.models import *
 
 # Helper functions
 
-from dashboard.tests.utils import *
+from testing.utils import *
 
 """
 ---------------------------------------------------

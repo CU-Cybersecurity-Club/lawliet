@@ -10,7 +10,7 @@ from dashboard.forms.settings import PasswordChangeForm
 from dashboard.forms.labs import LabUploadForm
 from uuid import UUID
 
-from .utils import *
+from testing.utils import *
 from labs.models import LabEnvironment
 from users.models import User
 

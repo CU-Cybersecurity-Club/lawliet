@@ -4,12 +4,13 @@ Tests for the views offered by the dashboard app.
 import os
 import random
 
-from django.test import TestCase, Client, tag
+from django.test import Client, tag
 from django.conf import settings
 from django.contrib.auth import get_user, login, logout
 from django.urls import reverse
 from uuid import UUID
 
+from testing.base import UnitTest
 from testing.utils import *
 from users.models import User
 
@@ -28,15 +29,10 @@ Signup tests
 """
 
 
-@tag("auth", "views", "unit-tests")
-class SignupViewTestCase(TestCase):
+@tag("auth", "views")
+class SignupViewTestCase(UnitTest):
     def setUp(self):
-        # Set up RNG to get reproducible results
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.client = Client()
-        self.username, self.email, self.password = create_random_user(self.rd)
+        super().setUp()
         self.form_data = signup_form_data(self.username, self.email, self.password)
 
     def test_signup(self):
@@ -132,16 +128,11 @@ Login tests
 """
 
 
-@tag("auth", "views", "unit-tests")
-class LoginViewTestCase(TestCase):
+@tag("auth", "views")
+class LoginViewTestCase(UnitTest):
     def setUp(self):
-        # Set up RNG to get reproducible results
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.client = Client()
+        super().setUp()
         self.login_data = login_form_data(*create_random_user(self.rd))
-
         User.objects.create_user(
             username=self.login_data["username"],
             email=random_email(self.rd),
@@ -222,20 +213,11 @@ Logout tests
 """
 
 
-@tag("auth", "views", "unit-tests")
-class LogoutViewTestCase(TestCase):
+@tag("auth", "views")
+class LogoutViewTestCase(UnitTest):
     def setUp(self):
-        # Set up RNG to get reproducible results
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.client = Client()
-        self.username, self.email, self.password = create_random_user(self.rd)
+        super().setUp(create_user=True)
         self.form_data = signup_form_data(self.username, self.email, self.password)
-
-        User.objects.create_user(
-            username=self.username, email=random_email(self.rd), password=self.password
-        )
 
     def test_logout(self):
         # Test the logout endpoint.
@@ -260,8 +242,8 @@ Settings tests
 """
 
 
-@tag("user-settings", "views", "unit-tests")
-class SettingsViewTestCase(TestCase):
+@tag("user-settings", "views")
+class SettingsViewTestCase(UnitTest):
     def setUp(self):
         # Set up RNG to get reproducible results
         self.rd = random.Random()

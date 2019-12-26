@@ -4,13 +4,15 @@ import random
 from django.core.files.images import ImageFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
-from django.test import TestCase, tag
+from django.test import tag
 from dashboard.forms.auth import LoginForm, SignupForm
 from dashboard.forms.settings import PasswordChangeForm
 from dashboard.forms.labs import LabUploadForm
 from uuid import UUID
 
+from testing.base import UnitTest
 from testing.utils import *
+
 from labs.models import LabEnvironment
 from users.models import User
 
@@ -21,16 +23,10 @@ SignupForm tests
 """
 
 
-@tag("auth", "forms", "unit-tests")
-class SignupFormTestCase(TestCase):
+@tag("auth", "forms")
+class SignupFormTestCase(UnitTest):
     def setUp(self):
-        # Set up RNG to get reproducible results
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.username = random_username(self.rd)
-        self.email = random_email(self.rd)
-        self.password = random_password(self.rd)
+        super().setUp()
         self.form_data = {
             "username": self.username,
             "email": self.email,
@@ -130,21 +126,11 @@ LoginForm tests
 """
 
 
-@tag("auth", "forms", "unit-tests")
-class LoginFormTestCase(TestCase):
+@tag("auth", "forms")
+class LoginFormTestCase(UnitTest):
     def setUp(self):
-        # Seed RNG for reproducible results
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.username = random_username(self.rd)
-        self.email = random_email(self.rd)
-        self.password = random_password(self.rd)
+        super().setUp(create_user=True)
         self.form_data = {"username": self.username, "password": self.password}
-
-        self.user = User.objects.create_user(
-            username=self.username, email=self.email, password=self.password
-        )
 
     def test_login(self):
         user = User.objects.get(username=self.username)
@@ -171,17 +157,10 @@ PasswordChangeForm tests
 """
 
 
-@tag("auth", "forms", "unit-tests", "user-settings")
-class PasswordChangeFormTests(TestCase):
+@tag("auth", "forms", "user-settings")
+class PasswordChangeFormTests(UnitTest):
     def setUp(self):
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.username, self.email, self.password = create_random_user(self.rd)
-
-        self.user = User.objects.create_user(
-            username=self.username, email=self.email, password=self.password
-        )
+        super().setUp(create_user=True)
 
     def test_valid_password_change(self):
         # Login as the user and attempt to submit a
@@ -231,20 +210,10 @@ LabUploadForm tests
 """
 
 
-@tag("forms", "labs", "unit-tests")
-class LabUploadFormTestCase(TestCase):
+@tag("forms", "labs")
+class LabUploadFormTestCase(UnitTest):
     def setUp(self):
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        # Staff user params
-        self.username, self.email, self.password = create_random_user(self.rd)
-        self.user = User.objects.create_user(
-            username=self.username,
-            email=self.email,
-            password=self.password,
-            is_staff=True,
-        )
+        super().setUp(create_user=True)
 
         # Lab params
         self.lab_url = "https://hub.docker.com/r/wshand/cutter:latest"

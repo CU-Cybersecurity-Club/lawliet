@@ -1,7 +1,7 @@
 from django.test import tag
 from selenium.webdriver.common.keys import Keys
 
-from .ft_base import FunctionalTest
+from .base import FunctionalTest
 from .utils import *
 from users.models import User
 

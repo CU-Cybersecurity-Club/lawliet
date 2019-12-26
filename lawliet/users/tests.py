@@ -13,6 +13,7 @@ from users.models import *
 # Helper functions
 
 from testing.utils import *
+from testing.base import UnitTest
 
 """
 ---------------------------------------------------
@@ -21,14 +22,8 @@ User tests (for custom User model)
 """
 
 
-@tag("auth", "unit-tests", "users")
-class UserTestCase(TestCase):
-    def setUp(self):
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.username, self.email, self.password = create_random_user(self.rd)
-
+@tag("auth", "users")
+class UserTestCase(UnitTest):
     def test_can_create_user(self):
         user = User.objects.create_user(
             username=self.username, email=self.email, password=self.password
@@ -96,9 +91,11 @@ Profile tests
 """
 
 
-@tag("auth", "profile", "unit-tests", "users")
-class ProfileTestCase(TestCase):
+@tag("auth", "profile", "users")
+class ProfileTestCase(UnitTest):
     def setUp(self):
+        super().setUp(create_user=True)
+
         # New users should use the default profile image
         path = DEFAULT_PROFILE_IMAGE
         filename = path.split(os.sep)[-1]
@@ -106,18 +103,6 @@ class ProfileTestCase(TestCase):
             self.profile_image = SimpleUploadedFile(
                 name=filename, content=img.read(), content_type="image/png"
             )
-
-        # Set RNG for reproducible results
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.email = random_email(self.rd)
-        self.username = random_username(self.rd)
-        self.password = random_password(self.rd)
-
-        self.user = User.objects.create(
-            username=self.username, email=self.email, password=self.password
-        )
 
     def test_can_create_profile(self):
         user = User.objects.get(username=self.username)

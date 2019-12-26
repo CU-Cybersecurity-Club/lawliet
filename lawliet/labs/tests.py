@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from labs.models import LabEnvironment
+from testing.base import UnitTest
 from testing.utils import random_docker_image
 
 BASE_DIR = settings.BASE_DIR
@@ -20,11 +21,10 @@ LabEnvironment tests
 """
 
 
-@tag("labs", "unit-tests")
-class LabEnvironmentTestCase(TestCase):
+@tag("labs")
+class LabEnvironmentTestCase(UnitTest):
     def setUp(self):
-        self.rd = random.Random()
-        self.rd.seed(0)
+        super().setUp()
 
         with open(os.path.join(STATIC_IMG_PATH, "meepy.png"), "rb") as img:
             self.cutter_image = SimpleUploadedFile(

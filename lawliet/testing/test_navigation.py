@@ -202,9 +202,9 @@ class SidebarNavigationTestCase(FunctionalTest):
             self.assertTrue(title in self.browser.title)
             self.assertTrue(self.browser.current_url.endswith(suffix))
 
-            # Meepy clicks the "Lab" button on the sidebar again to expand
-            # the lab submenu.
-            self.get_sidebar_button("Labs").click()
+            # Meepy doesn't need to click the "Lab" button again, because the
+            # sidebar is still expanded after clicking a button in the lab
+            # submenu.
             lab_menu = self.browser.find_element_by_id("lab-menu")
 
 

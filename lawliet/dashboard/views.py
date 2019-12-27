@@ -2,6 +2,7 @@ import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
 from dashboard.forms.auth import SignupForm, LoginForm
 from dashboard.forms.settings import PasswordChangeForm
@@ -19,6 +20,7 @@ Landing page
 """
 
 
+@require_http_methods(["GET"])
 def index_page(request):
     return redirect("login")
 
@@ -30,6 +32,7 @@ Authentication
 """
 
 
+@require_http_methods(["GET", "POST"])
 def login_page(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
@@ -47,6 +50,7 @@ def login_page(request):
     return render(request, template, context={"form": form})
 
 
+@require_http_methods(["GET", "POST"])
 def signup_page(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
@@ -71,6 +75,7 @@ def signup_page(request):
         return render(request, template, context={"form": SignupForm()})
 
 
+@require_http_methods(["GET"])
 def logout_page(request):
     if request.user.is_authenticated:
         logout(request)
@@ -86,18 +91,21 @@ Dashboard
 
 
 @login_required
+@require_http_methods(["GET"])
 def dashboard(request):
     template = os.path.join(TEMPLATES, "dashboard.html")
     return render(request, template)
 
 
 @login_required
+@require_http_methods(["GET"])
 def scoreboard(request):
     template = os.path.join(TEMPLATES, "scoreboard.html")
     return render(request, template)
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def user_settings(request):
     template = os.path.join(TEMPLATES, "user_settings.html")
     pass_change_form = PasswordChangeForm(
@@ -138,6 +146,7 @@ Interface for handling lab environments
 
 
 @login_required
+@require_http_methods(["GET"])
 def lab_list(request):
     # List all of the available labs to the user
     template = os.path.join(TEMPLATES, "lab_list.html")
@@ -148,12 +157,14 @@ def lab_list(request):
 
 
 @login_required
+@require_http_methods(["GET"])
 def active_lab(request):
     template = os.path.join(TEMPLATES, "active_lab.html")
     return render(request, template, context={"lab_menu_show": True})
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def upload_lab(request):
     template = os.path.join(TEMPLATES, "lab_upload.html")
 

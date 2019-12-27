@@ -1,9 +1,11 @@
 import requests
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_http_methods
 
 
 @login_required
+@require_http_methods(["POST"])
 def generate_lab(request):
     # api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
     # requests.put(url=api_server_host)
@@ -13,6 +15,7 @@ def generate_lab(request):
 
 
 @login_required
+@require_http_methods(["POST"])
 def delete_lab(request):
     # api_server_host = f"http://lawliet-k8s-api-server/container/{request.user.username}"
     # requests.delete(url=api_server_host)
@@ -22,6 +25,7 @@ def delete_lab(request):
 
 
 @login_required
+@require_http_methods(["GET"])
 def lab_status(request):
     # TODO: display the actual status of the currently running labs
     return JsonResponse({"labs": []})

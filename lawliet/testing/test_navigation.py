@@ -66,7 +66,7 @@ class UserDashboardTestCase(FunctionalTest):
         # - Username
         # - Rank
         self.assertTrue(self.username in jumbotron.text)
-        self.assertTrue(self.user.profile.get_rank() in jumbotron.text)
+        self.assertTrue(self.user.profile.get_rank in jumbotron.text)
 
         # - Profile image
         img = jumbotron.find_elements_by_tag_name("img")

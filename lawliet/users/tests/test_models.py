@@ -1,7 +1,6 @@
 import os
-import random
 
-from django.test import TestCase, Client, tag
+from django.test import Client, tag
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError

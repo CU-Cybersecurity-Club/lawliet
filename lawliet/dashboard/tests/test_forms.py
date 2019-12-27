@@ -1,7 +1,5 @@
 import os
-import random
 
-from django.core.files.images import ImageFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.test import tag

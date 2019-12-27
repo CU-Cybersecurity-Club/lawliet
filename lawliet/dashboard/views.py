@@ -92,20 +92,6 @@ def dashboard(request):
 
 
 @login_required
-def lab_list(request):
-    # List all of the available labs to the user
-    template = os.path.join(TEMPLATES, "lab_list.html")
-    environments = LabEnvironment.objects.all()
-    return render(request, template, context={"environments": environments})
-
-
-@login_required
-def active_lab(request):
-    template = os.path.join(TEMPLATES, "active_lab.html")
-    return render(request, template)
-
-
-@login_required
 def scoreboard(request):
     template = os.path.join(TEMPLATES, "scoreboard.html")
     return render(request, template)
@@ -117,30 +103,54 @@ def user_settings(request):
     pass_change_form = PasswordChangeForm(
         request.user, request.POST if request.POST else None
     )
-    profile_change_form = ProfileForm(request.POST if request.POST else None)
+    profile_change_form = ProfileForm(
+        request.POST if request.POST else None, instance=request.user
+    )
 
     context = {
         "password_change_form": pass_change_form,
         "profile_change_form": profile_change_form,
     }
 
-    if request.POST and pass_change_form.is_valid():
-        new_password = pass_change_form.cleaned_data["new_password"]
-        request.user.set_password(new_password)
-        request.user.save()
+    if request.POST:
 
-        context["successful_pass_change"] = True
+        if (
+            request.POST.get("profile-change-submit-button")
+            and profile_change_form.is_valid()
+        ):
+            profile_change_form.save()
 
-    elif request.POST and profile_change_form.is_valid():
-        pass
-        # profile_change_form.save()
+        elif request.POST.get("password-change-submit-button"):
+            new_password = pass_change_form.cleaned_data["new_password"]
+            request.user.set_password(new_password)
+            request.user.save()
+
+            context["successful_pass_change"] = True
 
     return render(request, template, context=context)
 
 
 """
+---------------------------------------------------
 Interface for handling lab environments
+---------------------------------------------------
 """
+
+
+@login_required
+def lab_list(request):
+    # List all of the available labs to the user
+    template = os.path.join(TEMPLATES, "lab_list.html")
+    environments = LabEnvironment.objects.all()
+    return render(
+        request, template, context={"environments": environments, "lab_menu_show": True}
+    )
+
+
+@login_required
+def active_lab(request):
+    template = os.path.join(TEMPLATES, "active_lab.html")
+    return render(request, template, context={"lab_menu_show": True})
 
 
 @login_required
@@ -151,7 +161,7 @@ def upload_lab(request):
     data = request.POST if request.POST else None
     file_data = request.FILES if request.FILES else None
     lab_form = LabUploadForm(data, file_data)
-    context = {"lab_form": lab_form}
+    context = {"lab_form": lab_form, "lab_menu_show": True}
 
     if request.POST and lab_form.is_valid():
         lab = lab_form.save()

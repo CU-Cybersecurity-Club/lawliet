@@ -1,9 +1,4 @@
 #!/bin/sh
-# In an ideal world, we would ensure that the proxy server only starts after
-# the certbot container finishes running. Unfortunately, this still isn't
-# possible with Docker :) So instead, we create a file CERTBOT_LOCK and have
-# the proxy wait until that file disappears, and pray that everything works
-# out okay.
 
 create_self_signed_certificates() {
     if [ ! -d /etc/letsencrypt/self-signed/$1 ]

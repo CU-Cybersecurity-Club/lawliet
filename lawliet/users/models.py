@@ -115,6 +115,7 @@ class Profile(models.Model):
     Helper functions
     """
 
+    @property
     def get_rank(self):
         return integer_rank_to_string(self.rank)
 

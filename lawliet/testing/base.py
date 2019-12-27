@@ -21,7 +21,7 @@ class FunctionalTest(StaticLiveServerTestCase):
     Base class for functional tests.
     """
 
-    def setUp(self, preauth=False):
+    def setUp(self, create_user=False, preauth=False):
         ### Seed RNG for consistent results
         self.rd = random.Random()
         self.rd.seed(0)
@@ -42,14 +42,16 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.password = random_password(self.rd)
         self.email = random_email(self.rd)
 
-        ### If preauth=True, then we create a new user corresponding to the given
-        ### username, password, and email in the setup phase, and login
-        ### automatically.
-        if preauth:
+        ### If preauth or create_user == True, then create a new user for the
+        ### test. In addition, if preauth == True, then we automatically log
+        ### in as the user.
+        self.client = Client()
+        if preauth or create_user:
             self.user = User.objects.create_user(
                 email=self.email, username=self.username, password=self.password
             )
-            self.client = Client()
+
+        if preauth:
             self.client.force_login(self.user)
             cookie = self.client.cookies["sessionid"]
             self.browser.get(self.live_server_url)

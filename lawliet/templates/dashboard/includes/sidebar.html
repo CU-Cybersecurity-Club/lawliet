@@ -30,7 +30,11 @@ Sidebar for the dashboard
 
       <div
           id="lab-menu"
+          {% if lab_menu_show %}
+          class="collapse show"
+          {% else %}
           class="collapse"
+          {% endif %}
           aria-labelledby="lab-menu-header"
           data-parent="#sidebar-wrapper">
         <ul class="list-group">

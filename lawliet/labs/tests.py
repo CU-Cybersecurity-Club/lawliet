@@ -1,7 +1,6 @@
 import os
-import random
 
-from django.test import TestCase, tag
+from django.test import tag
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 

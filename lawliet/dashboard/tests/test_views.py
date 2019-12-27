@@ -2,9 +2,8 @@
 Tests for the views offered by the dashboard app.
 """
 import os
-import random
 
-from django.test import Client, tag
+from django.test import tag
 from django.conf import settings
 from django.contrib.auth import get_user, login, logout
 from django.urls import reverse
@@ -245,18 +244,7 @@ Settings tests
 @tag("user-settings", "views")
 class SettingsViewTestCase(UnitTest):
     def setUp(self):
-        # Set up RNG to get reproducible results
-        self.rd = random.Random()
-        self.rd.seed(0)
-
-        self.client = Client()
-        self.username, self.email, self.password = create_random_user(self.rd)
-        self.user = User.objects.create_user(
-            username=self.username, email=random_email(self.rd), password=self.password
-        )
-
-        # Log the client into the test account by default
-        self.client.force_login(User.objects.get(username=self.username))
+        super().setUp(preauth=True)
 
     def test_user_settings_template(self):
         response = self.client.get(reverse("user settings"))

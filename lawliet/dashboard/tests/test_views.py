@@ -186,7 +186,7 @@ class LoginViewTestCase(UnitTest):
         # 2. If we're logged out and try to visit another page, then
         #    we should be redirected to that page after login through
         #    the login page.
-        pages = ("user settings", "scoreboard", "active labs", "available labs")
+        pages = ("user settings", "active labs", "available labs")
         for page in pages:
             response = self.client.get(reverse(page))
             self.assertEqual(response.status_code, 302)

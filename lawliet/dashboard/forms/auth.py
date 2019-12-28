@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
-from .fields import TextInput, PasswordInput
+from testing.fields import TextInput, PasswordInput
 from users.models import User
 
 import users.models as umodels

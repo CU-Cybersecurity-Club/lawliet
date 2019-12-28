@@ -1,7 +1,7 @@
 import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_http_methods
 
 from dashboard.forms.auth import SignupForm, LoginForm
@@ -164,14 +164,17 @@ def active_lab(request):
 
 
 @login_required
+@user_passes_test(lambda user: user.is_staff)
 @require_http_methods(["GET", "POST"])
 def upload_lab(request):
     template = os.path.join(TEMPLATES, "lab_upload.html")
 
     # Construct a LabUploadForm for the page
-    data = request.POST if request.POST else None
-    file_data = request.FILES if request.FILES else None
-    lab_form = LabUploadForm(data, file_data)
+    lab_form = LabUploadForm(
+        request.user,
+        request.POST if request.POST else None,
+        request.FILES if request.FILES else None,
+    )
     context = {"lab_form": lab_form, "lab_menu_show": True}
 
     if request.POST and lab_form.is_valid():

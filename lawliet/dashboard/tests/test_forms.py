@@ -212,6 +212,8 @@ LabUploadForm tests
 class LabUploadFormTestCase(UnitTest):
     def setUp(self):
         super().setUp(create_user=True)
+        self.user.is_staff = True
+        self.user.save()
 
         # Lab params
         self.lab_url = "https://hub.docker.com/r/wshand/cutter:latest"
@@ -239,7 +241,7 @@ class LabUploadFormTestCase(UnitTest):
             "has_web_interface": True,
         }
         file_data = {"header_image": self.lab_image}
-        form = LabUploadForm(data, file_data)
+        form = LabUploadForm(self.user, data, file_data)
         self.assertTrue(form.is_valid())
 
         # Save the new environment to the database
@@ -262,4 +264,12 @@ class LabUploadFormTestCase(UnitTest):
         user = User.objects.create_user(
             username=username, email=email, password=password, is_staff=False
         )
-        self.fail("TODO")
+        data = {
+            "name": self.lab_name,
+            "description": self.lab_description,
+            "url": self.lab_url,
+            "has_web_interface": True,
+        }
+        file_data = {"header_image": self.lab_image}
+        form = LabUploadForm(user, data, file_data)
+        self.assertFalse(form.is_valid())

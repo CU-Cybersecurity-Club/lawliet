@@ -46,10 +46,12 @@ Sidebar for the dashboard
           <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'active labs' %}">
             Active labs
           </a>
+          {% if request.user.is_staff %}
           {# Upload form for new labs #}
           <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'upload lab' %}">
             Upload new
           </a>
+          {% endif %}
         </ul>
       </div>
     </div>

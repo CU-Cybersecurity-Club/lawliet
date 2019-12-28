@@ -171,41 +171,51 @@ class SidebarNavigationTestCase(FunctionalTest):
 
     @tag("sidebar")
     def test_can_navigate_lab_submenu_in_sidebar(self):
-        # Meepy goes back to the site and checks out the sidebar. On the sidebar,
-        # she sees a button with the label "Labs". She clicks the button, causing
-        # a collapsible menu to expand.
-        self.browser.get(self.live_server_url)
-        lab_button = self.get_sidebar_button("Labs")
-        lab_menu = self.browser.find_element_by_id("lab-menu")
-        self.assertEqual(lab_menu.value_of_css_property("display"), "none")
-        lab_button.click()
-        self.assertNotEqual(lab_menu.value_of_css_property("display"), "none")
+        for is_staff in (False, True):
+            self.user.is_staff = is_staff
+            self.user.save()
 
-        # Within the labs submenu, Meepy sees the following options:
-        # - Available labs
-        # - Active labs
-        # - Upload new
-        menu_buttons = lab_menu.find_elements_by_class_name("list-group-item")
-        self.assertEqual(len(menu_buttons), 3)
-
-        data = zip(
-            ["Available labs", "Active labs", "Upload new"],
-            ["Labs", "Active lab", "Upload lab"],
-            ["labs", "active-lab", "upload-lab"],
-        )
-        for (ii, (text, title, suffix)) in enumerate(data):
-            # Meepy clicks one of the buttons on the submenu, and it redirects
-            # her to a new page corresponding to the button's label.
-            btn = lab_menu.find_elements_by_class_name("list-group-item")[ii]
-            self.assertEqual(btn.text, text)
-            btn.click()
-            self.assertTrue(title in self.browser.title)
-            self.assertTrue(self.browser.current_url.endswith(suffix))
-
-            # Meepy doesn't need to click the "Lab" button again, because the
-            # sidebar is still expanded after clicking a button in the lab
-            # submenu.
+            # Meepy goes back to the site and checks out the sidebar. On the sidebar,
+            # she sees a button with the label "Labs". She clicks the button, causing
+            # a collapsible menu to expand.
+            self.browser.get(self.live_server_url)
+            lab_button = self.get_sidebar_button("Labs")
             lab_menu = self.browser.find_element_by_id("lab-menu")
+            self.assertEqual(lab_menu.value_of_css_property("display"), "none")
+            lab_button.click()
+            self.assertNotEqual(lab_menu.value_of_css_property("display"), "none")
+
+            # Within the labs submenu, Meepy sees the following options:
+            # - Available labs
+            # - Active labs
+            #
+            # As a staff member, Meepy would also see a third option:
+            # - Upload new
+            data = (
+                # Button label / page title / button id
+                ("Available labs", "Labs", "labs"),
+                ("Active labs", "Active lab", "active-lab"),
+                ("Upload new", "Upload lab", "upload-lab"),
+            )
+
+            num_buttons = 2 if not is_staff else 3
+
+            menu_buttons = lab_menu.find_elements_by_class_name("list-group-item")
+            self.assertEqual(len(menu_buttons), num_buttons)
+
+            for (ii, (text, title, suffix)) in enumerate(data[:num_buttons]):
+                # Meepy clicks one of the buttons on the submenu, and it redirects
+                # her to a new page corresponding to the button's label.
+                btn = lab_menu.find_elements_by_class_name("list-group-item")[ii]
+                self.assertEqual(btn.text, text)
+                btn.click()
+                self.assertTrue(title in self.browser.title)
+                self.assertTrue(self.browser.current_url.endswith(suffix))
+
+                # Meepy doesn't need to click the "Lab" button again, because the
+                # sidebar is still expanded after clicking a button in the lab
+                # submenu.
+                lab_menu = self.browser.find_element_by_id("lab-menu")
 
 
 """

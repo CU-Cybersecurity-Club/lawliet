@@ -21,6 +21,10 @@ class LabUploadForm(ModelForm):
     to Lawliet.
     """
 
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
     class Meta:
         model = LabEnvironment
         fields = ["name", "description", "url", "header_image", "has_web_interface"]
@@ -43,3 +47,13 @@ class LabUploadForm(ModelForm):
         }
 
         initial = {"has_web_interface": True}
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if not self.user.is_staff:
+            raise forms.ValidationError(
+                "Only staff members are allowed to upload new labs."
+            )
+
+        return cleaned_data

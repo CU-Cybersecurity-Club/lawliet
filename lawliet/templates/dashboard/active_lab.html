@@ -71,7 +71,7 @@ Status card to display when we're waiting for a lab to start.
 {% comment %}
 iframe providing access to a lab environment's web interface.
 {% endcomment %}
-<div id="lab-interface" style="vnc-wrapper" style="display: none;">
+<div id="lab-interface" class="vnc-wrapper" style="display: none;">
   <iframe src="/vnc/{{ user.get_username }}/vnc.html" class="vnc-wrapper" allowfullscreen="true"></iframe>
 </div>
 

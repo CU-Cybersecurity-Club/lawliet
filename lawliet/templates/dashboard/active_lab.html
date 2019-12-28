@@ -34,25 +34,15 @@ Status card to display when the user doesn't have any running labs.
 
     <div class="row mt-4 mb-1">
       <div class="col">
-        <button
-          class="btn btn-primary float-right"
-          type="button"
-          onClick="window.location.replace('{% url "available labs" %}');">
+        <button class="btn btn-primary float-right" type="button" onClick="window.location.replace('{% url "available labs" %}');">
           <span class="lead">View available labs</span>
         </button>
       </div>
       <div class="col">
-        <button
-          class="btn btn-primary float-right"
-          type="button"
-          value="Refresh page"
-          onClick="window.location.reload();">
+        <button class="btn btn-primary float-right" type="button" value="Refresh page" onClick="window.location.reload();">
           <span class="lead">
             {% load static %}
-            <img
-              align="middle"
-              class="lab-action-icon"
-              src="{% static 'svg/ikonate/refresh.svg' %}">
+            <img align="middle" class="lab-action-icon" src="{% static 'svg/ikonate/refresh.svg' %}">
             Refresh page
         </button>
       </div>
@@ -81,12 +71,8 @@ Status card to display when we're waiting for a lab to start.
 {% comment %}
 iframe providing access to a lab environment's web interface.
 {% endcomment %}
-<div id="lab-interface" style="display: none; overflow: hidden; padding-top: 56.25%; position: relative">
-  <iframe
-    src="/vnc/{{ user.get_username }}/vnc.html"
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 90%;"
-    allowfullscreen="true">
-  </iframe>
+<div id="lab-interface" style="vnc-wrapper" style="display: none;">
+  <iframe src="/vnc/{{ user.get_username }}/vnc.html" class="vnc-wrapper" allowfullscreen="true"></iframe>
 </div>
 
 {# end verticle margins #}

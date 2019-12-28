@@ -1,11 +1,10 @@
 {% comment %}
 Navigation bar for the dashboard.
 {% endcomment %}
+{% load static %}
 <nav class="navbar dashboard-navbar navbar-expand-lg">
   <button class="btn p-2 btn-light rounded-circle" id="sidebar-toggle">
-    {% load static %}
-    <img class="sidebar-toggle-icon rounded-circle"
-      src="{% static 'svg/ikonate/hamburger.svg' %}">
+    <img class="sidebar-toggle-icon rounded-circle" src="{% static 'svg/ikonate/hamburger.svg' %}">
   </button> 
 
   <ul class="navbar-nav ml-auto mt-2">

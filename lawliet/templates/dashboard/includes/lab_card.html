@@ -3,9 +3,7 @@
 <div class="col mb-4">
   <div class="card shadow">
     <div class="border-bottom">
-      <img
-        class="card-img-top lab-img mx-auto"
-        src="{{ MEDIA_PREFIX }}{{ env.header_image }}">
+      <img class="card-img-top lab-img mx-auto" src="{{ MEDIA_PREFIX }}{{ env.header_image }}">
     </div>
     <div class="card-body">
       <h5 class="card-title mb-1">{{ env.name }}</h5>
@@ -40,25 +38,14 @@
       A row of buttons with different actions the user can take on the
       lab environment.
       {% endcomment %}
-      <button
-        class="btn btn-light lab-button"
-        onClick="create_lab('{% url "generate lab" %}')">
-        <img
-          class="img-fluid lab-action-icon"
-          src="{% static 'svg/ikonate/play.svg' %}">
+      <button class="btn btn-light lab-button" onClick="create_lab('{% url "generate lab" %}')">
+        <img class="img-fluid lab-action-icon" src="{% static 'svg/ikonate/play.svg' %}">
       </button>
-      <button
-        class="btn btn-light lab-button"
-        onClick="delete_lab('{% url "delete lab" %}')">
-        <img
-          class="img-fluid lab-action-icon"
-          src="{% static 'svg/ikonate/rectangle.svg' %}">
+      <button class="btn btn-light lab-button" onClick="delete_lab('{% url "delete lab" %}')">
+        <img class="img-fluid lab-action-icon" src="{% static 'svg/ikonate/rectangle.svg' %}">
       </button>
-      <button
-        class="btn btn-light lab-button">
-        <img
-          class="img-fluid lab-action-icon"
-          src="{% static 'svg/ikonate/settings.svg' %}">
+      <button class="btn btn-light lab-button">
+        <img class="img-fluid lab-action-icon" src="{% static 'svg/ikonate/settings.svg' %}">
       </button>
     </div>
   </div>

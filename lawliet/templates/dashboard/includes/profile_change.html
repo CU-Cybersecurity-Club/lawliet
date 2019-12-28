@@ -34,9 +34,7 @@
       <div class="col-6">
         {% load static %}
         {% get_media_prefix as MEDIA_PREFIX %}
-        <img
-          class="img-thumbnail img-fluid mb-2 profile-card-image"
-          alt="User profile image"
+        <img class="img-thumbnail img-fluid mb-2 profile-card-image" alt="User profile image"
           src="{{ MEDIA_PREFIX }}{{ user.profile.profile_image.name }}">
         <p>
         {{ profile_image }}
@@ -59,10 +57,7 @@
       {% endwith %}
     </div>
 
-    <button
-      type="submit"
-      class="btn btn-primary my-4"
-      name="profile-change-submit-button"
+    <button type="submit" class="btn btn-primary my-4" name="profile-change-submit-button"
       id="profile-change-submit-button">
       Save
     </button>

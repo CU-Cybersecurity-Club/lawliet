@@ -70,6 +70,20 @@ input.remember-me {
   border-size: 10px;
 }
 
+div.vnc-wrapper {
+  overflow: hidden;
+  padding-top: 56.25%;
+  position: relative;
+}
+
+iframe.vnc-wrapper {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 90%;
+}
+
 /***********************************
  * User profile display
  ***********************************/

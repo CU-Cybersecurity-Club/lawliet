@@ -97,13 +97,6 @@ def dashboard(request):
 
 
 @login_required
-@require_http_methods(["GET"])
-def scoreboard(request):
-    template = os.path.join(TEMPLATES, "scoreboard.html")
-    return render(request, template)
-
-
-@login_required
 @require_http_methods(["GET", "POST"])
 def user_settings(request):
     template = os.path.join(TEMPLATES, "user_settings.html")

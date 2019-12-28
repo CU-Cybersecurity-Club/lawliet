@@ -1,16 +1,13 @@
 # Web development
-django[argon2]
-gunicorn
-requests
+django[argon2] == 3.0.1
+gunicorn == 20.0.4
+requests == 2.22.0
 
 # Image processing
-Pillow
+Pillow == 6.2.1
 
 # Database
 mysql
-
-# API access
-requests
 
 # Deployment automation
 python-dotenv

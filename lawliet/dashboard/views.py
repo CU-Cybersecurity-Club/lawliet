@@ -107,8 +107,10 @@ def user_settings(request):
     context = {"password_change_form": pass_change_form}
 
     if request.POST:
-
-        if request.POST.get("password-change-submit-button"):
+        if (
+            "password-change-submit-button" in request.POST
+            and pass_change_form.is_valid()
+        ):
             new_password = pass_change_form.cleaned_data["new_password"]
             request.user.set_password(new_password)
             request.user.save()

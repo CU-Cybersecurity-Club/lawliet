@@ -3,6 +3,7 @@ Test various user settings.
 """
 
 from django.test import tag
+from unittest import skip
 
 from .base import FunctionalTest
 from users.models import User
@@ -14,7 +15,8 @@ Test changing user settings through the ProfileForm
 """
 
 
-@tag("users", "user-settings")
+@skip("Skipping Profile tests")
+@tag("profiles", "users", "user-settings")
 class UserProfileTestCase(FunctionalTest):
     """
     Meepy signs into her account. She wants to change some of the default

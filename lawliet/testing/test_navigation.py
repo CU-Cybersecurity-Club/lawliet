@@ -57,23 +57,6 @@ class UserDashboardTestCase(FunctionalTest):
         self.assertIn("Dashboard", self.browser.title)
         self.assertTrue(self.browser.current_url.endswith("dashboard"))
 
-        # On the dashboard, she's presented with a large window showing her
-        # username, current rank, and other information.
-        jumbotron = self.browser.find_elements_by_class_name("jumbotron")
-        self.assertEqual(len(jumbotron), 1)
-        jumbotron = jumbotron[0]
-
-        # - Username
-        # - Rank
-        self.assertTrue(self.username in jumbotron.text)
-        self.assertTrue(self.user.profile.get_rank in jumbotron.text)
-
-        # - Profile image
-        img = jumbotron.find_elements_by_tag_name("img")
-        self.assertEqual(len(img), 1)
-        img_src = img[0].get_attribute("src")
-        self.assertTrue(img_src.endswith(self.user.profile.profile_image.name))
-
     @tag("auth")
     def test_redirect_after_login(self):
         # Meepy tries to visit a few different pages, but isn't logged in yet.

@@ -8,9 +8,11 @@ information into various components of a page.
 <div class="row">
   {# Profile image #}
   <div class="my-auto col-4">
+    {% comment %}
     <img
       class="border profile-image rounded-circle"
       src="{{ MEDIA_PREFIX }}{{ user.profile.profile_image.name }}">
+    {% endcomment %}
   </div>
 
   {# User info #}
@@ -30,7 +32,9 @@ information into various components of a page.
         </span>
         <br>
         {% endif %}
+        {% comment %}
         <span class="profile-info-subheader resize-child text-muted">Rank: {{ user.profile.get_rank }}</span>
+        {% endcomment %}
       </div>
 
       {% comment %}

@@ -46,6 +46,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
 
+    # Information about running labs
+    n_active_labs = models.PositiveSmallIntegerField(default=0)
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 

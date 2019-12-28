@@ -12,8 +12,15 @@ Sidebar for the dashboard
   <div class="list-group list-group-flush">
 
     {# User profile #}
+    {% comment %}
     <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action profile-card">
       {% include 'includes/profile_card.html' with user=user format="short" only %}
+    </a>
+    {% endcomment %}
+    <a class="mt-1" href="{% url 'dashboard' %}">
+      <button class="btn btn-dark sidebar-button text-left">
+        <p class="my-2 text-monospace">Dashboard</p>
+      </button>
     </a>
 
     {# Lab environment access #}

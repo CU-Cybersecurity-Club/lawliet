@@ -2,8 +2,7 @@
 
 {% block title %}Dashboard | {{ block.super }}{% endblock %}
 
-{# Don't include a header at the top of the page #}
-{% block no_page_header %}{% endblock %}
+{% block page_header %}Dashboard{% endblock %}
 
 {% block page-content %}
 
@@ -16,21 +15,33 @@ Display the user profile. Show details such as
 - Username
 - Current rank
 {% endcomment %}
+{% comment %}
 <div class="jumbotron mt-3">
   {% include 'includes/profile_card.html' with user=user format="long" only %}
 </div>
+{% endcomment %}
 
-<h4 class="mt-4">Latest news</h3>
-<p>Latest updates about the service go here.</p>
+<div class="mt-4" style="display: block;">
+  <h3>Labs</h3>
+  {% if request.user.n_active_labs == 0 %}
+  <p class="lead">
+    You don't currently have any labs running.
+  </p>
+  <a href="{% url 'available labs' %}">
+    <button class="btn btn-primary" type="button">
+      <span class="lead">View available labs</span>
+    </button>
+  </a>
+  {% else %}
+  TODO
+  {% endif %}
+</div>
 
-<p>
-This area will be used to give users the most recent information about the status of Lawliet. For instance: what new environments / labs have recently been uploaded? What new features have we added in the past month? How can users contribute to the project? We'll include things like links to our GitHub repositories and to our container registry, where users can upload new labs.
-</p>
+<br>
 
-<ul>
-  <li>Recent environments that have been added.</li>
-  <li>Major feature additions.</li>
-  <li>How people can contribute (donations, pull requests, etc.)</li>
-</ul>
+<div class="my-4">
+  <h3>Latest news</h3>
+  {% lorem %}
+</div>
 
 {% endblock %}

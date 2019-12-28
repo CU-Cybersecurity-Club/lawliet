@@ -123,32 +123,30 @@ class SidebarNavigationTestCase(FunctionalTest):
         sidebar = self.get_sidebar()
         self.assertEqual(sidebar.location, {"x": 0, "y": 0})
 
-        # At the top of the sidebar, she sees a button with her username and profile
-        # image. This button redirects her back to the dashboard.
-        dashboard_url = self.browser.current_url
-        profile_button = sidebar.find_elements_by_class_name("profile-card")
-        self.assertEqual(len(profile_button), 1)
-
-        profile_button = profile_button[0]
-        profile_button_position = profile_button.location
-        profile_button.click()
-        self.assertEqual(self.browser.current_url, dashboard_url)
-
         # Below her profile information, she sees a list of buttons that redirect
         # her to various parts of the site.
+        # - Dashboard
         # - Labs
         # - Settings
+        labels = ["Dashboard", "Labs", "Settings"]
         buttons = self.get_sidebar_buttons()
-        self.assertEqual(len(buttons), 2)
-        self.assertEqual(buttons[0].text, "Labs")
-        self.assertEqual(buttons[1].text, "Settings")
+        self.assertEqual(len(buttons), len(labels))
+        for (btn, label) in zip(buttons, labels):
+            self.assertEqual(btn.text, label)
 
-        # First Meepy checks out the "Labs" sidebar button
+        # Meepy clicks the "Dashboard" button. It redirects her back to the
+        # dashboard.
+        buttons[0].click()
+        self.assertTrue(self.browser.current_url.endswith("dashboard"))
+        self.assertTrue("Dashboard" in self.browser.title)
+        buttons = self.get_sidebar_buttons()
+
+        # Meepy checks out the "Labs" sidebar button
         # (Tests omitted here -- see test_can_navigate_lab_submenu_in_sidebar)
 
-        # Next, Meepy checks out the "Settings" button. Clicking this button
+        # Meepy checks out the "Settings" button. Clicking this button
         # redirects her to the settings page.
-        buttons[1].click()
+        buttons[2].click()
         self.assertTrue(self.browser.current_url.endswith("settings"))
         self.assertTrue("Settings" in self.browser.title)
 

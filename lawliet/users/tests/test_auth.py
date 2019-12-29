@@ -84,10 +84,11 @@ class NewVisitorTestCase(FunctionalTest):
         self.browser.find_element_by_id("signup-button").click()
 
         # A message appears, telling Meepy than an email has been sent
-        time.sleep(1)
-        self.assertIn(
-            "An email has been sent. Check your inbox for further instructions.",
-            self.browser.find_element_by_tag_name("body").text,
+        self.wait_for(
+            lambda: self.assertIn(
+                "An email has been sent. Check your inbox for further instructions.",
+                self.browser.find_element_by_tag_name("body").text,
+            )
         )
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]

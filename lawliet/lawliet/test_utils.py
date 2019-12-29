@@ -2,9 +2,11 @@
 Various helpful functions and classes for running tests.
 """
 
+import abc
 import dotenv
 import os
 import random
+import time
 
 from django.test import TestCase, Client, tag
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -69,34 +71,18 @@ def random_login_form(rd):
 
 """
 ---------------------------------------------------
-Functional testing base class
+Generic abstract testing class
 ---------------------------------------------------
 """
 
 
-@tag("functional-tests")
-class FunctionalTest(StaticLiveServerTestCase):
-    """
-    Base class for functional tests.
-    """
-
-    def setUp(self, create_user=False, preauth=False):
+class AbstractTestCase(abc.ABC):
+    def setUp(self, seed=0, create_user=False, preauth=False):
         ### Seed RNG for consistent results
         self.rd = random.Random()
-        self.rd.seed(0)
+        self.rd.seed(seed)
 
-        ### Create a Selenium WebDriver to run functional tests
-        self.browser = webdriver.Firefox()
-
-        dotenv.load_dotenv()
-        staging_server = os.getenv("STAGING_SERVER")
-        if staging_server:
-            self.live_server_url = staging_server
-
-            # Authenticate to staging server
-            self.fail("TODO")
-
-        # Create a test username, email, and password
+        ### Create a test username, email, and password
         self.username = random_username(self.rd)
         self.password = random_password(self.rd)
         self.email = random_email(self.rd)
@@ -111,6 +97,86 @@ class FunctionalTest(StaticLiveServerTestCase):
             )
 
         if preauth:
+            self.client.force_login(self.user)
+
+    @abc.abstractmethod
+    def fail(self, *args, **kwargs):
+        pass
+
+    def wait_for(self, test, max_wait=5, interval=0.1):
+        """
+        Wait for a test to pass. When it passes we can continue execution. If the
+        wait exceeds the time limit, then we throw an error.
+
+        Parameters
+        ----------
+        test
+            A function that takes no inputs. If the test fails then test() should
+            raise an exception of some sort. If it succeeds, then no exception
+            should be raised.
+
+        Keyword parameters
+        ----------
+        max_wait (float) (default = 5)
+            The maximum amount of time (in seconds) we are willing to wait for the
+            test to pass. Once this time has been exceeded, we call self.fail. Must
+            be non-negative.
+
+        interval (float) (default = 0.1)
+            The amount of time (in seconds) to wait between evaluations of test().
+            Must be non-negative.
+
+        Returns
+        ----------
+        None
+        """
+        if not isinstance(max_wait, (int, float)) or max_wait < 0:
+            raise ValueError("max_wait must be a non-negative number.")
+        if not isinstance(interval, (int, float)) or interval < 0:
+            raise ValueError("interval must be a non-negative number.")
+
+        start_time = time.time()
+
+        while time.time() - start_time < max_wait:
+            try:
+                test()
+                ex = None
+                break
+            except Exception as _:
+                ex = _
+
+        if ex:
+            raise ex
+
+
+"""
+---------------------------------------------------
+Functional testing base class
+---------------------------------------------------
+"""
+
+
+@tag("functional-tests")
+class FunctionalTest(StaticLiveServerTestCase, AbstractTestCase):
+    """
+    Base class for functional tests.
+    """
+
+    def setUp(self, **kwargs):
+        AbstractTestCase.setUp(self, **kwargs)
+
+        ### Create a Selenium WebDriver to run functional tests
+        self.browser = webdriver.Firefox()
+
+        dotenv.load_dotenv()
+        staging_server = os.getenv("STAGING_SERVER")
+        if staging_server:
+            self.live_server_url = staging_server
+
+            # Authenticate to staging server
+            self.fail("TODO")
+
+        if kwargs.get("preauth"):
             self.client.force_login(self.user)
             cookie = self.client.cookies["sessionid"]
             self.browser.get(self.live_server_url)
@@ -135,26 +201,6 @@ Unit testing base class
 
 
 @tag("unit-tests")
-class UnitTest(TestCase):
-    def setUp(self, seed=0, create_user=False, preauth=False):
-        self.client = Client()
-
-        ### Seed RNG to ensure consistent results.
-        self.rd = random.Random()
-        self.rd.seed(seed)
-
-        ### Generate a random username, email address, and password that
-        ### child classes can use to create their own user.
-        self.email = random_email(self.rd)
-        self.username = random_username(self.rd)
-        self.password = random_password(self.rd)
-
-        ### If create_user or preauth is True, create a new user with the
-        # generated information in advance. If preauth=True then we also
-        # login the client as the new user.
-        if preauth or create_user:
-            self.user = User.objects.create_user(
-                email=self.email, username=self.username, password=self.password
-            )
-        if preauth:
-            self.client.force_login(self.user)
+class UnitTest(TestCase, AbstractTestCase):
+    def setUp(self, **kwargs):
+        AbstractTestCase.setUp(self, **kwargs)

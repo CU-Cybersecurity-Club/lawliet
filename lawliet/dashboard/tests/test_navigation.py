@@ -11,9 +11,6 @@ from selenium.webdriver.common.keys import Keys
 from lawliet.test_utils import FunctionalTest
 from users.models import User
 
-import time
-
-
 """
 ---------------------------------------------------
 Test landing page and redirects after login.
@@ -244,15 +241,21 @@ class NavbarNavigationTestCase(FunctionalTest):
 
         hamburger = navbar.find_element_by_id("sidebar-toggle")
         hamburger.click()
-        time.sleep(0.25)
-        self.assertTrue("toggled" in wrapper.get_attribute("class"))
-        self.assertEqual(navbar.size["width"], window_size["width"])
+        self.wait_for(
+            lambda: self.assertTrue("toggled" in wrapper.get_attribute("class"))
+        )
+        self.wait_for(
+            lambda: self.assertEqual(navbar.size["width"], window_size["width"])
+        )
 
         hamburger.click()
-        time.sleep(0.25)
-        self.assertFalse("toggled" in wrapper.get_attribute("class"))
-        self.assertEqual(
-            navbar.size["width"] + sidebar.size["width"], window_size["width"]
+        self.wait_for(
+            lambda: self.assertFalse("toggled" in wrapper.get_attribute("class"))
+        )
+        self.wait_for(
+            lambda: self.assertEqual(
+                navbar.size["width"] + sidebar.size["width"], window_size["width"]
+            )
         )
 
         # Meepy clicks the "logout" button on the navbar, de-authenticating

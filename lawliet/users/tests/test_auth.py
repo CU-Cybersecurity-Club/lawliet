@@ -1,5 +1,4 @@
 import re
-import time
 
 from django.core import mail
 from django.test import tag
@@ -110,8 +109,7 @@ class NewVisitorTestCase(FunctionalTest):
         passbox.send_keys(self.password)
         passbox.send_keys(Keys.ENTER)
 
-        time.sleep(0.25)
-        self.assertIn("Dashboard", self.browser.title)
+        self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
 
     @tag("email")
     def test_cannot_login_without_first_verifying_email(self):

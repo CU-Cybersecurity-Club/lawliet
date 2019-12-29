@@ -9,8 +9,7 @@ from django.contrib.auth import get_user, login, logout
 from django.urls import reverse
 from uuid import UUID
 
-from testing.base import UnitTest
-from testing.utils import *
+from lawliet.test_utils import *
 from users.models import User
 
 """

@@ -7,8 +7,7 @@ from dashboard.forms.auth import LoginForm, SignupForm
 from dashboard.forms.settings import PasswordChangeForm
 from uuid import UUID
 
-from testing.base import UnitTest
-from testing.utils import *
+from lawliet.test_utils import *
 
 from labs.models import LabEnvironment
 from users.models import User

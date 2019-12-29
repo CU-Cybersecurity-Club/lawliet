@@ -8,7 +8,7 @@ from django.contrib.auth import get_user
 from django.urls import reverse
 from selenium.webdriver.common.keys import Keys
 
-from .base import FunctionalTest
+from lawliet.test_utils import FunctionalTest
 from users.models import User
 
 import time

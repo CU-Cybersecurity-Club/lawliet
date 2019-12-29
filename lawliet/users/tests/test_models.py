@@ -7,12 +7,11 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user
 from uuid import UUID
 
-from users.models import *
+from users.models import User
 
 # Helper functions
 
-from testing.utils import *
-from testing.base import UnitTest
+from lawliet.test_utils import UnitTest
 
 """
 ---------------------------------------------------

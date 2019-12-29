@@ -6,8 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from labs.models import LabEnvironment
 from labs.forms import LabUploadForm
-from testing.base import UnitTest
-from testing.utils import random_docker_image
+from lawliet.test_utils import UnitTest, random_docker_image
 
 BASE_DIR = settings.BASE_DIR
 

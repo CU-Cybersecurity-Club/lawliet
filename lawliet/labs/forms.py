@@ -5,7 +5,7 @@ Forms for handling labs (creation, deletion, etc.)
 from django import forms
 from django.contrib import admin
 
-from testing.fields import TextInput, Textarea
+from lawliet.fields import TextInput, Textarea
 from labs.models import LabEnvironment
 
 """

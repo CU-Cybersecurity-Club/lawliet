@@ -1,8 +1,12 @@
 from django.test import tag
 from selenium.webdriver.common.keys import Keys
 
-from .base import FunctionalTest
-from .utils import *
+from lawliet.test_utils import (
+    FunctionalTest,
+    random_password,
+    random_username,
+    random_email,
+)
 from users.models import User
 
 """

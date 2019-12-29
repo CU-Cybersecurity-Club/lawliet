@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
-from testing.fields import PasswordInput
+from lawliet.fields import PasswordInput
 from users.models import User
 
 MAX_PASSWORD_LENGTH = settings.MAX_PASSWORD_LENGTH

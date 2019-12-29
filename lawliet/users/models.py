@@ -1,5 +1,3 @@
-import os
-
 from django import forms
 from django.db import models
 from django.conf import settings
@@ -8,6 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core.validators import RegexValidator, MinLengthValidator
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from uuid import uuid4
 
 from .managers import UserManager
 
@@ -133,3 +132,16 @@ ModelAdmin child class to register the custom user model in the admin interface.
 
 class UserAdmin(admin.ModelAdmin):
     form = AddUserForm
+
+
+"""
+---------------------------------------------------
+EmailVerificationToken class to verify a user's email before they can register.
+---------------------------------------------------
+"""
+
+
+class EmailVerificationToken(models.Model):
+    email = models.EmailField(max_length=MAX_EMAIL_ADDRESS_LENGTH, unique=True)
+    username = models.CharField(max_length=MAX_USERNAME_LENGTH, unique=True)
+    uid = models.UUIDField(default=uuid4, unique=True)

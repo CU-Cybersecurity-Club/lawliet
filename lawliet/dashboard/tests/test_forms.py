@@ -10,7 +10,7 @@ from uuid import UUID
 from lawliet.test_utils import *
 
 from labs.models import LabEnvironment
-from users.models import User
+from users.models import User, EmailVerificationToken
 
 """
 ---------------------------------------------------
@@ -134,6 +134,7 @@ class LoginFormTestCase(UnitTest):
         login_form.is_valid()
         self.assertTrue(login_form.is_valid())
 
+    def test_invalid_login(self):
         # Try a couple of invalid logins
         login_form = LoginForm(
             data={"username": self.username, "password": random_password(self.rd)}
@@ -143,6 +144,14 @@ class LoginFormTestCase(UnitTest):
         login_form = LoginForm(
             data={"username": random_username(self.rd), "password": self.password}
         )
+        self.assertFalse(login_form.is_valid())
+
+    def test_login_with_deactivated_account(self):
+        """Attempt to log in as a deactivated user."""
+        user = User.objects.get(username=self.username)
+        user.is_active = False
+        user.save()
+        login_form = LoginForm(data=self.form_data)
         self.assertFalse(login_form.is_valid())
 
 

@@ -26,6 +26,8 @@ urlpatterns = [
     url(r"^login$", dboard_views.login_page, name="login"),
     url(r"^logout$", dboard_views.logout_page, name="logout"),
     url(r"^signup$", dboard_views.signup_page, name="signup"),
+    url(r"^verify-email$", dboard_views.email_verification, name="email verification"),
+    # Admin
     url(r"^admin", admin.site.urls),
     # Dashboard
     url(r"^dashboard$", dboard_views.dashboard, name="dashboard"),

@@ -178,6 +178,14 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
 
 LOGIN_URL = "/login"
 
+# Email parameters
+
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
+EMAIL_USE_TLS = bool(os.getenv("EMAIL_USE_TLS", True))
+
 # Additional parameters
 
 MAX_PASSWORD_LENGTH = int(os.getenv("MAX_PASSWORD_LENGTH", 64))

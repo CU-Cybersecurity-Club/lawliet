@@ -9,7 +9,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
 from lawliet.fields import TextInput, PasswordInput
-from users.models import User
+from users.models import User, EmailVerificationToken
 
 import users.models as umodels
 
@@ -143,17 +143,27 @@ class LoginForm(forms.Form):
                 code="nonexistent",
             )
 
+        user = User.objects.get(username=username)
+        if not user.is_active:
+            # If there's an email verification token out on the user, then
+            # they can't sign up until they've verified their email address.
+            if EmailVerificationToken.objects.filter(username=username).exists():
+                raise forms.ValidationError(
+                    _("You must verify your email address before you can login."),
+                    code="inactive_account",
+                )
+            else:
+                raise forms.ValidationError(
+                    _("This user's account is currently deactivated."),
+                    code="inactive_account",
+                )
+
         user = authenticate(username=username, password=password)
 
         if not user:
             raise forms.ValidationError(
                 _("Sorry, that login was invalid. Please try again."),
                 code="invalid_login",
-            )
-        if not user.is_active:
-            raise forms.ValidationError(
-                _("This user's account is not currently active."),
-                code="inactive_account",
             )
 
         return cleaned_data

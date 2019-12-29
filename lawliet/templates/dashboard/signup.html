@@ -14,12 +14,19 @@
   <form method="POST">
     {% csrf_token %}
 
-    {% if form.non_field_errors %}
+    {% if successful_signup or form.non_field_errors %}
     <span class="d-flex justify-content-center">
+      {% if successful_signup %}
+      <div class="form-error alert alert-success mx-auto" role="alert">
+        An email has been sent. Check your inbox for further instructions.
+      </div>
+      {% endif %}
+      {% if form.non_field_errors %}
       <div class="form-error alert alert-danger mx-auto" role="alert">
         Some errors occurred while you were trying to sign up.
         {{ form.non_field_errors }}
       </div>
+      {% endif %}
     </span>
     {% endif %}
 

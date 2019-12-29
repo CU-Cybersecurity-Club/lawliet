@@ -1,3 +1,7 @@
+import re
+import time
+
+from django.core import mail
 from django.test import tag
 from selenium.webdriver.common.keys import Keys
 
@@ -48,6 +52,7 @@ class NewVisitorTestCase(FunctionalTest):
         self.assertIn(msg, self.browser.page_source)
         self.assertEqual(login_url, self.browser.current_url)
 
+    @tag("email")
     def test_can_sign_up_as_new_user(self):
         # Meepy decides to register as a new user. She visits the site again, and
         # clicks the 'signup' button.
@@ -78,23 +83,62 @@ class NewVisitorTestCase(FunctionalTest):
 
         self.browser.find_element_by_id("signup-button").click()
 
-        # TODO: email verification
+        # A message appears, telling Meepy than an email has been sent
+        time.sleep(1)
+        self.assertIn(
+            "An email has been sent. Check your inbox for further instructions.",
+            self.browser.find_element_by_tag_name("body").text,
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
 
-        # Meepy gets redirected to the login page, where she can now login with the
-        # credentials she used to sign up
+        # Within the message, there is a link that Meepy is asked to click.
+        url_search = re.search(r"http://.+/.+$", email.body)
+        if not url_search:
+            self.fail(f"Could not find URL in email body:\b{email_body}")
+        url = url_search.group(0)
+        self.assertIn(self.live_server_url, url)
+
+        # Meepy clicks the URL. She is immediately redirected to the login
+        # page. She enters her credentials and logs in.
+        self.browser.get(url)
+
         userbox = self.browser.find_element_by_id("id_username")
         passbox = self.browser.find_element_by_id("id_password")
-
         userbox.send_keys(self.username)
         passbox.send_keys(self.password)
+        passbox.send_keys(Keys.ENTER)
 
+        time.sleep(0.25)
+        self.assertIn("Dashboard", self.browser.title)
+
+    @tag("email")
+    def test_cannot_login_without_first_verifying_email(self):
+        # Meepy decides to sign up as a new user. She goes to the signup
+        # form and enters all her data.
+        self.browser.get(self.live_server_url)
+        self.browser.find_element_by_id("signup-redirect-button").click()
+
+        self.browser.find_element_by_id("id_email").send_keys(self.email)
+        self.browser.find_element_by_id("id_username").send_keys(self.username)
+        self.browser.find_element_by_id("id_password").send_keys(self.password)
+        self.browser.find_element_by_id("id_repassword").send_keys(self.password)
+        self.browser.find_element_by_id("signup-button").click()
+
+        # Meepy immediately tries to log in, but her login attempt fails
+        login_redirect_button = self.browser.find_element_by_id("login-redirect-button")
+        self.assertEqual(login_redirect_button.text, "Return to login page")
+        login_redirect_button.click()
+
+        self.browser.find_element_by_id("id_username").send_keys(self.username)
+        self.browser.find_element_by_id("id_password").send_keys(self.password)
         self.browser.find_element_by_id("login-button").click()
 
-        # After logging in, Meepy is redirected to her dashboard
-        self.assertIn("Dashboard", self.browser.title)
-        self.assertTrue(self.browser.current_url.endswith("/dashboard"))
-
-        self.fail("TODO (email authentication)")
+        self.assertIn("Login", self.browser.title)
+        self.assertIn(
+            "You must verify your email address before you can login.",
+            self.browser.find_element_by_tag_name("body").text,
+        )
 
 
 """

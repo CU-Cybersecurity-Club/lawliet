@@ -2,15 +2,17 @@
 Tests for the views offered by the dashboard app.
 """
 import os
+import re
 
 from django.test import tag
 from django.conf import settings
 from django.contrib.auth import get_user, login, logout
+from django.core import mail
 from django.urls import reverse
 from uuid import UUID
 
 from lawliet.test_utils import *
-from users.models import User
+from users.models import User, EmailVerificationToken
 
 """
 ---------------------------------------------------
@@ -33,6 +35,7 @@ class SignupViewTestCase(UnitTest):
         super().setUp()
         self.form_data = signup_form_data(self.username, self.email, self.password)
 
+    @tag("email")
     def test_signup(self):
         """
         Create a new user and check that they were registered in the database.
@@ -43,10 +46,38 @@ class SignupViewTestCase(UnitTest):
 
         response = self.client.post(reverse("signup"), self.form_data)
 
-        user = User.objects.get(username=self.username)
         self.assertEqual(len(User.objects.all()), 1)
+
+        user = User.objects.get(username=self.username)
         self.assertEqual(user.email, self.email)
         self.assertTrue(user.check_password(self.password))
+
+        # User should be disabled until they verify their email address. A new
+        # token should have been created and sent to the user for them to verify
+        # their address.
+        self.assertFalse(user.is_active)
+        self.assertEqual(len(mail.outbox), 1)
+
+        self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
+        token = EmailVerificationToken.objects.get(email=self.email)
+
+        email = mail.outbox[0]
+        self.assertIn(self.email, email.to)
+        self.assertEqual(email.subject, "Finish signing up for Lawliet")
+
+        # Within the email sent to the user, there should be a link that they can
+        # click to verify their address. If we visit the link, then the user
+        # account should become activated.
+        self.assertIn("Use this link to log in", email.body)
+        url_search = re.search(r"http://.+/.+$", email.body)
+        if not url_search:
+            self.fail(f"Could not find URL in email body:\b{email_body}")
+        url = url_search.group(0)
+        self.assertTrue(url.endswith(f"uid={token.uid}"))
+
+        self.client.get(url)
+        user = User.objects.get(username=self.username)
+        self.assertTrue(user.is_active)
 
     def test_signup_as_registered_email_or_user(self):
         """
@@ -129,13 +160,8 @@ Login tests
 @tag("auth", "views")
 class LoginViewTestCase(UnitTest):
     def setUp(self):
-        super().setUp()
-        self.login_data = login_form_data(*create_random_user(self.rd))
-        User.objects.create_user(
-            username=self.login_data["username"],
-            email=random_email(self.rd),
-            password=self.login_data["password"],
-        )
+        super().setUp(create_user=True)
+        self.login_data = {"username": self.username, "password": self.password}
 
     def test_login(self):
         # Attempt to login as a valid user and test that login succeeded
@@ -202,6 +228,36 @@ class LoginViewTestCase(UnitTest):
         response = self.client.get(reverse("logout"))
         response = self.client.post(response.url, self.login_data)
         self.assertEqual(response.url, reverse("dashboard"))
+
+    def test_deactivated_users_cannot_login(self):
+        """It should be impossible to login with a deactivated account."""
+        # Deactivate the account we created in setUp
+        user = User.objects.get(username=self.username)
+        user.is_active = False
+        user.save()
+
+        # Attempt to log in with the user's credentials
+        response = self.client.post(reverse("login"), self.login_data)
+        self.assertFalse(get_user(self.client).is_authenticated)
+        msg = "This user's account is currently deactivated."
+        self.assertFormError(response, "form", None, msg)
+
+    def test_error_if_login_attempted_with_unverified_email(self):
+        """
+        If the user account is currently deactivated and there's an
+        EmailVerificationToken out on them, then the login form should reflect
+        that when we attempt to log in.
+        """
+        user = User.objects.get(username=self.username)
+        user.is_active = False
+        user.save()
+
+        token = EmailVerificationToken.objects.create(
+            username=self.username, email=self.email
+        )
+        response = self.client.post(reverse("login"), self.login_data)
+        msg = "You must verify your email address before you can login."
+        self.assertFormError(response, "form", None, msg)
 
 
 """

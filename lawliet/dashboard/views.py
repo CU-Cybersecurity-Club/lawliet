@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 
 from dashboard.forms.auth import SignupForm, LoginForm
 from dashboard.forms.settings import PasswordChangeForm
-from dashboard.forms.labs import LabUploadForm
+from labs.forms import LabUploadForm
 from labs.models import LabEnvironment
 from users.models import User
 
@@ -153,9 +153,7 @@ def upload_lab(request):
 
     # Construct a LabUploadForm for the page
     lab_form = LabUploadForm(
-        request.user,
-        request.POST if request.POST else None,
-        request.FILES if request.FILES else None,
+        request.POST if request.POST else None, request.FILES if request.FILES else None
     )
     context = {"lab_form": lab_form, "lab_menu_show": True}
 

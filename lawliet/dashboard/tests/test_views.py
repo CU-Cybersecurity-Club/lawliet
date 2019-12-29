@@ -342,3 +342,29 @@ class SettingsViewTestCase(UnitTest):
             "new_password",
             "This password is too common.",
         )
+
+
+"""
+---------------------------------------------------
+Lab tests
+---------------------------------------------------
+"""
+
+
+@tag("views", "labs")
+class LabUploadTestCase(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+
+    def test_lab_upload_restricted_to_staff(self):
+        # If a non-staff member tries to visit the upload form, they should
+        # be automatically redirected to the dashboard.
+        response = self.client.get(reverse("upload lab"), follow=True)
+        location, status_code = response.redirect_chain[-1]
+        self.assertEqual(location, reverse("dashboard"))
+
+        # Staff users should be able to visit the upload form
+        self.user.is_staff = True
+        self.user.save()
+        response = self.client.get(reverse("upload lab"), follow=True)
+        self.assertEqual(response.status_code, 200)

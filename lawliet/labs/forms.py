@@ -3,7 +3,7 @@ Forms for handling labs (creation, deletion, etc.)
 """
 
 from django import forms
-from django.forms import ModelForm
+from django.contrib import admin
 
 from testing.fields import TextInput, Textarea
 from labs.models import LabEnvironment
@@ -15,15 +15,14 @@ LabUploadform
 """
 
 
-class LabUploadForm(ModelForm):
+class LabUploadForm(forms.ModelForm):
     """
     A ModelForm based off the LabEnvironment model for uploading new environments
     to Lawliet.
     """
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.user = user
 
     class Meta:
         model = LabEnvironment
@@ -48,12 +47,6 @@ class LabUploadForm(ModelForm):
 
         initial = {"has_web_interface": True}
 
-    def clean(self):
-        cleaned_data = super().clean()
 
-        if not self.user.is_staff:
-            raise forms.ValidationError(
-                "Only staff members are allowed to upload new labs."
-            )
-
-        return cleaned_data
+class LabEnvironmentAdmin(admin.ModelAdmin):
+    form = LabUploadForm

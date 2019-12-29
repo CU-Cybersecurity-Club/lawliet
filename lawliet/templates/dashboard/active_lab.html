@@ -72,7 +72,14 @@ Status card to display when we're waiting for a lab to start.
 iframe providing access to a lab environment's web interface.
 {% endcomment %}
 <div id="lab-interface" class="vnc-wrapper" style="display: none;">
-  <iframe src="/vnc/{{ user.get_username }}/vnc.html" class="vnc-wrapper" allowfullscreen="true"></iframe>
+  {% comment %}
+  <template> containing the iframe that we'll need to use in order to render the noVNC desktop.
+  This is in a template rather than inserted directly into the page so that we don't have to try
+  to wait for the iframe to load before the document is ready.
+  {% endcomment %}
+  <template id="vnc-iframe">
+    <iframe src="/vnc/{{ user.get_username }}/vnc.html" class="vnc-wrapper" allowfullscreen="true"></iframe>
+  </template>
 </div>
 
 {# end verticle margins #}

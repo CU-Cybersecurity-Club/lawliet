@@ -19,14 +19,15 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from dashboard import views as dboard_views
 from labs import urls as lab_urls
+from users import views as user_views
 
 urlpatterns = [
     url(r"^$", dboard_views.index_page, name="index"),
     # Auth
-    url(r"^login$", dboard_views.login_page, name="login"),
-    url(r"^logout$", dboard_views.logout_page, name="logout"),
-    url(r"^signup$", dboard_views.signup_page, name="signup"),
-    url(r"^verify-email$", dboard_views.email_verification, name="email verification"),
+    url(r"^login$", user_views.login_page, name="login"),
+    url(r"^logout$", user_views.logout_page, name="logout"),
+    url(r"^signup$", user_views.signup_page, name="signup"),
+    url(r"^verify-email$", user_views.email_verification, name="email verification"),
     # Admin
     url(r"^admin", admin.site.urls),
     # Dashboard

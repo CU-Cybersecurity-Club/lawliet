@@ -61,23 +61,9 @@ class SignupViewTestCase(UnitTest):
         self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
         token = EmailVerificationToken.objects.get(email=self.email)
 
-        email = mail.outbox[0]
-        self.assertIn(self.email, email.to)
-        self.assertEqual(email.subject, "Finish signing up for Lawliet")
-
-        # Within the email sent to the user, there should be a link that they can
-        # click to verify their address. If we visit the link, then the user
-        # account should become activated.
-        self.assertIn("Use this link to log in", email.body)
-        url_search = re.search(r"http://.+/.+$", email.body)
-        if not url_search:
-            self.fail(f"Could not find URL in email body:\b{email_body}")
-        url = url_search.group(0)
-        self.assertTrue(url.endswith(f"uid={token.uid}"))
-
-        self.client.get(url)
-        user = User.objects.get(username=self.username)
-        self.assertTrue(user.is_active)
+        # The token carries a URL that, when visited, activates the user's account.
+        response = self.client.get(token.email_verification_location)
+        self.assertTrue(User.objects.get(username=self.username).is_active)
 
     def test_signup_as_registered_email_or_user(self):
         """
@@ -258,6 +244,53 @@ class LoginViewTestCase(UnitTest):
         response = self.client.post(reverse("login"), self.login_data)
         msg = "You must verify your email address before you can login."
         self.assertFormError(response, "form", None, msg)
+
+
+"""
+---------------------------------------------------
+Email verification tests
+---------------------------------------------------
+"""
+
+
+@tag("auth", "email", "views")
+class EmailVerificationTestCase(UnitTest):
+    def setUp(self):
+        super().setUp()
+
+        # POST data to the signup form as if to sign up as a new user
+        signup_data = {
+            "email": self.email,
+            "username": self.username,
+            "password": self.password,
+            "repassword": self.password,
+        }
+        self.client.post(reverse("signup"), data=signup_data)
+
+    def test_verify_email(self):
+        # After attempting to sign up as a new user, check the outbox to
+        # get the link to verify email.
+        self.assertEqual(len(mail.outbox), 1)
+
+        email = mail.outbox[0]
+        self.assertIn(self.email, email.to)
+        self.assertEqual(email.subject, "Finish signing up for Lawliet")
+
+        # Within the email sent to the user, there should be a link that they can
+        # click to verify their address.
+        self.assertIn("Use this link to log in", email.body)
+        url_search = re.search(r"http://.+/.+$", email.body)
+        if not url_search:
+            self.fail(f"Could not find URL in email body:\b{email_body}")
+        url = url_search.group(0)
+
+        token = EmailVerificationToken.objects.get(email=self.email)
+        self.assertTrue(url.endswith(f"uid={token.uid}"))
+
+        # If the user visits that link, their email should become verified and
+        # their account should be activated.
+        self.client.get(url)
+        self.assertTrue(User.objects.get(username=self.username).is_active)
 
 
 """

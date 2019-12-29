@@ -38,8 +38,7 @@ def send_signup_email(email, username, request):
     # When a user tries to sign up with a new email address, we send an
     # email to that user to confirm their email.
     token = EmailVerificationToken.objects.create(email=email, username=username)
-    location = f"{reverse('email verification')}?uid={token.uid}"
-    url = request.build_absolute_uri(location)
+    url = request.build_absolute_uri(token.email_verification_location)
     send_mail(
         "Finish signing up for Lawliet",
         f"Use this link to log in:\n\n{url}",

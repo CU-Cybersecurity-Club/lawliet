@@ -77,15 +77,20 @@ class UploadNewLabTestCase(FunctionalTest):
 
         self.wait_for(lambda: self.assertIn("Upload lab", self.browser.title))
 
-    @tag("tmp")
     def test_upload_new_lab(self):
         user = User.objects.get(username=self.username)
         user.is_staff = True
         user.save()
 
+        # Meepy goes to the "available labs" page. She sees that nobody has
+        # added a new lab environment to the site yet.
+        self.browser.get(f"{self.live_server_url}{reverse('available labs')}")
+        lab_cards = self.browser.find_elements_by_class_name("available-lab-card")
+        self.assertEqual(len(lab_cards), 0)
+
         # Meepy goes to the lab upload page, where she's presented with a form
         # for adding a new LabEnvironment to the site.
-        self.browser.get(self.live_server_url + reverse("upload lab"))
+        self.browser.get(f"{self.live_server_url}{reverse('upload lab')}")
 
         self.wait_for(lambda: self.assertIn("Upload lab", self.browser.title))
 
@@ -112,9 +117,19 @@ class UploadNewLabTestCase(FunctionalTest):
         # By default, the "has web interface" box should be selected.
         self.assertTrue(webbox.is_selected)
 
-        # Meepy clicks the "save lab" button
+        # Meepy clicks the "save lab" button. She receives a message saying that her
+        # lab was saved and uploaded to the server.
         save_button = self.browser.find_element_by_id("lab-save-button")
         self.assertEqual(save_button.text, "Save lab")
         save_button.click()
 
-        self.fail("TODO (test_upload_new_lab)")
+        alert = self.browser.find_element_by_class_name("alert-success")
+        self.assertIn("Your environment was uploaded to the server", alert.text)
+
+        # Meepy now goes to the "available labs" page and sees the environment she
+        # added.
+        self.browser.get(f"{self.live_server_url}{reverse('available labs')}")
+        lab_cards = self.browser.find_elements_by_class_name("available-lab-card")
+        self.assertEqual(len(lab_cards), 1)
+        self.assertIn(self.lab_name, lab_cards[0].text)
+        self.assertIn(self.lab_description, lab_cards[0].text)

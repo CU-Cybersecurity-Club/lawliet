@@ -41,6 +41,9 @@ input.remember-me {
 /***********************************
  * CSS for lab environments
  ***********************************/
+.available-lab-card {
+}
+
 .lab-img {
   max-height: 100%;
   max-width: 100%;

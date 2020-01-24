@@ -1,0 +1,185 @@
+language: python
+cache: pip
+
+os: linux
+dist: bionic
+
+services:
+  - mysql
+env:
+  - DEVELOPMENT=no DATABASE_ENGINE=mysql
+
+jobs:
+
+  allow_failures:
+    - env: TRAVIS_PYTHON_VERSION=nightly
+    - env: ALLOW_FAILURE=yes
+    - os: osx
+    - os: windows
+
+  include:
+
+    #############################################################
+    ### Ensure that any code committed to the repository is
+    ### consistent with formatting guidelines set by Black. This
+    ### check is run first since it's pretty fast.
+    #############################################################
+
+    - stage: "Run tests"
+      name: "Code formatting matches guidelines"
+      python: 3.7
+      install:
+        - pip3 install black
+      script:
+        - find ./src -type f -name "*.py" | xargs black --check --diff
+
+    ########################################################
+    ### Unit testing using a MySQL database.
+    ########################################################
+
+    - stage:
+      name: "Unit tests (Python 3.7)"
+      python: 3.7
+      before_script:
+        - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+
+    - stage:
+      name: "Unit tests (Python 3.8)"
+      python: 3.8
+      before_script:
+        - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+
+    #############################################################
+    ### Functional tests
+    #############################################################
+    - stage:
+      name: "Functional tests (Firefox stable)"
+      python: 3.7
+      addons:
+        firefox: latest
+      services:
+        - xvfb
+        - mysql
+      before_script:
+        # Selenium needs Geckodriver in order to test Firefox
+        - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
+        - wget "$URL" -O geckodriver.tar.gz
+        - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
+        - mv geckodriver ~/.local/bin/geckodriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - firefox --version
+
+    - stage:
+      name: "Functional tests (Firefox beta)"
+      python: 3.7
+      env:
+        - ALLOW_FAILURE=yes
+      addons:
+        firefox: latest-beta
+      services:
+        - xvfb
+        - mysql
+      before_install:
+        - export DEVELOPMENT=yes
+        - export DATABASE_ENGINE=mysql
+      before_script:
+        # Selenium needs Geckodriver in order to test Firefox
+        - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
+        - wget "$URL" -O geckodriver.tar.gz
+        - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
+        - mv geckodriver ~/.local/bin/geckodriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - firefox --version
+
+    - stage:
+      name: "Functional tests (Chrome stable)"
+      python: 3.7
+      addons:
+        chrome: stable
+      services:
+        - xvfb
+        - mysql
+      before_script:
+        # Selenium needs Chromedriver in order to test Chrome
+        - URL='https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip'
+        - curl "$URL" -o chromedriver.zip
+        - unzip chromedriver.zip && rm chromedriver.zip
+        - mv chromedriver ~/.local/bin/chromedriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - export BROWSER="Chrome"
+        - google-chrome --version
+
+    - stage:
+      name: "Functional tests (Chrome beta)"
+      python: 3.7
+      env:
+        - ALLOW_FAILURE=yes
+      addons:
+        chrome: beta
+      services:
+        - xvfb
+        - mysql
+      before_install:
+        - export DEVELOPMENT=yes
+        - export DATABASE_ENGINE=mysql
+      before_script:
+        # Selenium needs Chromedriver in order to test Chrome
+        - URL='https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip'
+        - curl "$URL" -o chromedriver.zip
+        - unzip chromedriver.zip && rm chromedriver.zip
+        - mv chromedriver ~/.local/bin/chromedriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - export BROWSER="Chrome"
+        - google-chrome --version
+
+    #############################################################
+    ### Upload coverage results by running all of the tests (both
+    ### unit tests and functional tests).
+    #############################################################
+    - stage: "Run full tests and upload coverage results"
+      python: 3.7
+      addons:
+        firefox: latest
+      services:
+        - xvfb
+        - mysql
+      before_script:
+        - pip3 install codecov
+        # Selenium needs Geckodriver in order to test Firefox
+        - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
+        - wget "$URL" -O geckodriver.tar.gz
+        - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
+        - mv geckodriver ~/.local/bin/geckodriver
+        - export TEST_FLAGS=""
+      after_success:
+        - $PY -m codecov
+
+install:
+  - pip3 install --upgrade pip
+  - pip3 install -r requirements.txt
+  - pip3 install coverage selenium tblib
+  # Create ~/.local/bin to store any additional binaries we may need for testing. Especially
+  # useful for the functional tests.
+  - mkdir -p ~/.local/bin/
+  # Export various useful environmental variables that didn't need to be specified in the
+  # env section.
+  - export DJANGO_SECRET_KEY="$(head -c 40 /dev/random | base64)"
+  - export TEST_FLAGS="--parallel 4"
+  - export PATH="~/.local/bin:$PATH"
+  - if [ $(which python3) ]; then export PY=python3; else export PY=python; fi
+  # MySQL environmental variables for tests that use a MySQL database
+  - export MYSQL_DATABASE="testdb"
+  - export MYSQL_USER="root"
+  - export MYSQL_PASSWORD=""
+  - export DATABASE_HOST="localhost"
+  - if [ $DATABASE_ENGINE = "mysql" ]; then mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"; fi
+
+script:
+  # This script is run for all tests
+  - echo $PATH
+  - echo $PY && which $PY
+  - echo $TEST_FLAGS
+  - cd src
+  - $PY manage.py makemigrations
+  - $PY manage.py migrate --run-syncdb
+  - coverage run --source="." manage.py test ${TEST_FLAGS}

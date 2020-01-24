@@ -1,4 +1,8 @@
 # Lawliet
+
+[![Build Status](https://travis-ci.com/CU-Cybersecurity-Club/lawliet.svg?branch=master)](https://travis-ci.com/CU-Cybersecurity-Club/lawliet)
+[![codecov](https://codecov.io/gh/CU-Cybersecurity-Club/lawliet/branch/master/graph/badge.svg)](https://codecov.io/gh/CU-Cybersecurity-Club/lawliet)
+
 The universal lab environment deployment system.
 
 ## What's Lawliet?

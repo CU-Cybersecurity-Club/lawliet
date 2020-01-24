@@ -166,6 +166,7 @@ install:
   - export DJANGO_SECRET_KEY="$(head -c 40 /dev/random | base64)"
   - export TEST_FLAGS="--parallel 4"
   - export PATH="~/.local/bin:$PATH"
+  - export HOST="127.0.0.1"
   - if [ $(which python3) ]; then export PY=python3; else export PY=python; fi
   # MySQL environmental variables for tests that use a MySQL database
   - export MYSQL_DATABASE="testdb"

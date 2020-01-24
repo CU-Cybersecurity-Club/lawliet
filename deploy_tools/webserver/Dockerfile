@@ -31,7 +31,7 @@ RUN apk update \
         libffi-dev \
         python3-dev
 
-ADD lawliet /var/www
+ADD src /var/www
 
 # Add a user to run the server
 RUN adduser -D -s /bin/false -H -G www-data www-data \

@@ -10,8 +10,8 @@
 *.pytest_cache
 
 # Static and user-uploaded files
-lawliet/static
-lawliet/media
+src/static
+src/media
 *keys
 
 # Virtual environments

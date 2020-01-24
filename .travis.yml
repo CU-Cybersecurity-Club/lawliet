@@ -31,7 +31,7 @@ jobs:
       install:
         - pip3 install black
       script:
-        - find ./src -type f -name "*.py" | xargs black --check --diff
+        - find ./lawliet -type f -name "*.py" | xargs black --check --diff
 
     ########################################################
     ### Unit testing using a MySQL database.
@@ -179,7 +179,7 @@ script:
   - echo $PATH
   - echo $PY && which $PY
   - echo $TEST_FLAGS
-  - cd src
+  - cd lawliet
   - $PY manage.py makemigrations
   - $PY manage.py migrate --run-syncdb
   - coverage run --source="." manage.py test ${TEST_FLAGS}

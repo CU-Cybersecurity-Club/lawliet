@@ -164,11 +164,17 @@ class FunctionalTest(StaticLiveServerTestCase, AbstractTestCase):
 
     def setUp(self, **kwargs):
         AbstractTestCase.setUp(self, **kwargs)
+        dotenv.load_dotenv()
 
         ### Create a Selenium WebDriver to run functional tests
-        self.browser = webdriver.Firefox()
+        browser = os.getenv("BROWSER", "Firefox")
+        if browser.lower() == "firefox":
+            self.browser = webdriver.Firefox()
+        elif browser.lower() == "chrome":
+            self.browser = webdriver.Chrome()
+        else:
+            raise Exception(f"Browser type '{browser}' not recognized.")
 
-        dotenv.load_dotenv()
         staging_server = os.getenv("STAGING_SERVER")
         if staging_server:
             self.live_server_url = staging_server

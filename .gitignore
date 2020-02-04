@@ -6,7 +6,6 @@
 *.pyx
 *__pycache__
 *.ipynb_checkpoints
-*migrations
 *.pytest_cache
 
 # Static and user-uploaded files

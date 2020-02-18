@@ -1,11 +1,5 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<link
-  rel="stylesheet"
-  {% load static %} href="{% static 'css/simple-sidebar.css' %}">
-{% endblock %}
-
 {% block body %}
 <div class="d-flex" id="wrapper">
   {% include "./includes/sidebar.html" %}

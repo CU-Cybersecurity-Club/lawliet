@@ -20,12 +20,14 @@
 
       into their template.
       {% endcomment %}
-      {% block no_page_header %}
-      <h1 class="mt-4">{% block page_header %}{% endblock %}</h1>
-      <hr>
-      {% endblock %}
 
-      {% block page-content %}{% endblock %}
+      <div class="uk-margin-left">
+        {% block no_page_header %}
+        <h1 class="mt-4">{% block page_header %}{% endblock %}</h1>
+        <hr>
+        {% endblock %}
+        {% block page-content %}{% endblock %}
+      </div>
     </div>
   </div>
 </div>

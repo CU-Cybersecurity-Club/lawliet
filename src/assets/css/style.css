@@ -135,7 +135,6 @@ div.profile-card {
  ***********************************/
 #sidebar-wrapper .sidebar-heading {
   font-size: 1.5rem;
-  color: white;
 }
 
 .sidebar-wrapper {
@@ -144,16 +143,13 @@ div.profile-card {
 }
 
 .sidebar-button-list {
-  background-color: white;
+  /* background-color: white; */
   font-family: monospace, courier, sans-serif;
 }
 
 #sidebar-wrapper {
   min-height: 100vh;
   margin-left: -15rem;
-  -webkit-transition: margin .25s ease-out;
-  -moz-transition: margin .25s ease-out;
-  -o-transition: margin .25s ease-out;
   transition: margin .25s ease-out;
 }
 

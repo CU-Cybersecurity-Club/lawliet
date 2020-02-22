@@ -2,17 +2,11 @@
 Navigation bar for the dashboard.
 {% endcomment %}
 {% load static %}
-<nav class="navbar dashboard-navbar navbar-expand-lg">
-  <button class="btn p-2 btn-light rounded-circle" id="sidebar-toggle">
-    <img class="sidebar-toggle-icon rounded-circle" src="{% static 'svg/ikonate/hamburger.svg' %}">
-  </button> 
 
-  <ul class="navbar-nav ml-auto mt-2">
-    <li class="nav-item active">
-      <a class="nav-link" href="{% url 'logout' %}">
-        <button class="btn btn-primary" id="logout-button">
-          Logout
-        </button>
-      </a>
-  </ul>
+<nav class="uk-navbar uk-navbar-primary uk-navbar-attached">
+  <div class="uk-navbar-flip">
+    <ul class="uk-navbar-nav">
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </div>
 </nav>

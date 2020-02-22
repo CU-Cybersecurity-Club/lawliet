@@ -3,85 +3,65 @@
 {% block title %}Login | {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1 class="display-1">
-  {% include "includes/logo.html" %}
-</h1>
-<div class="container justify-content-md-center my-4">
-  <form method="POST">
+<div class="uk-container uk-container-center uk-margin-top">
+  {# Logo #}
+  <h1 class="uk-h1">
+    {% include "includes/logo.html" %}
+  </h1>
+
+  <form class="uk-form uk-margin" method="POST">
     {% csrf_token %}
-    <h2 class="text-center display-5">
-      Login
-    </h2>
 
     {% if form.non_field_errors %}
-    <span class="d-flex justify-content-center">
-      <div class="form-error alert alert-danger mx-auto" role="alert">
-        {% comment %}
-        If only one error was produced (e.g. "invalid credentials"), then just show
-        that error by itself in a non-list form. Otherwise, list all of the errors
-        that occurred.
-        {% endcomment %}
-
-        {% if form.non_field_errors|length == 1 %}
-
-        <div class="text-center">
-        {% for error in form.non_field_errors %}
-        {{ error|escape }}
-        {% endfor %}
-        </div>
-
-        {% else %}
-
-        Unable to log in. The following errors were encountered:
-        {{ form.non_field_errors }}
-
-        {% endif %}
-      </div>
-    </span>
-    {% endif %}
-
-    <div class="container auth-form">
+    <div class="uk-alert uk-alert-danger" role="alert">
       {% comment %}
-      Show the fields of the authentication form here. We place the "remember_user"
-      checkbox in the same row as the "login" button.
+      If only one error was produced (e.g. "invalid credentials"), then just show
+      that error by itself in a non-list form. Otherwise, list all of the errors
+      that occurred.
       {% endcomment %}
 
+      {% if form.non_field_errors|length == 1 %}
+
+      <div class="text-center">
+      {% for error in form.non_field_errors %}
+      {{ error|escape }}
+      {% endfor %}
+      </div>
+
+      {% else %}
+
+      Unable to log in. The following errors were encountered:
+      {{ form.non_field_errors }}
+
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <fieldset>
+      <legend>Login</legend>
       {% for field in form %}
       {% if field.name != "remember_user" %}
-      <div class="form-group">
+      <div>
         {{ field }}
         {% include 'includes/field_errors.html' with errors=field.errors only %}
       </div>
       {% endif %}
       {% endfor %}
+    </fieldset>
 
-      <div class="row">
-        <div class="col">
-          <button
-            type="submit"
-            class="btn btn-primary"
-            id="login-button">
-            Login
-          </button>
-        </div>
-        <div class="col">
-          <div style="float: right !important;">
-            {{ form.remember_user }}
-            <label for="{{ form.remember_user.id_for_label }}">
-              {{ form.remember_user.label }}
-            </label>
-          </div>
-        </div>
-      </div>
-
+    <div class="uk-form-row uk-margin-top">
+      <button type="submit" class="uk-button uk-button-primary" id="login-button">
+        Login
+      </button>
     </div>
   </form>
-  <div class="text-center container mt-4">
-    <a href="{% url 'signup' %}">
-      <button id="signup-redirect-button" class="btn btn-primary">
-        New user? Sign up here!
-      </button>
-    </a>
-  </div>
+
+  {# Signup button #}
+  <a class="margin-top" href="{% url 'signup' %}">
+    <button id="signup-redirect-button" class="uk-button uk-button-primary">
+      New user? Sign up here!
+    </button>
+  </a>
+
 </div>
 {% endblock %}

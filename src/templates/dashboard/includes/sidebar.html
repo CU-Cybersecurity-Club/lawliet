@@ -4,74 +4,31 @@ Sidebar for the dashboard
 
 {% load static %}
 {% get_media_prefix as MEDIA_PREFIX %}
-<div class="accordion sidebar-wrapper" id="sidebar-wrapper">
-  <div class="sidebar-heading">
+
+<div class="uk-width-2-10 sidebar-wrapper" id="sidebar-wrapper">
+  <div class="uk-margin uk-margin-top sidebar-heading">
     {% include "includes/logo.html" %}
   </div>
 
-  <div class="list-group list-group-flush">
+  <ul class="sidebar-button-list uk-nav uk-list-line uk-nav-parent-icon uk-nav-side" data-uk-nav="">
 
-    {# User profile #}
-    {% comment %}
-    <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action profile-card">
-      {% include 'includes/profile_card.html' with user=user format="short" only %}
-    </a>
-    {% endcomment %}
-    <a class="mt-1" href="{% url 'dashboard' %}">
-      <button class="btn btn-dark sidebar-button text-left">
-        <p class="my-2 text-monospace">Dashboard</p>
-      </button>
-    </a>
+    {# Link back to dashboard #}
+    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
 
-    {# Lab environment access #}
-    <div class="mt-1">
-      <button class="btn sidebar-button text-left" type="button" data-toggle="collapse"
-          data-target="#lab-menu" aria-expanded="true" aria-controls="lab-menu">
-        <p class="my-2 text-monospace">Labs</p>
-      </button>
+    {# Lab options #}
+    <li class="uk-parent">
+      <a href="#" aria-expanded="false">Labs</a>
+      <ul class="uk-list-line uk-nav-sub">
+        <li><a href="{% url 'available labs' %}">Available labs</a></li>
+        <li><a href="{% url 'active labs' %}">Active labs</a></li>
 
-      <div
-          id="lab-menu"
-          {% if lab_menu_show %}
-          class="collapse show"
-          {% else %}
-          class="collapse"
-          {% endif %}
-          aria-labelledby="lab-menu-header"
-          data-parent="#sidebar-wrapper">
-        <ul class="list-group">
-          {# Show labs that the user can access #}
-          <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'available labs' %}">
-            Available labs
-          </a>
-          {# Show what labs the user currently has running #}
-          <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'active labs' %}">
-            Active labs
-          </a>
-          {% if request.user.is_staff %}
-          {# Upload form for new labs #}
-          <a class="list-group-item list-group-item-action bg-light text-monospace" href="{% url 'upload lab' %}">
-            Upload new
-          </a>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-
-    {% comment %}
-    {# Scoreboard #}
-    <a class="mt-1" href="{% url 'scoreboard' %}">
-      <button class="btn sidebar-button text-left">
-        <p class="my-2 text-monospace">Scoreboard</p>
-      </button>
-    </a>
-    {% endcomment %}
+        {% if request.user.is_staff %}
+        <li><a href="{% url 'upload lab' %}">Upload new</a></li>
+        {% endif %}
+      </ul>
+    </li>
 
     {# Settings #}
-    <a class="mt-1" href="{% url 'user settings' %}">
-      <button class="btn btn-dark sidebar-button text-left">
-        <p class="my-2 text-monospace">Settings</p>
-      </button>
-    </a>
-  </div>
+    <li><a href="{% url 'user settings' %}">Settings</a></li>
+  </ul>
 </div>

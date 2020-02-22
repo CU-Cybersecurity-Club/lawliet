@@ -143,22 +143,9 @@ div.profile-card {
   font-family: sans-serif;
 }
 
-.sidebar-button {
-  width: 100%;
-  background-color: #34495e;
-  color: white;
-  border-radius: 0px !important;
-  border-color: white !important;
-  border-width: 0px;
-}
-
-.sidebar-button:hover {
-  background-color: #1b2631;
-  color: white;
-}
-
-.resize-child {
-  color: transparent !important;
+.sidebar-button-list {
+  background-color: white;
+  font-family: monospace, courier, sans-serif;
 }
 
 #sidebar-wrapper {

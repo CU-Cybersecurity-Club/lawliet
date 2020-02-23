@@ -28,9 +28,12 @@ class LabUploadForm(forms.ModelForm):
         model = LabEnvironment
         fields = ["name", "description", "url", "header_image", "has_web_interface"]
         widgets = {
-            "name": TextInput(attrs={"placeholder": "Environment name"}),
+            "name": TextInput(attrs={"placeholder": "Environment name",}),
             "description": Textarea(
-                attrs={"placeholder": "Add a description of the lab environment"}
+                attrs={
+                    "data-uk-htmleditor": "{markdown:true}",
+                    "placeholder": "Add a description of the lab environment",
+                }
             ),
             "url": TextInput(
                 attrs={"placeholder": "ex. https://hub.docker.com/r/wshand/cutter"}

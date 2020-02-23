@@ -8,62 +8,55 @@ Interface for uploading new lab environments to Lawliet.
 {% block page_header %}Upload new lab environment{% endblock %}
 
 {% block page-content %}
-<div class="container">
+<div class="uk-container">
   {# Show alert after successful upload #}
   {% if success %}
-  <span class="d-flex justify-content-center">
-    <div class="form-error alert alert-success mx-auto" role="alert">
-      <p class="mb-0">Your environment was uploaded to the server!</p>
-      {% if uploaded_id %}
-      <p class="mb-0">Its ID is <span class="text-monospace">{{ uploaded_id }}</span>.</p>
-      {% endif %}
-    </div>
-  </span>
+  <div class="uk-alert uk-alert-success" role="alert">
+    <p>Your environment was uploaded to the server!</p>
+    {% if uploaded_id %}
+    <p>Its ID is {{ uploaded_id }}.</p>
+    {% endif %}
+  </div>
   {% endif %}
 
   {# Upload form #}
-  <form class="mt-4" method="POST" enctype="multipart/form-data">
+  <form class="uk-form uk-width-1-1" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {% if lab_form.non_field_errors %}
-    <span class="d-flex justify-content-center">
-      <div class="alert alert-danger mx-auto" role="alert">
-        {% if lab_form.non_field_errors|length == 1 %}
 
-        <div class="text-center">
-        {% for error in lab_form.non_field_errors %}
-        {{ error|escape }}
-        {% endfor %}
-        </div>
+    {# TODO: add non-field errors #}
 
-        {% else %}
-
-        Unable to upload lab.
-        {{ lab_form.non_field_errors }}
-
-        {% endif %}
+    <fieldset>
+      {% for field in lab_form %}
+      <h2 class="uk-h2">{{ field.label }}</h2>
+      <div>
+        {{ field }}
+        {% include "includes/field_errors.html" with errors=field.errors only %}
       </div>
-    </span>
-    {% endif %}
+      {% endfor %}
+    </fieldset>
 
-    <div class="container float-left">
-
-      <div class="row">
-        {% for field in lab_form %}
-        <div class="col-4 mb-3">
-          <p>{{ field.label }}</p>
-        </div>
-        <div class="col-6 mb-3">
-          {{ field }}
-          {% include "includes/field_errors.html" with errors=field.errors only %}
-        </div>
-        <div class="w-100"></div>
-        {% endfor %}
-      </div>
-
-      <button type="submit" class="btn btn-primary" id="lab-save-button">
-        Save lab
-      </button>
-    </div>
+    <button type="submit" class="btn btn-primary" id="lab-save-button">
+      Save lab
+    </button>
   </form>
 </div>
+{% endblock %}
+
+{% block css %}
+{{ block.super }}
+{% load static %}
+<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'css/components/htmleditor.min.css' %}">
+{% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+{% load static %}
+<script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+<script src="{% static 'codemirror/mode/markdown/markdown.js' %}"></script>
+<script src="{% static 'codemirror/addon/mode/overlay.js' %}"></script>
+<script src="{% static 'codemirror/mode/xml/xml.js' %}"></script>
+<script src="{% static 'codemirror/mode/gfm/gfm.js' %}"></script>
+<script src="{% static 'js/marked.min.js' %}"></script>
+<script src="{% static 'js/components/htmleditor.min.js' %}"></script>
 {% endblock %}

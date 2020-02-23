@@ -10,7 +10,7 @@ class TextInput(forms.TextInput):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.attrs["class"] = "uk-form-width-medium"
+        # self.attrs["class"] = "uk-form-width-medium"
 
 
 class PasswordInput(forms.PasswordInput):
@@ -18,7 +18,7 @@ class PasswordInput(forms.PasswordInput):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.attrs["class"] = "uk-form-width-medium"
+        # self.attrs["class"] = "uk-form-width-medium"
 
 
 class Textarea(forms.Textarea):
@@ -26,4 +26,4 @@ class Textarea(forms.Textarea):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.attrs["class"] = "uk-form-width-medium"
+        # self.attrs["class"] = "uk-form-width-medium"

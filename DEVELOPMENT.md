@@ -14,13 +14,8 @@ In this repository's root directory, create a new virtual environment with the p
 ```
 python3 -m venv venv \
   && source venv/bin/activate \
-  && pip install -r requirements.txt
-```
-
-You should also install some additional dependencies that are used specifically for development and testing purposes:
-
-```
-pip install selenium tblib pylint black
+  && pip install -r requirements.txt \
+  && pip install -r requirements.dev.txt
 ```
 
 If you want to run the functional tests you should also have [geckodriver](https://github.com/mozilla/geckodriver) installed. Download the [latest release of geckodriver](https://github.com/mozilla/geckodriver/releases) from its repository, and make sure that the `geckodriver` executable is somewhere on your system path.

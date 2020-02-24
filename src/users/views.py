@@ -86,29 +86,23 @@ def signup_page(request):
         return redirect("dashboard")
 
     template = "signup.html"
+    form = SignupForm(request.POST if request.POST else None)
 
-    if request.method == "POST":
-        form = SignupForm(request.POST)
+    if request.method == "POST" and form.is_valid():
+        email = form.cleaned_data.get("email")
+        username = form.cleaned_data.get("username")
+        password = form.cleaned_data.get("password")
 
-        if form.is_valid():
-            # TODO: send verification email
-            email = form.cleaned_data.get("email")
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
+        # Create new account. Disable the account until its email address
+        # has been verified.
+        # TODO: re-enable email verification.
+        # user = User.objects.create_user(username, email, password, is_active=False)
+        # send_signup_email(email, username, request)
 
-            # Create new account. Disable the account until its email address
-            # has been verified.
-            user = User.objects.create_user(username, email, password, is_active=False)
-            send_signup_email(email, username, request)
+        user = User.objects.create_user(username, email, password)
+        login(request, user)
 
-            context = {"successful_signup": True, "form": SignupForm()}
-            return render(request, template, context=context)
-
-        else:
-            return render(request, template, context={"form": form})
-
-    else:
-        return render(request, template, context={"form": SignupForm()})
+    return render(request, template, context={"form": form})
 
 
 @require_http_methods(["GET"])

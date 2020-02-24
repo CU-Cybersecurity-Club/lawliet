@@ -64,14 +64,6 @@ input.remember-me {
 
 .lab-status-card {
   display: none;  /* Should hide the card by default */
-  max-width: 30rem;
-}
-
-.active-lab-waiting-spinner {
-  display: block;
-  height: 10vmin;
-  width: 10vmin;
-  border-size: 10px;
 }
 
 div.vnc-wrapper {

@@ -5,85 +5,81 @@
 
 {% block page-content %}
 
-{# Add upper and lower vertical margins over the interface #}
-<div style="margin-top: 10vh; margin-bottom: 10vh;">
+<div class="uk-container">
 
-{% comment %}
-Show a spinner while we're waiting to see whether the user has started
-any lab environments and, if so, whether or not they're already up and
-running.
-{% endcomment %}
-<div
-  id="active-lab-waiting"
-  role="status"
-  class="mx-auto spinner-border active-lab-waiting-spinner">
-  <div class="sr-only">Loading...</div>
-</div>
+  {% comment %}
+  Show a spinner while we're waiting to see whether the user has started
+  any lab environments and, if so, whether or not they're already up and
+  running.
+  {% endcomment %}
+  <div class="uk-grid uk-margin-top" id="active-lab-waiting">
+    <div class="uk-container-center">
+      <i role="status" class="uk-icon-large uk-icon-refresh uk-icon-spin"></i>
+    </div>
+  </div>
 
-{% comment %}
-Status card to display when the user doesn't have any running labs.
-{% endcomment %}
-<div id="no-active-lab" class="mx-auto card lab-status-card">
-  <div class="card-body">
-    <h2 class="text-center">
-      No active environments found
-    </h2>
-    <p>
-      Start a new environment from the list of labs, or refresh the page to check whether an active environment already exists.
-    </p>
+  <div class="uk-width-medium-1-2 uk-container-center">
 
-    <div class="row mt-4 mb-1">
-      <div class="col">
-        <button class="btn btn-primary float-right" type="button" onClick="window.location.replace('{% url "available labs" %}');">
-          <span class="lead">View available labs</span>
+    {% comment %}
+    Status card to display when the user doesn't have any running labs.
+    {% endcomment %}
+    <div id="no-active-lab" class="uk-panel uk-panel-box lab-status-card">
+      <h2 class="uk-panel-title">
+        No active environments found
+      </h2>
+      <p>
+        Start a new environment from the list of labs, or refresh the page to check whether an active environment already exists.
+      </p>
+
+      <div class="uk-button-group uk-container-center">
+        <button class="uk-button" type="button" onClick="window.location.replace('{% url "available labs" %}');">
+          <span>View available labs</span>
         </button>
-      </div>
-      <div class="col">
-        <button class="btn btn-primary float-right" type="button" value="Refresh page" onClick="window.location.reload();">
-          <span class="lead">
+        <button class="uk-button" type="button" value="Refresh page" onClick="window.location.reload();">
+          <span>
             {% load static %}
-            <img align="middle" class="lab-action-icon" src="{% static 'svg/ikonate/refresh.svg' %}">
+            <i class="uk-icon-refresh"></i>
             Refresh page
           </span>
         </button>
       </div>
     </div>
+
+    {% comment %}
+    Status card to display when we're waiting for a lab to start.
+    {% endcomment %}
+    <div id="lab-loading" class="uk-panel uk-panel-box lab-status-card">
+      <div class="uk-panel-title">
+        <h2 class="uk-text-center">
+          Waiting for the lab to start...
+        </h2>
+        <p>
+          We're currently waiting for your environment to load. You will be notified when the lab is ready.
+        </p>
+        <button class="btn btn-primary" type="button" disabled>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Loading...
+        </button>
+      </div>
+    </div>
+
+    {% comment %}
+    iframe providing access to a lab environment's web interface.
+    {% endcomment %}
+    <div id="lab-interface" class="vnc-wrapper" style="display: none;">
+      {% comment %}
+      <template> containing the iframe that we'll need to use in order to render the noVNC desktop.
+      This is in a template rather than inserted directly into the page so that we don't have to try
+      to wait for the iframe to load before the document is ready.
+      {% endcomment %}
+      <template id="vnc-iframe">
+        <iframe src="/vnc/{{ user.get_username }}/vnc.html" class="vnc-wrapper" allowfullscreen="true"></iframe>
+      </template>
+    </div>
+
+  {# end uk-container-center #}
   </div>
-</div>
-
-{% comment %}
-Status card to display when we're waiting for a lab to start.
-{% endcomment %}
-<div id="lab-loading" class="mx-auto card lab-status-card">
-  <div class="card-body">
-    <h2 class="text-center">
-      Waiting for the lab to start...
-    </h2>
-    <p>
-      We're currently waiting for your environment to load. You will be notified when the lab is ready.
-    </p>
-    <button class="btn btn-primary" type="button" disabled>
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Loading...
-    </button>
-  </div>
-</div>
-
-{% comment %}
-iframe providing access to a lab environment's web interface.
-{% endcomment %}
-<div id="lab-interface" class="vnc-wrapper" style="display: none;">
-  {% comment %}
-  <template> containing the iframe that we'll need to use in order to render the noVNC desktop.
-  This is in a template rather than inserted directly into the page so that we don't have to try
-  to wait for the iframe to load before the document is ready.
-  {% endcomment %}
-  <template id="vnc-iframe">
-    <iframe src="/vnc/{{ user.get_username }}/vnc.html" class="vnc-wrapper" allowfullscreen="true"></iframe>
-  </template>
-</div>
-
-{# end verticle margins #}
+{# end uk-container #}
 </div>
 
 {% block javascripts %}

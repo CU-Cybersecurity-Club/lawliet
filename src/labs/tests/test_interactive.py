@@ -9,9 +9,11 @@ from django.urls import reverse
 
 from lawliet.test_utils import FunctionalTest
 from users.models import User
+from unittest import skip
 
 
 @tag("labs")
+@skip("TODO")
 class UploadNewLabTestCase(FunctionalTest):
     """
     Functional tests for uploading new labs to the site.

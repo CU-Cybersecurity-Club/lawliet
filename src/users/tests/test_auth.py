@@ -2,14 +2,14 @@ import re
 
 from django.core import mail
 from django.test import tag
-from selenium.webdriver.common.keys import Keys
-
 from lawliet.test_utils import (
     FunctionalTest,
     random_password,
     random_username,
     random_email,
 )
+from selenium.webdriver.common.keys import Keys
+from unittest import skip
 from users.models import User
 
 """
@@ -20,6 +20,7 @@ Test authentication (login and signup) for the site.
 
 
 @tag("auth")
+@skip("TODO")
 class NewVisitorTestCase(FunctionalTest):
     """
     Meepy the Anthropomorphic Router visits the site, and decides that she
@@ -149,6 +150,7 @@ signup form.
 
 
 @tag("auth")
+@skip("TODO")
 class InvalidSignupTestCase(FunctionalTest):
 
     """

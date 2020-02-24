@@ -156,8 +156,7 @@ jobs:
 
 install:
   - pip3 install --upgrade pip
-  - pip3 install -r requirements.txt
-  - pip3 install coverage selenium tblib
+  - pip3 install -r requirements.txt -r requirements.dev.txt coverage
   # Create ~/.local/bin to store any additional binaries we may need for testing. Especially
   # useful for the functional tests.
   - mkdir -p ~/.local/bin/

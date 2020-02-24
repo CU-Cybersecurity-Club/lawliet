@@ -32,14 +32,6 @@ class LabUploadFormTestCase(UnitTest):
         self.lab_url = "https://hub.docker.com/r/wshand/cutter:latest"
         self.lab_name = "Cutter"
         self.lab_description = "Cutter lab environment"
-        self.lab_image_path = os.path.join(
-            settings.BASE_DIR, "assets", "img", "meepy.png"
-        )
-        with open(self.lab_image_path, "rb") as img:
-            filename = self.lab_image_path.split(os.sep)[-1]
-            self.lab_image = SimpleUploadedFile(
-                filename, img.read(), content_type="image/png"
-            )
 
     def test_create_new_environment(self):
         """
@@ -53,8 +45,7 @@ class LabUploadFormTestCase(UnitTest):
             "url": self.lab_url,
             "has_web_interface": True,
         }
-        file_data = {"header_image": self.lab_image}
-        form = LabUploadForm(data, file_data)
+        form = LabUploadForm(data)
         self.assertTrue(form.is_valid())
 
         # Save the new environment to the database
@@ -65,5 +56,3 @@ class LabUploadFormTestCase(UnitTest):
         self.assertEqual(lab.description, self.lab_description)
         self.assertEqual(lab.url, self.lab_url)
         self.assertTrue(lab.has_web_interface)
-        with open(self.lab_image_path, "rb") as img:
-            self.assertEqual(lab.header_image.read(), img.read())

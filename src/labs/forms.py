@@ -26,7 +26,7 @@ class LabUploadForm(forms.ModelForm):
 
     class Meta:
         model = LabEnvironment
-        fields = ["name", "description", "url", "header_image", "has_web_interface"]
+        fields = ["name", "description", "url", "has_web_interface"]
         widgets = {
             "name": TextInput(attrs={"placeholder": "Environment name",}),
             "description": Textarea(

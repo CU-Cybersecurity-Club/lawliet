@@ -6,7 +6,7 @@
 {% block page-content %}
 {% if environments|length == 0 %}
 
-<div class="card mx-auto" style="margin-top: 5vh; max-width: 500px;">
+<div class="uk-panel uk-panel-box uk-container-center">
   <div class="card-body">
     <h1 class="card-title disply-3">Uh-oh!</p>
     <h3 class="card-subtitle">We couldn't find any lab environments for you to run.</h3>
@@ -22,7 +22,7 @@
 <div class="uk-grid">
   {% for env in environments %}
   <div class="uk-width-1-4">
-    {% include "./includes/lab_card.html" with env=env only %}
+    {% include "./includes/lab_card.html" with env=env user=request.user only %}
   </div>
   {% endfor %}
 </div>

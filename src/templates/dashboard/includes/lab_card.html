@@ -1,20 +1,35 @@
-{% load static %}
-<div class="uk-panel uk-panel-box uk-panel-box-primary">
-  <h3 class="uk-panel-title">{{ env.name }}</h3>
-  <p>{{ env.description }}</p>
+{% comment %}
+"Lab card" that summarizes a lab environment on the site.
+{% endcomment %}
 
-  <div class="uk-container">
-    <div class="uk-grid">
-      <div class="uk-width-medium-1-3">
-        <button class="uk-button" onClick="create_lab('{% url "generate lab" %}')">
-          <a href="" class="uk-icon-play"></a>
-        </button>
-      </div>
-      <div class="uk-width-medium-1-3">
-        <button class="uk-button" onClick="delete_lab('{% url "generate lab" %}')">
-          <a href="" class="uk-icon-stop"></a>
-        </button>
-      </div>
+<a href="#env_{{ env.id }}_modal" data-uk-modal="{center:true}">
+  <div class="uk-panel uk-panel-box">
+    <p class="uk-text-bold uk-text-center">{{ env.name }}</p>
+  </div>
+</a>
+
+{% comment %}
+Modal that appears when the lab environment card is clicked.
+{% endcomment %}
+<div id="env_{{ env.id }}_modal" class="uk-modal">
+  <div class="uk-modal-dialog">
+    <a class="uk-modal-close uk-close"></a>
+    <div class="uk-modal-header">
+      <h2 class="uk-h2 uk-text-bold">{{ env.name }}</h2>
+    </div>
+    <p>{{ env.description }}</p>
+
+    <div class="uk-button-group">
+      <button class="uk-button" onClick="create_lab('{% url "generate lab" %}')">
+        <i class="uk-icon-play"></i>
+        Start
+      </button>
+      {% if user.is_staff %}
+      <button class="uk-button">
+        <i class="uk-icon-gears"></i>
+        Settings
+      </button>
+      {% endif %}
     </div>
   </div>
 </div>

@@ -1,69 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'auth_base.html' %}
 
 {% block title %}Sign up | {{ block.super }}{% endblock %}
-
-{% block body %}
-<h1 class="display-1">
-  {% include "includes/logo.html" %}
-</h1>
-<div class="container justify-content-md-center my-4">
-  <h2 class="text-center display-5">
-    Sign up
-  </h2>
-
-  <form method="POST">
-    {% csrf_token %}
-
-    {% if successful_signup or form.non_field_errors %}
-    <span class="d-flex justify-content-center">
-      {% if successful_signup %}
-      <div class="form-error alert alert-success mx-auto" role="alert">
-        An email has been sent. Check your inbox for further instructions.
-      </div>
-      {% endif %}
-      {% if form.non_field_errors %}
-      <div class="form-error alert alert-danger mx-auto" role="alert">
-        Some errors occurred while you were trying to sign up.
-        {{ form.non_field_errors }}
-      </div>
-      {% endif %}
-    </span>
-    {% endif %}
-
-    <div class="container auth-form">
-
-      {% for field in form %}
-      <div class="form-group">
-        {% if field.label != "" %}
-        <label for="{{ field.id_for_label }}">
-          {{ field.label }}
-        </label>
-        {% endif %}
-        {{ field }}
-
-        {% include "includes/field_errors.html" with errors=field.errors only %}
-
-      </div>
-      {% endfor %}
-
-      <div class="row">
-        <div class="col">
-          <button
-            type="submit"
-            class="btn btn-primary float-left"
-            id="signup-button">
-            Sign up
-          </button>
-        </div>
-        <div class="col">
-          <a href="{% url 'login' %}">
-            <button type="button" id="login-redirect-button" class="btn btn-primary float-right">
-              Return to login page
-            </button>
-          </a>
-        </div>
-      </div>
-    </div>
-  </form>
+{% block form_title %}Sign up{% endblock %}
+{% block auth_form %}
+{{ block.super }}
+<div class="uk-container-center uk-width-medium-1-5 uk-margin-top">
+  <a href="{% url 'login' %}">
+    <button type="button" id="login-redirect-button" class="uk-width-1-1 uk-button">
+      Return to login page
+    </button>
+  </a>
 </div>
 {% endblock %}

@@ -40,9 +40,27 @@ class IconTextInput(forms.TextInput):
         return context
 
 
-class URLTextInput(IconTextInput):
-    """
-    Custom TextInput field for URLs
-    """
+### Subtypes of IconTextInput
 
+
+class EmailTextInput(IconTextInput):
+    icon_name = "envelope"
+
+
+class IconlessPasswordInput(IconTextInput):
+    def get_context(self, *args):
+        context = super().get_context(*args)
+        context["widget"]["type"] = "password"
+        return context
+
+
+class PasswordInput(IconlessPasswordInput):
+    icon_name = "key"
+
+
+class UsernameTextInput(IconTextInput):
+    icon_name = "user"
+
+
+class URLTextInput(IconTextInput):
     icon_name = "link"

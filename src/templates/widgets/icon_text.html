@@ -2,13 +2,7 @@
 Widget template for the IconTextInput custom TextInput widget.
 {% endcomment %}
 
-{% if widget.icon_name %}
 <div class="uk-form-icon">
-  <i class="uk-icon-{{ widget.icon_name }}"></i>
+  <i {% if widget.icon_name %}class="uk-icon-{{ widget.icon_name }}"{% endif %}></i>
   {% include "django/forms/widgets/text.html" %}
 </div>
-{% else %}
-
-{% include "django/forms/widgets/text.html" %}
-
-{% endif %}

@@ -1,67 +1,16 @@
-{% extends 'base.html' %}
+{% extends 'auth_base.html' %}
 
 {% block title %}Login | {{ block.super }}{% endblock %}
+{% block form_title %}Login{% endblock %}
+{% block auth_form %}
+{{ block.super }}
 
-{% block body %}
-<div class="uk-container uk-container-center uk-margin-top">
-  {# Logo #}
-  <h1 class="uk-h1">
-    {% include "includes/logo.html" %}
-  </h1>
-
-  <form class="uk-form uk-margin" method="POST">
-    {% csrf_token %}
-
-    {% if form.non_field_errors %}
-    <div class="uk-alert uk-alert-danger" role="alert">
-      {% comment %}
-      If only one error was produced (e.g. "invalid credentials"), then just show
-      that error by itself in a non-list form. Otherwise, list all of the errors
-      that occurred.
-      {% endcomment %}
-
-      {% if form.non_field_errors|length == 1 %}
-
-      <div class="text-center">
-      {% for error in form.non_field_errors %}
-      {{ error|escape }}
-      {% endfor %}
-      </div>
-
-      {% else %}
-
-      Unable to log in. The following errors were encountered:
-      {{ form.non_field_errors }}
-
-      {% endif %}
-    </div>
-    {% endif %}
-
-    <fieldset>
-      <legend>Login</legend>
-      {% for field in form %}
-      {% if field.name != "remember_user" %}
-      <div>
-        {{ field }}
-        {% include 'includes/field_errors.html' with errors=field.errors only %}
-      </div>
-      {% endif %}
-      {% endfor %}
-    </fieldset>
-
-    <div class="uk-form-row uk-margin-top">
-      <button type="submit" class="uk-button uk-button-primary" id="login-button">
-        Login
-      </button>
-    </div>
-  </form>
-
-  {# Signup button #}
-  <a class="margin-top" href="{% url 'signup' %}">
-    <button id="signup-redirect-button" class="uk-button uk-button-primary">
+{# Signup button #}
+<div class="uk-container-center uk-width-medium-1-5 uk-margin-top">
+  <a href="{% url 'signup' %}">
+    <button id="signup-redirect-button" class="uk-width-1-1 uk-button">
       New user? Sign up here!
     </button>
   </a>
-
 </div>
 {% endblock %}

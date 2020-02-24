@@ -6,42 +6,21 @@
 
 {% block page-content %}
 
-{% load static %}
-{% get_media_prefix as MEDIA_PREFIX %}
+<h2 class="uk-article-lead">Labs</h2>
+{% if request.user.n_active_labs == 0 %}
+<p>You don't currently have any labs running.</p>
+<a href="{% url 'available labs' %}">
+  <button class="uk-button" type="button">
+    <span>View available labs</span>
+  </button>
+</a>
+{% else %}
+TODO
+{% endif %}
 
-{% comment %}
-Display the user profile. Show details such as
-- Profile image
-- Username
-- Current rank
-{% endcomment %}
-{% comment %}
-<div class="jumbotron mt-3">
-  {% include 'includes/profile_card.html' with user=user format="long" only %}
-</div>
-{% endcomment %}
+<hr class="uk-article-divider">
 
-<div class="mt-4" style="display: block;">
-  <h3>Labs</h3>
-  {% if request.user.n_active_labs == 0 %}
-  <p class="lead">
-    You don't currently have any labs running.
-  </p>
-  <a href="{% url 'available labs' %}">
-    <button class="btn btn-primary" type="button">
-      <span class="lead">View available labs</span>
-    </button>
-  </a>
-  {% else %}
-  TODO
-  {% endif %}
-</div>
-
-<br>
-
-<div class="my-4">
-  <h3>Latest news</h3>
-  {% lorem %}
-</div>
+<h2 class="uk-article-lead">Latest news</h2>
+<p>{% lorem %}</p>
 
 {% endblock %}

@@ -5,30 +5,31 @@
   {% include "./includes/sidebar.html" %}
 
   {# Page content #}
-  <div id="page-content-wrapper">
-    <div>
+  <article id="page-content-wrapper">
+    {% comment %}
+    Define the no_page_header and page_header blocks. On pages with
+    the page_header block defined, we format the header at the top
+    of the page in a consistent format. If a user wants to generate
+    a template that doesn't have a page header (e.g. see
+    dashboard.html), they should insert
 
-      {% comment %}
-      Define the no_page_header and page_header blocks. On pages with
-      the page_header block defined, we format the header at the top
-      of the page in a consistent format. If a user wants to generate
-      a template that doesn't have a page header (e.g. see
-      dashboard.html), they should insert
+      {% block no_page_header %}{% endblock %}
 
-        {% block no_page_header %}{% endblock %}
+    into their template.
+    {% endcomment %}
 
-      into their template.
-      {% endcomment %}
-
-      <div class="uk-margin-left">
-        {% block no_page_header %}
-        <h1 class="uk-h1">{% block page_header %}{% endblock %}</h1>
-        <hr>
-        {% endblock %}
-        {% block page-content %}{% endblock %}
+    <div class="uk-container uk-margin-top">
+      {% block no_page_header %}
+      <div class="uk-margin-bottom">
+        <h1 class="uk-article-title">
+          {% block page_header %}{% endblock %}
+          <hr class="uk-article-divider">
+        </h1>
       </div>
+      {% endblock %}
+      {% block page-content %}{% endblock %}
     </div>
-  </div>
+  </article>
 </div>
 {% endblock %}
 

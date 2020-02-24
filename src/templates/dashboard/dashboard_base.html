@@ -6,8 +6,7 @@
 
   {# Page content #}
   <div id="page-content-wrapper">
-    {% include "./includes/navbar.html" %}
-    <div class="mb-4 container-fluid">
+    <div>
 
       {% comment %}
       Define the no_page_header and page_header blocks. On pages with
@@ -23,7 +22,7 @@
 
       <div class="uk-margin-left">
         {% block no_page_header %}
-        <h1 class="mt-4">{% block page_header %}{% endblock %}</h1>
+        <h1 class="uk-h1">{% block page_header %}{% endblock %}</h1>
         <hr>
         {% endblock %}
         {% block page-content %}{% endblock %}

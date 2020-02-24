@@ -8,7 +8,7 @@ Interface for uploading new lab environments to Lawliet.
 {% block page_header %}Upload new lab environment{% endblock %}
 
 {% block page-content %}
-<div class="uk-container">
+<div class="uk-container uk-margin-bottom">
   {# Show alert after successful upload #}
   {% if success %}
   <div class="uk-alert uk-alert-success" role="alert">
@@ -25,17 +25,22 @@ Interface for uploading new lab environments to Lawliet.
 
     {# TODO: add non-field errors #}
 
-    <fieldset>
-      {% for field in lab_form %}
-      <h2 class="uk-h2">{{ field.label }}</h2>
-      <div>
-        {{ field }}
-        {% include "includes/field_errors.html" with errors=field.errors only %}
-      </div>
-      {% endfor %}
-    </fieldset>
+    <div class="uk-panel uk-panel-box">
+      <fieldset>
+        {% for field in lab_form %}
+        <h2 class="uk-h2">{{ field.label }}</h2>
+        {% if field.help_text %}
+        <p>{{ field.help_text }}</p>
+        {% endif %}
+        <div>
+          {{ field }}
+          {% include "includes/field_errors.html" with errors=field.errors only %}
+        </div>
+        {% endfor %}
+      </fieldset>
+    </div>
 
-    <button type="submit" class="btn btn-primary" id="lab-save-button">
+    <button type="submit" class="uk-button uk-margin-top" id="lab-save-button">
       Save lab
     </button>
   </form>

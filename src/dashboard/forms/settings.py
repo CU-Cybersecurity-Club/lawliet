@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
-from lawliet.fields import PasswordInput
 from users.models import User
 
 MAX_PASSWORD_LENGTH = settings.MAX_PASSWORD_LENGTH
@@ -23,20 +22,20 @@ PasswordChangeForm
 class PasswordChangeForm(forms.Form):
 
     old_password = forms.CharField(
-        widget=PasswordInput(attrs={"placeholder": "Enter current password"}),
+        widget=forms.PasswordInput(attrs={"placeholder": "Enter current password"}),
         help_text="Enter the current password you use to login to this account.",
         min_length=MIN_PASSWORD_LENGTH,
     )
 
     new_password = forms.CharField(
-        widget=PasswordInput(attrs={"placeholder": "Enter new password"}),
+        widget=forms.PasswordInput(attrs={"placeholder": "Enter new password"}),
         help_text="Enter the new password you want to use.",
         validators=User.password.field.validators,
         min_length=MIN_PASSWORD_LENGTH,
     )
 
     new_repassword = forms.CharField(
-        widget=PasswordInput(attrs={"placeholder": "Enter new password again"}),
+        widget=forms.PasswordInput(attrs={"placeholder": "Enter new password again"}),
         help_text="Re-enter the new password you want to use.",
         min_length=MIN_PASSWORD_LENGTH,
     )

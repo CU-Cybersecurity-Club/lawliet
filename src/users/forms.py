@@ -8,7 +8,6 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
-from lawliet.fields import TextInput, PasswordInput
 from users.models import User, EmailVerificationToken
 
 import users.models as umodels
@@ -33,7 +32,7 @@ class SignupForm(forms.ModelForm):
     """
 
     repassword = forms.CharField(
-        widget=PasswordInput(attrs={"placeholder": "Enter your password again"}),
+        widget=forms.PasswordInput(attrs={"placeholder": "Enter your password again"}),
         label="",
         help_text="Re-enter the password you entered in the previous box.",
         max_length=User.password.field.max_length,
@@ -46,9 +45,9 @@ class SignupForm(forms.ModelForm):
         fields = ("email", "username", "password")
 
         widgets = {
-            "email": TextInput(attrs={"placeholder": "Enter your email address"}),
-            "username": TextInput(attrs={"placeholder": "Select a username"}),
-            "password": PasswordInput(
+            "email": forms.TextInput(attrs={"placeholder": "Enter your email address"}),
+            "username": forms.TextInput(attrs={"placeholder": "Select a username"}),
+            "password": forms.PasswordInput(
                 attrs={
                     "minlength": MIN_PASSWORD_LENGTH,
                     "placeholder": "Choose a password",
@@ -112,12 +111,12 @@ class LoginForm(forms.Form):
     """
 
     username = forms.CharField(
-        widget=TextInput(attrs={"placeholder": "Username"}),
+        widget=forms.TextInput(attrs={"placeholder": "Username"}),
         help_text="Enter the username you registered with.",
     )
 
     password = forms.CharField(
-        widget=PasswordInput(attrs={"placeholder": "Password"}),
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"}),
         help_text="Enter the password you used to sign up.",
         min_length=MIN_PASSWORD_LENGTH,
     )

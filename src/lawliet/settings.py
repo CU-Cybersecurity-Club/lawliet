@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.forms",
     "dashboard",
     "labs",
     "users",
@@ -102,6 +103,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "lawliet.wsgi.application"
 
+# Change the form renderer so that we can use custom widget templates
+FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

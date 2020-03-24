@@ -7,13 +7,15 @@ Sidebar for the dashboard
     {% include "includes/logo.html" %}
   </div>
 
-  <ul class="sidebar-button-list uk-nav uk-list-divider uk-nav-parent-icon uk-nav-default" uk-nav="">
+  <ul class="uk-nav uk-text-uppercase uk-list-divider uk-nav-parent-icon uk-nav-default" uk-nav="">
 
     {# Link back to dashboard #}
-    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li class="uk-margin-left uk-margin-right">
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+    </li>
 
     {# Lab options #}
-    <li class="uk-parent">
+    <li class="uk-parent uk-margin-left uk-margin-right">
       <a href="#" aria-expanded="false">Labs</a>
       <ul class="uk-list-divider uk-nav-sub">
         <li><a href="{% url 'available labs' %}">Available labs</a></li>
@@ -26,9 +28,13 @@ Sidebar for the dashboard
     </li>
 
     {# Settings #}
-    <li><a href="{% url 'user settings' %}">Settings</a></li>
+    <li class="uk-margin-left uk-margin-right">
+      <a href="{% url 'user settings' %}">Settings</a>
+    </li>
 
     {# Logout #}
-    <li><a href="{% url 'logout' %}">Logout</a></li>
+    <li class="uk-margin-left uk-margin-right">
+      <a href="{% url 'logout' %}">Logout</a>
+    </li>
   </ul>
 </div>

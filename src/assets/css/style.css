@@ -129,26 +129,6 @@ div.profile-card {
   font-size: 1.5rem;
 }
 
-.sidebar-wrapper {
-  background-color: #212f3c;
-  font-family: sans-serif;
-}
-
-.sidebar-button-list {
-  /* background-color: white; */
-  font-family: monospace, courier, sans-serif;
-}
-
-#sidebar-wrapper {
-  min-height: 100vh;
-  margin-left: -15rem;
-  transition: margin .25s ease-out;
-}
-
-#sidebar-wrapper .list-group {
-  width: 15rem;
-}
-
 #page-content-wrapper {
   min-width: 100vw;
 }

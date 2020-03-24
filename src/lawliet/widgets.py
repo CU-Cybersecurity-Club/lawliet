@@ -44,7 +44,7 @@ class IconTextInput(forms.TextInput):
 
 
 class EmailTextInput(IconTextInput):
-    icon_name = "envelope"
+    icon_name = "mail"
 
 
 class IconlessPasswordInput(IconTextInput):
@@ -55,7 +55,7 @@ class IconlessPasswordInput(IconTextInput):
 
 
 class PasswordInput(IconlessPasswordInput):
-    icon_name = "key"
+    icon_name = "lock"
 
 
 class UsernameTextInput(IconTextInput):

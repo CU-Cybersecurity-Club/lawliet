@@ -37,8 +37,8 @@ class SignupForm(forms.ModelForm):
     """
 
     repassword = forms.CharField(
-        widget=IconlessPasswordInput(
-            attrs={"placeholder": "Enter your password again"}
+        widget=PasswordInput(
+            attrs={"placeholder": "Enter your password again", "class": "uk-input"}
         ),
         label="",
         help_text="Re-enter the password you entered in the previous box.",
@@ -52,12 +52,17 @@ class SignupForm(forms.ModelForm):
         fields = ("email", "username", "password")
 
         widgets = {
-            "email": EmailTextInput(attrs={"placeholder": "Enter your email address"}),
-            "username": UsernameTextInput(attrs={"placeholder": "Select a username"}),
+            "email": EmailTextInput(
+                attrs={"placeholder": "Enter your email address", "class": "uk-input"}
+            ),
+            "username": UsernameTextInput(
+                attrs={"placeholder": "Select a username", "class": "uk-input"}
+            ),
             "password": PasswordInput(
                 attrs={
                     "minlength": MIN_PASSWORD_LENGTH,
                     "placeholder": "Choose a password",
+                    "class": "uk-input",
                 }
             ),
         }
@@ -118,12 +123,14 @@ class LoginForm(forms.Form):
     """
 
     username = forms.CharField(
-        widget=UsernameTextInput(attrs={"placeholder": "Username"}),
+        widget=UsernameTextInput(
+            attrs={"placeholder": "Username", "class": "uk-input"}
+        ),
         help_text="Enter the username you registered with.",
     )
 
     password = forms.CharField(
-        widget=PasswordInput(attrs={"placeholder": "Password"}),
+        widget=PasswordInput(attrs={"placeholder": "Password", "class": "uk-input"}),
         help_text="Enter the password you used to sign up.",
         min_length=MIN_PASSWORD_LENGTH,
     )

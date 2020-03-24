@@ -6,15 +6,13 @@
 {% block page-content %}
 {% if environments|length == 0 %}
 
-<div class="uk-panel uk-panel-box uk-container-center">
-  <div class="card-body">
-    <h1 class="card-title disply-3">Uh-oh!</p>
-    <h3 class="card-subtitle">We couldn't find any lab environments for you to run.</h3>
-    <hr>
-    <p class="mt-2 lead card-text">
-      Please contact your site administrator if you believe this to be an error.
-    </p>
-  </div>
+<div class="uk-card uk-card-body uk-container-center">
+  <h1 class="card-title disply-3">Uh-oh!</p>
+  <h3 class="card-subtitle">We couldn't find any lab environments for you to run.</h3>
+  <hr>
+  <p class="mt-2 lead card-text">
+    Please contact your site administrator if you believe this to be an error.
+  </p>
 </div>
 
 {% else %}

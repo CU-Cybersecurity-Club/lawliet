@@ -4,15 +4,19 @@
 {% block page_header %}Settings{% endblock %}
 
 {% block page-content %}
-<div class="uk-container uk-grid">
-  <ul class="uk-tab uk-tab-left uk-width-medium-2-10" data-uk-tab="{connect: '#settings_switcher'}">
-    <li class="uk-active"><a href="#">Password change</a></li>
-  </ul>
-
-  <div class="uk-container uk-width-medium-8-10">
-  <ul id="settings_switcher" class="uk-switcher uk-margin-left">
-    <li>{% include "./includes/password_change.html" %}</li>
-  </ul>
+<div class="uk-margin-top" uk-grid>
+  <div class="uk-width-1-5@s">
+    <ul class="uk-tab-left" uk-tab="connect: #settings_switcher">
+      <li id="password_change" class="uk-active">
+        <a href="#">Change password</a>
+      </li>
+    </ul>
   </div>
-</ul>
+
+  <div class="uk-width-4-5@s">
+    <ul id="settings_switcher" class="uk-switcher uk-margin">
+      <li>{% include "./includes/password_change.html" %}</li>
+    </ul>
+  </div>
+</div>
 {% endblock %}

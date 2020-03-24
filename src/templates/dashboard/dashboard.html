@@ -6,11 +6,11 @@
 
 {% block page-content %}
 
-<h2 class="uk-article-lead">Labs</h2>
+<h2 class="uk-text-lead">Labs</h2>
 {% if request.user.n_active_labs == 0 %}
 <p>You don't currently have any labs running.</p>
 <a href="{% url 'available labs' %}">
-  <button class="uk-button" type="button">
+  <button class="uk-button uk-button-secondary" type="button">
     <span>View available labs</span>
   </button>
 </a>
@@ -18,9 +18,9 @@
 TODO
 {% endif %}
 
-<hr class="uk-article-divider">
+<hr>
 
-<h2 class="uk-article-lead">Latest news</h2>
+<h2 class="uk-text-lead">Latest news</h2>
 <p>{% lorem %}</p>
 
 {% endblock %}

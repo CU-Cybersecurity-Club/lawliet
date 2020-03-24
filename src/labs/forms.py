@@ -31,20 +31,20 @@ class LabUploadForm(forms.ModelForm):
             "name": forms.TextInput(
                 attrs={
                     "placeholder": "Environment name",
-                    "class": "uk-form-width-large",
+                    "class": "uk-input uk-form-width-large",
                 }
             ),
             "description": forms.Textarea(
                 attrs={
                     # "data-uk-htmleditor": "{markdown:true}",
                     "placeholder": "Add a description of the lab environment",
-                    "class": "uk-form-width-large",
+                    "class": "uk-textarea uk-form-width-large",
                 }
             ),
             "url": URLTextInput(
                 attrs={
                     "placeholder": "ex. https://hub.docker.com/r/wshand/cutter",
-                    "class": "uk-form-width-large",
+                    "class": "uk-input uk-form-width-large",
                 }
             ),
             "has_web_interface": forms.CheckboxInput(),

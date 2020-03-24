@@ -12,7 +12,7 @@
 
     {% block css %}
     {# UIkit stylesheet #}
-    <link rel="stylesheet" href="{% static 'css/uikit.gradient.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/uikit.min.css' %}">
 
     {# Custom stylesheets #}
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
@@ -28,6 +28,7 @@
     {% block javascripts %}
     <script type="application/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" ></script>
     <script type="application/javascript" src="{% static 'js/uikit.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/uikit-icons.min.js' %}"></script>
     {% endblock %}
   </body>
 </html>

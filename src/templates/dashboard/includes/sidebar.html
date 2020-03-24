@@ -2,12 +2,12 @@
 Sidebar for the dashboard
 {% endcomment %}
 
-<div class="uk-block uk-block-primary uk-contrast uk-padding-remove uk-width-2-10" id="sidebar-wrapper">
+<div class="uk-section uk-section-primary uk-padding-remove uk-width-1-5" id="sidebar-wrapper">
   <div class="uk-margin uk-margin-top sidebar-heading">
     {% include "includes/logo.html" %}
   </div>
 
-  <ul class="sidebar-button-list uk-nav uk-list-line uk-nav-parent-icon uk-nav-side" data-uk-nav="">
+  <ul class="sidebar-button-list uk-nav uk-list-divider uk-nav-parent-icon uk-nav-default" uk-nav="">
 
     {# Link back to dashboard #}
     <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
@@ -15,7 +15,7 @@ Sidebar for the dashboard
     {# Lab options #}
     <li class="uk-parent">
       <a href="#" aria-expanded="false">Labs</a>
-      <ul class="uk-list-line uk-nav-sub">
+      <ul class="uk-list-divider uk-nav-sub">
         <li><a href="{% url 'available labs' %}">Available labs</a></li>
         <li><a href="{% url 'active labs' %}">Active labs</a></li>
 

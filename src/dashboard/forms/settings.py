@@ -22,20 +22,35 @@ PasswordChangeForm
 class PasswordChangeForm(forms.Form):
 
     old_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Enter current password"}),
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Enter current password",
+                "class": "uk-input uk-form-width-large",
+            }
+        ),
         help_text="Enter the current password you use to login to this account.",
         min_length=MIN_PASSWORD_LENGTH,
     )
 
     new_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Enter new password"}),
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Enter new password",
+                "class": "uk-input uk-form-width-large",
+            }
+        ),
         help_text="Enter the new password you want to use.",
         validators=User.password.field.validators,
         min_length=MIN_PASSWORD_LENGTH,
     )
 
     new_repassword = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Enter new password again"}),
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Enter new password again",
+                "class": "uk-input uk-form-width-large",
+            }
+        ),
         help_text="Re-enter the new password you want to use.",
         min_length=MIN_PASSWORD_LENGTH,
     )

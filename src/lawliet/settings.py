@@ -30,7 +30,7 @@ if os.path.exists(dotenv_path):
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ.setdefault("DEVELOPMENT", "").lower() == "1":
+if os.environ.setdefault("DEVELOPMENT", "").lower() == "yes":
     logging.warn("Running server in debug mode")
     DEBUG = True
 else:
@@ -52,7 +52,11 @@ elif DEBUG:
 else:
     raise Exception("DJANGO_SECRET_KEY must be defined in DEBUG is False.")
 
-ALLOWED_HOSTS = [os.environ.setdefault("HOST", "*"), "127.0.0.1"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", None)
+if ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ALLOWED_HOSTS.strip().replace(" ", "").split(",")
+else:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition

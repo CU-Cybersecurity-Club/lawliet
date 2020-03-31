@@ -7,7 +7,7 @@ services:
   database:
     build:
       context: deploy_tools/db
-    image: wshand/lawliet-database:latest
+    image: lawliet-database:latest
     container_name: lawliet-database
     volumes:
       - dbvol:/var/lib/mysql:rw
@@ -26,8 +26,12 @@ services:
     build:
       context: .
       dockerfile: deploy_tools/webserver/Dockerfile
-    image: wshand/lawliet-webserver:latest
+    image: lawliet-webserver:latest
     container_name: lawliet-webserver
+    volumes:
+      - ./src:/var/www/src:ro
+    environment:
+      STATIC_ROOT: "/var/www/static"
     env_file:
       - .env
     networks:
@@ -68,7 +72,7 @@ services:
   proxy:
     build:
       context: deploy_tools/proxy
-    image: wshand/lawliet-dashboard-proxy:latest
+    image: lawliet-proxy:latest
     container_name: lawliet-proxy
     env_file:
       - .env

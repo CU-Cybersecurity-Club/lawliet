@@ -10,8 +10,7 @@ python3 manage.py collectstatic \
 # or we exceed the maximum number of attempts.
 for ii in {1..5}
 do
-    python3 manage.py makemigrations \
-        && python3 manage.py migrate --run-syncdb
+    python3 manage.py migrate --run-syncdb
 
     RESULT=$?
     if [ $RESULT -eq 0 ]
@@ -39,4 +38,5 @@ nginx
 # Run webserver
 gunicorn lawliet.wsgi \
     --bind 0.0.0.0:8000 \
-    --workers 2
+    --workers 2 \
+    --reload

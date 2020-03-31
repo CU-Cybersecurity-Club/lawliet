@@ -31,17 +31,18 @@ RUN apk update \
         libffi-dev \
         python3-dev
 
-ADD src /var/www
-
 # Add a user to run the server
 RUN adduser -D -s /bin/false -H -G www-data www-data \
+    && mkdir -p /var/www/src \
     && chown -R www-data:www-data /var/www
+
+VOLUME /var/www/src
 
 #
 # Configure Nginx
 #
 COPY deploy_tools/webserver/nginx-config /etc/nginx
 
-WORKDIR /var/www
-COPY deploy_tools/webserver/run.sh .
-CMD [ "./run.sh" ]
+WORKDIR /var/www/src
+COPY deploy_tools/webserver/run.sh /
+CMD [ "/run.sh" ]

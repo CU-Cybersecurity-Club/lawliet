@@ -13,7 +13,7 @@ DJANGO_SECRET_KEY:
     not specified, one will be randomly generated.
 
 ALLOWED_HOSTS:
-  default: "localhost,127.0.0.1"
+  default: "localhost,127.0.0.1,webserver"
   help: >
     A comma-separated list of hostnames/IP addresses with which it
     should be possible to access the server.

@@ -2,44 +2,90 @@ version: '3'
 
 services:
 
+  # MariaDB database for auth, storing information about labs, etc
+
   database:
     build:
       context: deploy_tools/db
-    image: wshand/lawliet-dashboard-database:latest
+    image: wshand/lawliet-database:latest
+    container_name: lawliet-database
     volumes:
-      - mysql-database:/var/lib/mysql:rw
+      - dbvol:/var/lib/mysql:rw
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
     env_file:
       - .env
+    networks:
+      - labnet
     ports:
       - "5432:5432"
+
+  # Webserver which serves as the main interface for the site
 
   webserver:
     build:
       context: .
       dockerfile: deploy_tools/webserver/Dockerfile
-    image: wshand/lawliet-dashboard-webserver:latest
+    image: wshand/lawliet-webserver:latest
+    container_name: lawliet-webserver
     env_file:
       - .env
-    ports:
-      - "8000:8000"
-      - "8001:80"
+    networks:
+      - labnet
     depends_on:
       - database
+
+  # Apache Guacamole
+
+  guacd:
+    image: guacamole/guacd:latest
+    container_name: lawliet-guacd
+    networks:
+      - labnet
+
+  guacamole:
+    build:
+      context: deploy_tools/guacamole
+    image: lawliet-guacamole:latest
+    container_name: lawliet-guacamole
+    env_file:
+      - .env
+    environment:
+      GUACAMOLE_HOME: "/etc/guacamole"
+      GUACD_HOSTNAME: lawliet-guacd
+      GUACD_PORT: 4822
+      MYSQL_HOSTNAME: lawliet-database
+    ports:
+      - "8080:8080"
+    networks:
+      - labnet
+    depends_on:
+      - database
+      - guacd
+
+  # Nginx proxy between the webserver and the rest of the world
 
   proxy:
     build:
       context: deploy_tools/proxy
     image: wshand/lawliet-dashboard-proxy:latest
+    container_name: lawliet-proxy
     env_file:
       - .env
     volumes:
       - tls:/etc/letsencrypt:rw
+    networks:
+      - labnet
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - webserver
+      - guacamole
+
+networks:
+  labnet:
 
 volumes:
   tls:
-  mysql-database:
+  dbvol:

@@ -6,8 +6,5 @@ requests == 2.22.0
 # Image processing
 Pillow == 6.2.1
 
-# Database
-mysql
-
 # Deployment automation
 python-dotenv

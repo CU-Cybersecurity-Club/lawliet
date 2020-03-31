@@ -1,3 +1,0 @@
-upstream site-server {
-    server ${SITE_SERVER}:8000;
-}

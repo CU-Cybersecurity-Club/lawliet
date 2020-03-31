@@ -52,11 +52,10 @@ elif DEBUG:
 else:
     raise Exception("DJANGO_SECRET_KEY must be defined in DEBUG is False.")
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", None)
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", [])
 if ALLOWED_HOSTS:
     ALLOWED_HOSTS = ALLOWED_HOSTS.strip().replace(" ", "").split(",")
-else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS += ["localhost", "127.0.0.1"]
 
 
 # Application definition

@@ -41,8 +41,8 @@ VOLUME /var/www/src
 #
 # Configure Nginx
 #
-COPY deploy_tools/webserver/nginx-config /etc/nginx
+COPY docker/webserver/nginx-config /etc/nginx
 
 WORKDIR /var/www/src
-COPY deploy_tools/webserver/run.sh /
+COPY docker/webserver/run.sh /
 CMD [ "/run.sh" ]

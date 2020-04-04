@@ -6,7 +6,7 @@ services:
 
   database:
     build:
-      context: deploy_tools/db
+      context: docker/database
     image: lawliet-database:latest
     container_name: lawliet-database
     volumes:
@@ -25,7 +25,7 @@ services:
   webserver:
     build:
       context: .
-      dockerfile: deploy_tools/webserver/Dockerfile
+      dockerfile: docker/webserver/Dockerfile
     image: lawliet-webserver:latest
     container_name: lawliet-webserver
     volumes:
@@ -49,7 +49,7 @@ services:
 
   guacamole:
     build:
-      context: deploy_tools/guacamole
+      context: docker/guacamole
     image: lawliet-guacamole:latest
     container_name: lawliet-guacamole
     env_file:
@@ -71,7 +71,7 @@ services:
 
   proxy:
     build:
-      context: deploy_tools/proxy
+      context: docker/proxy
     image: lawliet-proxy:latest
     container_name: lawliet-proxy
     env_file:
@@ -85,6 +85,20 @@ services:
       - "443:443"
     depends_on:
       - webserver
+      - guacamole
+
+  # SSH server accessible over Guacamole for testing purposes
+
+  lawliet-ssh:
+    build:
+      context: docker/ssh
+      args:
+        FROM_IMAGE: "debian:buster-slim"
+    container_name: lawliet-ssh
+    image: lawliet-ssh
+    networks:
+      - labnet
+    depends_on:
       - guacamole
 
 networks:

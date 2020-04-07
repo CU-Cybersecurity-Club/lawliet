@@ -1,8 +1,13 @@
+import logging
 import os
+import requests
+
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.views import View
 from django.views.decorators.http import require_http_methods
 from django.urls import reverse
 
@@ -31,11 +36,19 @@ Dashboard
 """
 
 
-@login_required
-@require_http_methods(["GET"])
-def dashboard(request):
-    template = os.path.join(TEMPLATES, "dashboard.html")
-    return render(request, template)
+class DashboardView(LoginRequiredMixin, View):
+
+    logger = logging.getLogger("labs")
+
+    def get(self, request):
+        template = os.path.join(TEMPLATES, "dashboard.html")
+        environments = LabEnvironment.objects.all()
+        return render(request, template, context={"environments": environments})
+
+    def post(self, request):
+        template = os.path.join(TEMPLATES, "dashboard.html")
+        environments = LabEnvironment.objects.all()
+        return render(request, template, context={"environments": environments})
 
 
 @login_required

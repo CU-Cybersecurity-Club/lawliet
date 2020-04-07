@@ -196,3 +196,35 @@ EMAIL_USE_TLS = bool(os.getenv("EMAIL_USE_TLS", True))
 
 MAX_PASSWORD_LENGTH = int(os.getenv("MAX_PASSWORD_LENGTH", 64))
 MIN_PASSWORD_LENGTH = int(os.getenv("MIN_PASSWORD_LENGTH", 8))
+
+# Logging settings
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[{asctime}] [{process:d}] [{levelname}] {message}",
+            "style": "{",
+        },
+        "verbose": {
+            "format": "[{asctime}] {module} [{process:d}] [{thread:d}] [{levelname}] {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "default",},
+        "console_debug": {"class": "logging.StreamHandler", "formatter": "verbose",},
+    },
+    "root": {"handlers": ["console"], "level": "INFO" if DEBUG else "WARNING"},
+    "loggers": {
+        # Search loggers
+        "labs": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LAB_LOGLEVEL", "DEBUG" if DEBUG else "INFO"),
+        },
+        "auth": {
+            "handler": ["console"],
+            "level": os.getenv("DJANGO_AUTH_LOGLEVEL", "DEBUG" if DEBUG else "INFO"),
+        },
+    },
+}

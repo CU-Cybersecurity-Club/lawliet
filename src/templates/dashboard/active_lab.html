@@ -6,13 +6,12 @@
 {% block page-content %}
 
 <div class="uk-container">
-  <iframe src="/guacamole" class="vnc-wrapper" allowfullscreen="true"></iframe>
+  {# <iframe src="/guacamole" class="vnc-wrapper" allowfullscreen="false"></iframe> #}
 </div>
 {% endblock %}
 
 {% block javascripts %}
 {{ block.super }}
 {% load static %}
-<script type="application/javascript"
-  src="{% static 'js/active-labs.js' %}"></script>
+<script type="application/javascript" src="{% static 'js/guacamole-common.min.js' %}"></script>
 {% endblock %}

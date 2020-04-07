@@ -19,15 +19,15 @@
   {% endcomment %}
 
   <div class="uk-container uk-margin-top">
-    {% block no_page_header %}
-    <div class="uk-margin-bottom">
-      <h1 class="uk-article-title">
-        {% block page_header %}{% endblock %}
-        <hr>
-      </h1>
-    </div>
-    {% endblock %}
-    {% block page-content %}{% endblock %}
+  {% block no_page_header %}
+  <div class="uk-margin-bottom">
+    <h1 class="uk-article-title">
+      {% block page_header %}{% endblock %}
+      <hr>
+    </h1>
+  </div>
+  {% endblock %}
+  {% block page-content %}{% endblock %}
   </div>
 </article>
 {% endblock %}

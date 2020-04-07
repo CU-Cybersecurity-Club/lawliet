@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacamole
+  labels:
+    app: guacamole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guacamole
+  template:
+    metadata:
+      labels:
+        app: guacamole
+    spec:
+      containers:
+        - name: lawliet-guacamole
+          image: wshand/lawliet-guacamole:latest
+          imagePullPolicy: Always
+          env:
+            - name: "GUACAMOLE_HOME"
+              value: "/etc/guacamole"
+            - name: "GUACD_HOSTNAME"
+              value: "lawliet-guacd"
+            - name: "GUACD_PORT"
+              value: "4822"
+            - name: "MYSQL_HOSTNAME"
+              value: "lawliet-database"
+          envFrom:
+            - secretRef:
+                name: dashboard-secrets
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacd
+  labels:
+    app: guacamole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guacamole
+  template:
+    metadata:
+      labels:
+        app: guacamole
+    spec:
+      containers:
+        - name: lawliet-guacd
+          image: guacamole/guacd:latest
+

@@ -27,7 +27,7 @@ input.remember-me {
 
 /* Styling for the site logo */
 .site-logo {
-  font-family: lobster two, roboto, sans-serif !important;
+  font-family: "Lobster Two", roboto, sans-serif !important;
   user-select: none;
 }
 

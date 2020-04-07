@@ -7,7 +7,7 @@ services:
   database:
     build:
       context: docker/database
-    image: lawliet-database:latest
+    image: wshand/lawliet-database:latest
     container_name: lawliet-database
     volumes:
       - dbvol:/var/lib/mysql:rw
@@ -26,7 +26,7 @@ services:
     build:
       context: .
       dockerfile: docker/webserver/Dockerfile
-    image: lawliet-webserver:latest
+    image: wshand/lawliet-webserver:latest
     container_name: lawliet-webserver
     volumes:
       - ./src:/var/www/src:ro
@@ -50,7 +50,7 @@ services:
   guacamole:
     build:
       context: docker/guacamole
-    image: lawliet-guacamole:latest
+    image: wshand/lawliet-guacamole:latest
     container_name: lawliet-guacamole
     env_file:
       - .env
@@ -72,7 +72,7 @@ services:
   proxy:
     build:
       context: docker/proxy
-    image: lawliet-proxy:latest
+    image: wshand/lawliet-proxy:latest
     container_name: lawliet-proxy
     env_file:
       - .env
@@ -95,7 +95,7 @@ services:
       args:
         FROM_IMAGE: "debian:buster-slim"
     container_name: lawliet-ssh
-    image: lawliet-ssh
+    image: wshand/lawliet-ssh
     networks:
       - labnet
     depends_on:

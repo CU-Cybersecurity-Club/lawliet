@@ -31,7 +31,7 @@ urlpatterns = [
     # Admin
     url(r"^admin", admin.site.urls),
     # Dashboard
-    url(r"^dashboard$", dboard_views.dashboard, name="dashboard"),
+    url(r"^dashboard$", dboard_views.DashboardView.as_view(), name="dashboard"),
     url(r"^labs$", dboard_views.lab_list, name="available labs"),
     url(r"^active-lab$", dboard_views.active_lab, name="active labs"),
     url(r"^settings$", dboard_views.user_settings, name="user settings"),

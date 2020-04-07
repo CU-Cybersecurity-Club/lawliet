@@ -37,10 +37,6 @@ else:
     logging.warn("Running server in production mode")
     DEBUG = False
 
-if not DEBUG and "HOST" not in os.environ:
-    raise Exception("HOST environmental variable must be defined if DEBUG is False.")
-
-
 # SECURITY WARNING: keep the secret key used in production secret!
 #
 # If DJANGO_SECRET_KEY is undefined or doesn't exist as an environmental

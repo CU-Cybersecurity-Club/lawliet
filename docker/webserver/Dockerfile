@@ -36,12 +36,15 @@ RUN adduser -D -s /bin/false -H -G www-data www-data \
     && mkdir -p /var/www/src \
     && chown -R www-data:www-data /var/www
 
+COPY src /var/www/src
+
 VOLUME /var/www/src
 
 #
 # Configure Nginx
 #
-COPY docker/webserver/nginx-config /etc/nginx
+COPY docker/webserver/nginx.conf /etc/nginx/nginx.conf
+COPY docker/webserver/default.conf /etc/nginx/conf.d/default.conf
 
 WORKDIR /var/www/src
 COPY docker/webserver/run.sh /

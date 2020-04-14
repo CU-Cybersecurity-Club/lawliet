@@ -27,10 +27,13 @@ AVAILABLE_OPTIONS_FILE = os.path.relpath(
 )
 AVAILABLE_OPTIONS = []
 
-# Default location in which to safe the config file
+# Default location in which to save the config file
 SAVE_LOCATION = os.path.relpath(
     os.path.join(DEPLOY_TOOLS_DIR, os.pardir, ".env"), os.getcwd()
 )
+
+# Default location in which to save the config file as YAML for Kubernetes
+KUBE_SAVE_LOCATION = os.path.join(DEPLOY_TOOLS_DIR, "k8s", "secrets.yml")
 
 """
 ----------------------------------------
@@ -81,21 +84,56 @@ def generate_secret():
     return b64encode(token_bytes()).decode("utf-8")
 
 
+def save_config_to_yaml(opts):
+    """
+    Save configuration options as a Kubernetes secrets file.
+    """
+
+    opts = opts.copy()
+    for key in opts:
+        opts[key] = str(opts[key])
+
+    config = {
+        "apiVersion": "v1",
+        "kind": "Secret",
+        "metadata": {"name": "dashboard-secrets",},
+        "type": "Opaque",
+        "stringData": opts,
+    }
+
+    while os.path.exists(KUBE_SAVE_LOCATION):
+        overwrite = input(f"{KUBE_SAVE_LOCATION} already exists. Overwrite? (y/n): ")
+        if overwrite.lower() == "n":
+            overwrite = False
+            break
+        elif overwrite.lower() == "y":
+            overwrite = True
+            break
+        else:
+            print("Please enter y or n.")
+
+    if overwrite:
+        with open(KUBE_SAVE_LOCATION, "w", encoding="utf-8") as f:
+            dump = yaml.dump(config, allow_unicode=True, encoding=None)
+            f.write(dump)
+        print(f"Kubernetes secrets saved to {KUBE_SAVE_LOCATION}")
+
+
 def create_config(args):
     """
     Create a new config file from the default config.
     """
 
-    if os.path.exists(args.output):
-        while True:
-            overwrite = input(f"{args.output} already exists. Overwrite? (y/n): ")
-            if overwrite.lower() == "n":
-                print("Exiting...")
-                return
-            elif overwrite.lower() == "y":
-                break
-            else:
-                print("Please enter y or n.")
+    while os.path.exists(args.output):
+        overwrite = input(f"{args.output} already exists. Overwrite? (y/n): ")
+        if overwrite.lower() == "n":
+            overwrite = False
+            break
+        elif overwrite.lower() == "y":
+            overwrite = True
+            break
+        else:
+            print("Please enter y or n.")
 
     # Fill in some additional configuration options
     if args.DJANGO_SECRET_KEY is None:
@@ -104,18 +142,25 @@ def create_config(args):
         args.MYSQL_PASSWORD = generate_secret()
 
     # Write all configuration options to the output file
-    opts = []
+    opts = {}
+    opts_list = []
     for opt_name in AVAILABLE_OPTIONS:
         opt = getattr(args, opt_name)
-        if opt is None:
-            opts.append(f"{opt_name}=")
-        else:
-            opts.append(f"{opt_name}={opt}")
+        if opt is not None:
+            opts[opt_name] = opt
+            opts_list.append(f"{opt_name}={opt}")
 
-    with open(args.output, "w") as f:
-        f.write("\n".join(opts))
+        # if opt is None:
+        #    opts_list.append(f"{opt_name}=")
+        # else:
+        #    opts_list.append(f"{opt_name}={opt}")
 
-    print(f"Config saved to {os.path.abspath(args.output)}")
+    if overwrite:
+        with open(args.output, "w") as f:
+            f.write("\n".join(opts_list))
+        print(f"Config saved to {os.path.abspath(args.output)}")
+
+    save_config_to_yaml(opts)
 
 
 if __name__ == "__main__":

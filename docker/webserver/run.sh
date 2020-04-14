@@ -36,7 +36,8 @@ mkdir -p /data/nginx/cache
 nginx
 
 # Run webserver
-gunicorn lawliet.wsgi \
-    --bind 0.0.0.0:8000 \
-    --workers 2 \
-    --reload
+#gunicorn lawliet.wsgi \
+#    --bind 0.0.0.0:8000 \
+#    --workers 2 \
+#    --reload
+python3 manage.py runserver

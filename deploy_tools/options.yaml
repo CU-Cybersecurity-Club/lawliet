@@ -19,7 +19,7 @@ ALLOWED_HOSTS:
     should be possible to access the server.
 
 DATABASE_ENGINE:
-  default: sqlite3
+  default: mysql
   help: The database engine to use to run the site.
   choices:
     - sqlite3
@@ -42,6 +42,15 @@ MYSQL_DATABASE:
   help: >
     The name of the MySQL database to connect to. Ignored when
     DATABASE_ENGINE is not "mysql".
+
+MYSQL_RANDOM_ROOT_PASSWORD:
+  default: "yes"
+  help: >
+    Whether or not to initialize the MariaDB database with a random
+    root password.
+  choices:
+    - "yes"
+    - "no"
 
 DATABASE_HOST:
   default: database

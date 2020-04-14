@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lawliet-dashboard-database
+  name: lawliet-database-dply
   labels:
-    app: lawliet-dashboard-database
+    app: lawliet-database
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lawliet-dashboard-database
+      app: lawliet-database
   template:
     metadata:
       labels:
-        app: lawliet-dashboard-database
+        app: lawliet-database
     spec:
       containers:
-        - name: lawliet-dashboard-database
-          image: wshand/lawliet-dashboard-database:latest
+        - name: lawliet-database
+          image: wshand/lawliet-database:latest
           imagePullPolicy: Always
           envFrom:
             - secretRef:
@@ -29,50 +29,50 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lawliet-dashboard-webserver
+  name: lawliet-webserver-dply
   labels:
-    app: lawliet-dashboard-webserver
+    app: lawliet-webserver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lawliet-dashboard-webserver
+      app: lawliet-webserver
   template:
     metadata:
       labels:
-        app: lawliet-dashboard-webserver
+        app: lawliet-webserver
     spec:
       containers:
-        - name: lawliet-dashboard-webserver
-          image: wshand/lawliet-dashboard-webserver:latest
+        - name: lawliet-webserver
+          image: wshand/lawliet-webserver:latest
           imagePullPolicy: Always
           envFrom:
             - secretRef:
                 name: dashboard-secrets
           ports:
-            - containerPort: 8000
+            - containerPort: 80
               protocol: TCP
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lawliet-dashboard-proxy
+  name: lawliet-proxy-dply
   labels:
-    app: lawliet-dashboard-proxy
+    app: lawliet-proxy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lawliet-dashboard-proxy
+      app: lawliet-proxy
   template:
     metadata:
       labels:
-        app: lawliet-dashboard-proxy
+        app: lawliet-proxy
     spec:
       containers:
-        - name: lawliet-dashboard-proxy
-          image: wshand/lawliet-dashboard-proxy:latest
+        - name: lawliet-proxy
+          image: wshand/lawliet-proxy:latest
           imagePullPolicy: Always
           envFrom:
             - secretRef:
@@ -96,38 +96,28 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: lawliet-dashboard-database-svc
+  name: lawliet-webserver
+  labels:
+    app: lawliet-webserver
 spec:
   selector:
-    app: lawliet-dashboard-database
-  ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
-      protocol: TCP
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lawliet-dashboard-webserver-svc
-spec:
-  selector:
-    app: lawliet-dashboard-webserver
+    app: lawliet-webserver
   ports:
     - name: http
-      port: 8000
-      targetPort: 8000
+      port: 80
+      targetPort: 80
       protocol: TCP
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: lawliet-dashboard-proxy-svc
+  name: lawliet-proxy
+  labels:
+    app: lawliet-proxy
 spec:
   selector:
-    app: lawliet-dashboard-proxy
+    app: lawliet-proxy
   ports:
     - name: http
       port: 80
@@ -138,3 +128,20 @@ spec:
       targetPort: 443
       protocol: TCP
   type: NodePort
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawliet-database
+  labels:
+    app: lawliet-database
+spec:
+  selector:
+    app: lawliet-database
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+

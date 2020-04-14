@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guacamole
+  name: lawliet-guacamole-dply
   labels:
-    app: guacamole
+    app: lawliet-guacamole
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: guacamole
+      app: lawliet-guacamole
   template:
     metadata:
       labels:
-        app: guacamole
+        app: lawliet-guacamole
     spec:
       containers:
         - name: lawliet-guacamole
@@ -31,27 +31,69 @@ spec:
             - secretRef:
                 name: dashboard-secrets
           ports:
-            - containerPort: 3306
+            - containerPort: 8080
               protocol: TCP
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guacd
+  name: lawliet-guacd-dply
   labels:
-    app: guacamole
+    app: lawliet-guacamole
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: guacamole
+      app: lawliet-guacamole
   template:
     metadata:
       labels:
-        app: guacamole
+        app: lawliet-guacamole
     spec:
       containers:
         - name: lawliet-guacd
           image: guacamole/guacd:latest
+          ports:
+            - containerPort: 4822
+              protocol: TCP
+
+---
+
+### SERVICES
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawliet-guacamole
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawliet-guacamole
+spec:
+  selector:
+    app: lawliet-guacamole
+  ports:
+    - name: guacamole
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawliet-guacd
+apiVersion: v1
+kind: Service
+metadata:
+  name: lawliet-guacd
+spec:
+  selector:
+    app: lawliet-guacd
+  ports:
+    - name: guacamole
+      port: 4822
+      targetPort: 4822
+      protocol: TCP
 

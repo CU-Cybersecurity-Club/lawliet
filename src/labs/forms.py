@@ -4,6 +4,7 @@ Forms for handling labs (creation, deletion, etc.)
 
 from django import forms
 from django.contrib import admin
+from django.utils.translation import gettext as _
 
 from lawliet.widgets import URLTextInput
 from labs.models import LabEnvironment
@@ -26,7 +27,7 @@ class LabUploadForm(forms.ModelForm):
 
     class Meta:
         model = LabEnvironment
-        fields = ["name", "description", "url", "has_web_interface"]
+        fields = ["name", "description", "url", "protocol"]
         widgets = {
             "name": forms.TextInput(
                 attrs={
@@ -47,23 +48,43 @@ class LabUploadForm(forms.ModelForm):
                     "class": "uk-input uk-form-width-large",
                 }
             ),
-            "has_web_interface": forms.CheckboxInput(),
+            "protocol": forms.Select(
+                choices=[
+                    (protocol.lower(), protocol) for protocol in ("SSH", "VNC", "RDP")
+                ]
+            ),
         }
 
         labels = {
             "url": "Docker image URL",
-            "has_web_interface": "HTTP web interface",
         }
 
         help_texts = {
-            "has_web_interface": (
-                "Check the box below if the lab environment you're adding has an "
-                "HTTP web interface (i.e., it has an interface that can be accessed "
-                "via port 80)."
+            "protocol": (
+                "Choose the protocol that Guacamole will use to connect "
+                "to the container."
             )
         }
 
-        initial = {"has_web_interface": True}
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Add a port if one wasn't specified
+        if "port" not in cleaned_data:
+            protocol = cleaned_data.get("protocol")
+            if protocol == "ssh":
+                cleaned_data["port"] = 22
+            elif protocol == "vnc":
+                cleaned_data["port"] = 5901
+            elif protocol == "rdp":
+                cleaned_data["port"] = 3389
+            else:
+                error = forms.ValidationError(
+                    _("The protocol must be SSH, VNC, or RDP."), code="bad_protocol",
+                )
+                self.add_error("protocol", error)
+
+        return cleaned_data
 
 
 class LabEnvironmentAdmin(admin.ModelAdmin):

@@ -19,14 +19,17 @@ class LabEnvironment(models.Model):
 
     # The name of the lab. Set default=None to force an error if we try to
     # save a LabEnvironment to the database without a name.
-    name = models.CharField(max_length=30, blank=False, default=None)
+    name = models.CharField(max_length=30, blank=False, default=None, unique=True)
 
     # Description of the lab
     description = models.CharField(max_length=1000)
 
     # URL of the Docker image for the lab. Set default=None to force an error
     # if we try to save a LabEnvironment to the database without a url.
-    url = models.URLField(max_length=100, blank=False, default=None)
+    url = models.URLField(max_length=200, blank=False, default=None)
 
-    # Boolean field that specifies whether or not the lab has a web interface
-    has_web_interface = models.BooleanField(default=True)
+    # Protocol used by Guacamole to connect to the lab
+    protocol = models.CharField(max_length=32, blank=False)
+
+    # Port used to connect to the lab
+    port = models.PositiveIntegerField(blank=False)

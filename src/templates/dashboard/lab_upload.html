@@ -33,8 +33,8 @@ Interface for uploading new lab environments to Lawliet.
         <p>{{ field.help_text }}</p>
         {% endif %}
         <div>
-          {{ field }}
           {% include "includes/field_errors.html" with errors=field.errors only %}
+          {{ field }}
         </div>
         {% endfor %}
       </div>

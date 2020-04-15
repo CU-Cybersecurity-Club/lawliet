@@ -113,7 +113,7 @@ def upload_lab(request):
     context = {"lab_form": lab_form, "lab_menu_show": True}
 
     if request.POST and lab_form.is_valid():
-        lab = lab_form.save()
+        lab = LabEnvironment.objects.create(**lab_form.cleaned_data)
         context["success"] = True
         context["uploaded_id"] = lab.id
 

@@ -13,7 +13,7 @@ class GuacamoleConnection(models.Model):
     connection_id = models.AutoField(primary_key=True)
     connection_name = models.CharField(max_length=128)
     parent = models.ForeignKey(
-        "GuacamoleConnectionGroup", models.DO_NOTHING, blank=True, null=True
+        "GuacamoleConnectionGroup", models.CASCADE, blank=True, null=True
     )
     protocol = models.CharField(max_length=32)
     proxy_port = models.IntegerField(blank=True, null=True)
@@ -22,7 +22,7 @@ class GuacamoleConnection(models.Model):
     max_connections = models.IntegerField(blank=True, null=True)
     max_connections_per_user = models.IntegerField(blank=True, null=True)
     connection_weight = models.IntegerField(blank=True, null=True)
-    failover_only = models.IntegerField()
+    failover_only = models.IntegerField(default=0)
 
     class Meta:
         managed = True
@@ -31,9 +31,7 @@ class GuacamoleConnection(models.Model):
 
 
 class GuacamoleConnectionAttribute(models.Model):
-    connection = models.OneToOneField(
-        GuacamoleConnection, models.DO_NOTHING, primary_key=True
-    )
+    connection = models.ForeignKey(GuacamoleConnection, models.CASCADE)
     attribute_name = models.CharField(max_length=128)
     attribute_value = models.CharField(max_length=4096)
 
@@ -45,7 +43,7 @@ class GuacamoleConnectionAttribute(models.Model):
 
 class GuacamoleConnectionGroup(models.Model):
     connection_group_id = models.AutoField(primary_key=True)
-    parent = models.ForeignKey("self", models.DO_NOTHING, blank=True, null=True)
+    parent = models.ForeignKey("self", models.CASCADE, blank=True, null=True)
     connection_group_name = models.CharField(max_length=128)
     type = models.CharField(max_length=14)
     max_connections = models.IntegerField(blank=True, null=True)
@@ -59,9 +57,7 @@ class GuacamoleConnectionGroup(models.Model):
 
 
 class GuacamoleConnectionGroupAttribute(models.Model):
-    connection_group = models.OneToOneField(
-        GuacamoleConnectionGroup, models.DO_NOTHING, primary_key=True
-    )
+    connection_group = models.ForeignKey(GuacamoleConnectionGroup, models.CASCADE)
     attribute_name = models.CharField(max_length=128)
     attribute_value = models.CharField(max_length=4096)
 
@@ -72,10 +68,8 @@ class GuacamoleConnectionGroupAttribute(models.Model):
 
 
 class GuacamoleConnectionGroupPermission(models.Model):
-    entity = models.OneToOneField(
-        "GuacamoleEntity", models.DO_NOTHING, primary_key=True
-    )
-    connection_group = models.ForeignKey(GuacamoleConnectionGroup, models.DO_NOTHING)
+    entity = models.OneToOneField("GuacamoleEntity", models.CASCADE, primary_key=True)
+    connection_group = models.ForeignKey(GuacamoleConnectionGroup, models.CASCADE)
     permission = models.CharField(max_length=10)
 
     class Meta:
@@ -86,15 +80,15 @@ class GuacamoleConnectionGroupPermission(models.Model):
 
 class GuacamoleConnectionHistory(models.Model):
     history_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey("GuacamoleUser", models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey("GuacamoleUser", models.CASCADE, blank=True, null=True)
     username = models.CharField(max_length=128)
     remote_host = models.CharField(max_length=256, blank=True, null=True)
     connection = models.ForeignKey(
-        GuacamoleConnection, models.DO_NOTHING, blank=True, null=True
+        GuacamoleConnection, models.CASCADE, blank=True, null=True
     )
     connection_name = models.CharField(max_length=128)
     sharing_profile = models.ForeignKey(
-        "GuacamoleSharingProfile", models.DO_NOTHING, blank=True, null=True
+        "GuacamoleSharingProfile", models.CASCADE, blank=True, null=True
     )
     sharing_profile_name = models.CharField(max_length=128, blank=True, null=True)
     start_date = models.DateTimeField()
@@ -106,9 +100,7 @@ class GuacamoleConnectionHistory(models.Model):
 
 
 class GuacamoleConnectionParameter(models.Model):
-    connection = models.OneToOneField(
-        GuacamoleConnection, models.DO_NOTHING, primary_key=True
-    )
+    connection = models.ForeignKey("GuacamoleConnection", on_delete=models.CASCADE)
     parameter_name = models.CharField(max_length=128)
     parameter_value = models.CharField(max_length=4096)
 
@@ -119,10 +111,8 @@ class GuacamoleConnectionParameter(models.Model):
 
 
 class GuacamoleConnectionPermission(models.Model):
-    entity = models.OneToOneField(
-        "GuacamoleEntity", models.DO_NOTHING, primary_key=True
-    )
-    connection = models.ForeignKey(GuacamoleConnection, models.DO_NOTHING)
+    entity = models.ForeignKey("GuacamoleEntity", models.CASCADE)
+    connection = models.ForeignKey(GuacamoleConnection, models.CASCADE)
     permission = models.CharField(max_length=10)
 
     class Meta:
@@ -145,7 +135,7 @@ class GuacamoleEntity(models.Model):
 class GuacamoleSharingProfile(models.Model):
     sharing_profile_id = models.AutoField(primary_key=True)
     sharing_profile_name = models.CharField(max_length=128)
-    primary_connection = models.ForeignKey(GuacamoleConnection, models.DO_NOTHING)
+    primary_connection = models.ForeignKey(GuacamoleConnection, models.CASCADE)
 
     class Meta:
         managed = True
@@ -155,7 +145,7 @@ class GuacamoleSharingProfile(models.Model):
 
 class GuacamoleSharingProfileAttribute(models.Model):
     sharing_profile = models.OneToOneField(
-        GuacamoleSharingProfile, models.DO_NOTHING, primary_key=True
+        GuacamoleSharingProfile, models.CASCADE, primary_key=True
     )
     attribute_name = models.CharField(max_length=128)
     attribute_value = models.CharField(max_length=4096)
@@ -168,7 +158,7 @@ class GuacamoleSharingProfileAttribute(models.Model):
 
 class GuacamoleSharingProfileParameter(models.Model):
     sharing_profile = models.OneToOneField(
-        GuacamoleSharingProfile, models.DO_NOTHING, primary_key=True
+        GuacamoleSharingProfile, models.CASCADE, primary_key=True
     )
     parameter_name = models.CharField(max_length=128)
     parameter_value = models.CharField(max_length=4096)
@@ -180,8 +170,8 @@ class GuacamoleSharingProfileParameter(models.Model):
 
 
 class GuacamoleSharingProfilePermission(models.Model):
-    entity = models.OneToOneField(GuacamoleEntity, models.DO_NOTHING, primary_key=True)
-    sharing_profile = models.ForeignKey(GuacamoleSharingProfile, models.DO_NOTHING)
+    entity = models.OneToOneField(GuacamoleEntity, models.CASCADE, primary_key=True)
+    sharing_profile = models.ForeignKey(GuacamoleSharingProfile, models.CASCADE)
     permission = models.CharField(max_length=10)
 
     class Meta:
@@ -202,7 +192,7 @@ class GuacamoleSystemPermission(models.Model):
 
 class GuacamoleUser(models.Model):
     user_id = models.AutoField(primary_key=True)
-    entity = models.OneToOneField(GuacamoleEntity, models.DO_NOTHING)
+    entity = models.OneToOneField(GuacamoleEntity, models.CASCADE)
     password_hash = models.BinaryField(max_length=32)
     password_salt = models.BinaryField(max_length=32, blank=True, null=True)
     password_date = models.DateTimeField(default=timezone.now)
@@ -224,7 +214,7 @@ class GuacamoleUser(models.Model):
 
 
 class GuacamoleUserAttribute(models.Model):
-    user = models.OneToOneField(GuacamoleUser, models.DO_NOTHING, primary_key=True)
+    user = models.OneToOneField(GuacamoleUser, models.CASCADE, primary_key=True)
     attribute_name = models.CharField(max_length=128)
     attribute_value = models.CharField(max_length=4096)
 
@@ -236,7 +226,7 @@ class GuacamoleUserAttribute(models.Model):
 
 class GuacamoleUserGroup(models.Model):
     user_group_id = models.AutoField(primary_key=True)
-    entity = models.OneToOneField(GuacamoleEntity, models.DO_NOTHING)
+    entity = models.OneToOneField(GuacamoleEntity, models.CASCADE)
     disabled = models.IntegerField()
 
     class Meta:
@@ -246,7 +236,7 @@ class GuacamoleUserGroup(models.Model):
 
 class GuacamoleUserGroupAttribute(models.Model):
     user_group = models.OneToOneField(
-        GuacamoleUserGroup, models.DO_NOTHING, primary_key=True
+        GuacamoleUserGroup, models.CASCADE, primary_key=True
     )
     attribute_name = models.CharField(max_length=128)
     attribute_value = models.CharField(max_length=4096)
@@ -259,9 +249,9 @@ class GuacamoleUserGroupAttribute(models.Model):
 
 class GuacamoleUserGroupMember(models.Model):
     user_group = models.OneToOneField(
-        GuacamoleUserGroup, models.DO_NOTHING, primary_key=True
+        GuacamoleUserGroup, models.CASCADE, primary_key=True
     )
-    member_entity = models.ForeignKey(GuacamoleEntity, models.DO_NOTHING)
+    member_entity = models.ForeignKey(GuacamoleEntity, models.CASCADE)
 
     class Meta:
         managed = True
@@ -270,8 +260,8 @@ class GuacamoleUserGroupMember(models.Model):
 
 
 class GuacamoleUserGroupPermission(models.Model):
-    entity = models.OneToOneField(GuacamoleEntity, models.DO_NOTHING, primary_key=True)
-    affected_user_group = models.ForeignKey(GuacamoleUserGroup, models.DO_NOTHING)
+    entity = models.OneToOneField(GuacamoleEntity, models.CASCADE, primary_key=True)
+    affected_user_group = models.ForeignKey(GuacamoleUserGroup, models.CASCADE)
     permission = models.CharField(max_length=10)
 
     class Meta:
@@ -282,7 +272,7 @@ class GuacamoleUserGroupPermission(models.Model):
 
 class GuacamoleUserHistory(models.Model):
     history_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(GuacamoleUser, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(GuacamoleUser, models.CASCADE, blank=True, null=True)
     username = models.CharField(max_length=128)
     remote_host = models.CharField(max_length=256, blank=True, null=True)
     start_date = models.DateTimeField()
@@ -295,7 +285,7 @@ class GuacamoleUserHistory(models.Model):
 
 class GuacamoleUserPasswordHistory(models.Model):
     password_history_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(GuacamoleUser, models.DO_NOTHING)
+    user = models.ForeignKey(GuacamoleUser, models.CASCADE)
     password_hash = models.CharField(max_length=32)
     password_salt = models.CharField(max_length=32, blank=True, null=True)
     password_date = models.DateTimeField()

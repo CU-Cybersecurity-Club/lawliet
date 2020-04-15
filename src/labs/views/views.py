@@ -13,6 +13,7 @@ from django.urls import reverse
 from labs.models import LabEnvironment
 from guacamole.models import (
     GuacamoleConnection,
+    GuacamoleConnectionParameter,
     GuacamoleConnectionPermission,
     GuacamoleEntity,
 )
@@ -40,13 +41,27 @@ class GenerateLabView(HubAPIView):
         # response = requests.put(endpoint)
         endpoint = f"{self.api_server_host}/container/{username}"
 
-        # Register new lab with Guacamole
-        conn = GuacamoleConnection.objects.get(connection_name="ssh-test")
-        user = GuacamoleEntity.objects.get(name=request.user.username, type="USER")
+        # Create a new GuacamoleConnection to the container
+        conn = GuacamoleConnection.objects.create(
+            connection_name="ssh-test", protocol="ssh"
+        )
+        GuacamoleConnectionParameter.objects.bulk_create(
+            [
+                GuacamoleConnectionParameter(
+                    connection=conn,
+                    parameter_name="hostname",
+                    parameter_value="lawliet-ssh",
+                ),
+                GuacamoleConnectionParameter(
+                    connection=conn, parameter_name="port", parameter_value="22",
+                ),
+            ]
+        )
+
+        # Give the user permission to connect to the container
+        entity = GuacamoleEntity.objects.get(name=request.user.username, type="USER")
         perm = GuacamoleConnectionPermission.objects.create(
-            entity_id=user.entity_id,
-            connection_id=conn.connection_id,
-            permission="READ",
+            entity=entity, connection=conn, permission="READ",
         )
 
         return self._render_dashboard(request)
@@ -60,10 +75,9 @@ class DeleteLabView(HubAPIView):
         self.logger.info(f"User {username!r} requested to delete a lab")
 
         conn = GuacamoleConnection.objects.get(connection_name="ssh-test")
-        user = GuacamoleEntity.objects.get(name=request.user.username, type="USER")
-        GuacamoleConnectionPermission.objects.filter(
-            entity_id=user.entity_id, connection_id=conn.connection_id
-        ).delete()
+
+        # Delete the connection
+        conn.delete()
 
         return self._render_dashboard(request)
 

@@ -1,9 +1,12 @@
+import hashlib
 import logging
+import secrets
 
 from django.contrib.auth.models import BaseUserManager
 from django.core.validators import RegexValidator
-from django.db import connection
+from django.utils import timezone
 from django.utils.translation import gettext as _
+from guacamole.models import GuacamoleEntity, GuacamoleUser, GuacamoleUserPermission
 
 """
 ---------------------------------------------------
@@ -17,6 +20,11 @@ class UserManager(BaseUserManager):
     logger = logging.getLogger("auth")
 
     def create_user(self, username, email, password, **extra_fields):
+        if extra_fields.get("is_superuser", False):
+            self.logger.warn(f"Creating new superuser {username!r}")
+        else:
+            self.logger.info(f"Creating new user {username!r}")
+
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
@@ -27,59 +35,34 @@ class UserManager(BaseUserManager):
         user.save()
 
         # Add the user to the Guacamole database
-        with connection.cursor() as cur:
-            self.logger.info(f"Putting {username} into the Guacamole database")
+        h = hashlib.sha256()
+        salt = secrets.token_bytes(32)
+        h.update(password.encode("utf-8"))
+        h.update(salt.hex().upper().encode("utf-8"))
+        hashed_password = h.digest()
 
-            query = """
-            SET @salt = UNHEX(SHA2(UUID(), 256));
+        self.logger.info(f"Adding GuacamoleEntity for new user {username!r}")
+        entity = GuacamoleEntity.objects.create(name=username, type="USER")
 
-            INSERT INTO guacamole_entity
-                (name, type)
-            VALUES
-                ("%s", "USER");
+        self.logger.info(f"Adding GuacamoleUser for new user {username!r}")
+        guac_user = GuacamoleUser.objects.create(
+            entity_id=entity.entity_id,
+            password_salt=salt,
+            password_hash=hashed_password,
+            password_date=timezone.now(),
+        )
 
-            INSERT INTO guacamole_user
-                (entity_id, password_salt, password_hash, password_date)
-            SELECT
-                entity_id,
-                @salt,
-                UNHEX(SHA2(CONCAT("%s", HEX(@salt)), 256)),
-                NOW()
-            FROM guacamole_entity
-            WHERE name = "%s" AND type = "USER";
-            """
-            self.logger.debug(query)
-            cur.execute(query, [username, password, username])
+        perms = ["READ", "UPDATE"]
+        if user.is_superuser:
+            perms.append("ADMINISTER")
 
-            query = """
-            INSERT INTO guacamole_user_permission
-                (entity_id, affected_user_id, permission)
-            SELECT
-                guacamole_entity.entity_id, guacamole_user.user_id, permission
-            FROM (
-                SELECT
-                    "%s" AS username,
-                    "%s" AS affected_username,
-                    "READ"    AS permission
-                UNION SELECT
-                    "%s" AS username,
-                    "%s" AS affected_username,
-                    "UPDATE"  AS permission
-            ) permissions
-            JOIN
-                guacamole_entity
-                ON permissions.username = guacamole_entity.name
-                AND guacamole_entity.type = "USER"
-            JOIN
-                guacamole_entity affected
-                ON permissions.affected_username = affected.name
-                AND guacamole_entity.type = "USER"
-            JOIN
-                guacamole_user
-                ON guacamole_user.entity_id = affected.entity_id;
-            """
-            self.logger.debug(query)
-            cur.execute(query, 4 * [username])
+        for perm in perms:
+            self.logger.info(f"Adding {perm} permissions for new user {username!r}")
+            GuacamoleUserPermission.objects.create(
+                entity_id=entity.entity_id,
+                affected_user_id=guac_user.user_id,
+                permission=perm,
+            )
 
         return user
 

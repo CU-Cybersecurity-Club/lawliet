@@ -64,7 +64,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.forms",
+    # Custom apps
     "dashboard",
+    "guacamole",
     "labs",
     "users",
 ]

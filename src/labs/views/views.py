@@ -5,13 +5,17 @@ import requests
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import connection
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 from django.views import View
 from django.urls import reverse
 from labs.models import LabEnvironment
+from guacamole.models import (
+    GuacamoleConnection,
+    GuacamoleConnectionPermission,
+    GuacamoleEntity,
+)
 
 
 class HubAPIView(LoginRequiredMixin, View, metaclass=abc.ABCMeta):
@@ -34,11 +38,16 @@ class GenerateLabView(HubAPIView):
         username = request.user.username
         self.logger.info(f"User {username!r} requested to create a new lab")
         endpoint = f"{self.api_server_host}/container/{username}"
-        # response = requests.put(endpoint)
 
         # Register new lab with Guacamole
-        # TODO: fix SQLi
-        with connection.cursor() as cursor:
+        self.logger.info(GuacamoleEntity.objects.all())
+        conn = GuacamoleConnection.objects.get(connection_name="ssh-test")
+        user = GuacamoleEntity.objects.get(name=request.user.username, type="USER")
+        perm = GuacamoleConnectionPermission.objects.create(
+            user.entity_id, entity.connection_id, "READ"
+        )
+
+        '''
             query = """
             INSERT INTO guacamole_connection_permission
                 (entity_id, connection_id, permission)
@@ -55,6 +64,7 @@ class GenerateLabView(HubAPIView):
             """
             self.logger.debug(query)
             cursor.execute(query, [username])
+        '''
 
         return self._render_dashboard(request)
 

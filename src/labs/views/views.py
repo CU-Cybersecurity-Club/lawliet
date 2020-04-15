@@ -41,28 +41,46 @@ class GenerateLabView(HubAPIView):
         # response = requests.put(endpoint)
         endpoint = f"{self.api_server_host}/container/{username}"
 
-        # Create a new GuacamoleConnection to the container
-        conn = GuacamoleConnection.objects.create(
-            connection_name="ssh-test", protocol="ssh"
-        )
-        GuacamoleConnectionParameter.objects.bulk_create(
-            [
-                GuacamoleConnectionParameter(
-                    connection=conn,
-                    parameter_name="hostname",
-                    parameter_value="lawliet-ssh",
-                ),
-                GuacamoleConnectionParameter(
-                    connection=conn, parameter_name="port", parameter_value="22",
-                ),
-            ]
-        )
+        # Get the lab environment specified by the "create" parameter in
+        # the URL
+        lab_id = request.GET.get("create", None)
+        labenv = LabEnvironment.objects.filter(id=lab_id)
 
-        # Give the user permission to connect to the container
-        entity = GuacamoleEntity.objects.get(name=request.user.username, type="USER")
-        perm = GuacamoleConnectionPermission.objects.create(
-            entity=entity, connection=conn, permission="READ",
-        )
+        if not labenv.exists():
+            self.logger.info(
+                (
+                    f"User {username!r} failed to create new lab environment: lab "
+                    f"with id {lab_id} does not exist"
+                )
+            )
+        else:
+            protocol = labenv[0].protocol
+            port = str(labenv[0].port)
+
+            # Create a new GuacamoleConnection to the container
+            conn = GuacamoleConnection.objects.create(
+                connection_name="ssh-test", protocol=protocol,
+            )
+            GuacamoleConnectionParameter.objects.bulk_create(
+                [
+                    GuacamoleConnectionParameter(
+                        connection=conn,
+                        parameter_name="hostname",
+                        parameter_value="lawliet-ssh",
+                    ),
+                    GuacamoleConnectionParameter(
+                        connection=conn, parameter_name="port", parameter_value=port,
+                    ),
+                ]
+            )
+
+            # Give the user permission to connect to the container
+            entity = GuacamoleEntity.objects.get(
+                name=request.user.username, type="USER"
+            )
+            perm = GuacamoleConnectionPermission.objects.create(
+                entity=entity, connection=conn, permission="READ",
+            )
 
         return self._render_dashboard(request)
 

@@ -6,7 +6,12 @@ from django.contrib.auth.models import BaseUserManager
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from guacamole.models import GuacamoleEntity, GuacamoleUser, GuacamoleUserPermission
+from guacamole.models import (
+    GuacamoleEntity,
+    GuacamoleSystemPermission,
+    GuacamoleUser,
+    GuacamoleUserPermission,
+)
 
 """
 ---------------------------------------------------
@@ -52,17 +57,23 @@ class UserManager(BaseUserManager):
             password_date=timezone.now(),
         )
 
-        perms = ["READ", "UPDATE"]
+        user_perms = ["READ", "UPDATE"]
+        system_perms = []
         if user.is_superuser:
-            perms.append("ADMINISTER")
-
-        for perm in perms:
-            self.logger.info(f"Adding {perm} permissions for new user {username!r}")
-            GuacamoleUserPermission.objects.create(
-                entity_id=entity.entity_id,
-                affected_user_id=guac_user.user_id,
-                permission=perm,
+            user_perms.append("ADMINISTER")
+            system_perms.extend(
+                [
+                    "CREATE_CONNECTION",
+                    "CREATE_CONNECTION_GROUP",
+                    "CREATE_SHARING_PROFILE",
+                    "CREATE_USER",
+                    "CREATE_USER_GROUP",
+                    "ADMINISTER",
+                ]
             )
+
+        self.add_user_permissions(entity, guac_user, user_perms)
+        self.add_system_permissions(entity, guac_user, system_perms)
 
         return user
 
@@ -79,3 +90,47 @@ class UserManager(BaseUserManager):
             return self.create_user(
                 username=username, email=email, password=password, **extra_fields
             )
+
+    """
+    Helper functions
+    """
+
+    def add_user_permissions(
+        self, entity: GuacamoleEntity, user: GuacamoleUser, permissions
+    ):
+        """
+        Add user-level permissions to a GuacamoleUser
+        """
+
+        guac_perms = []
+
+        for perm in permissions:
+            self.logger.info(f"Adding user permission {perm} for user {entity.name!r}")
+            guac_perms.append(
+                GuacamoleUserPermission(
+                    entity_id=entity.entity_id,
+                    affected_user_id=user.user_id,
+                    permission=perm,
+                )
+            )
+
+        GuacamoleUserPermission.objects.bulk_create(guac_perms)
+
+    def add_system_permissions(
+        self, entity: GuacamoleEntity, user: GuacamoleUser, permissions
+    ):
+        """
+        Add system-level permissions to a GuacamoleUser
+        """
+
+        guac_perms = []
+
+        for perm in permissions:
+            self.logger.warn(
+                f"Adding system permission {perm} for user {entity.name!r}"
+            )
+            guac_perms.append(
+                GuacamoleSystemPermission(entity_id=entity.entity_id, permission=perm)
+            )
+
+        GuacamoleSystemPermission.objects.bulk_create(guac_perms)

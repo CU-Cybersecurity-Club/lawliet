@@ -37,34 +37,17 @@ class GenerateLabView(HubAPIView):
     def post(self, request):
         username = request.user.username
         self.logger.info(f"User {username!r} requested to create a new lab")
+        # response = requests.put(endpoint)
         endpoint = f"{self.api_server_host}/container/{username}"
 
         # Register new lab with Guacamole
-        self.logger.info(GuacamoleEntity.objects.all())
         conn = GuacamoleConnection.objects.get(connection_name="ssh-test")
         user = GuacamoleEntity.objects.get(name=request.user.username, type="USER")
         perm = GuacamoleConnectionPermission.objects.create(
-            user.entity_id, entity.connection_id, "READ"
+            entity_id=user.entity_id,
+            connection_id=conn.connection_id,
+            permission="READ",
         )
-
-        '''
-            query = """
-            INSERT INTO guacamole_connection_permission
-                (entity_id, connection_id, permission)
-            SELECT
-                entity_id,
-                (
-                    SELECT connection_id
-                    FROM guacamole_connection
-                    WHERE connection_name = "ssh-test"
-                ) as connection_id,
-                "READ"
-            FROM guacamole_entity
-            WHERE name = "%s" AND type = "USER";
-            """
-            self.logger.debug(query)
-            cursor.execute(query, [username])
-        '''
 
         return self._render_dashboard(request)
 
@@ -76,26 +59,11 @@ class DeleteLabView(HubAPIView):
         # response = requests.delete(endpoint)
         self.logger.info(f"User {username!r} requested to delete a lab")
 
-        # Delete lab connection from Guacamole
-        # TODO: fix SQLi
-        with connection.cursor() as cursor:
-            query = f"""
-            DELETE FROM guacamole_connection_permission
-            WHERE (entity_id, connection_id, permission) IN (
-                SELECT
-                    entity_id,
-                    (
-                        SELECT connection_id
-                        FROM guacamole_connection
-                        WHERE connection_name = "ssh-test"
-                    ) as connection_id,
-                    "READ"
-                FROM guacamole_entity
-                WHERE name = "%s" and type = "USER"
-            )
-            """
-            self.logger.debug(query)
-            cursor.execute(query, [username])
+        conn = GuacamoleConnection.objects.get(connection_name="ssh-test")
+        user = GuacamoleEntity.objects.get(name=request.user.username, type="USER")
+        GuacamoleConnectionPermission.objects.filter(
+            entity_id=user.entity_id, connection_id=conn.connection_id
+        ).delete()
 
         return self._render_dashboard(request)
 

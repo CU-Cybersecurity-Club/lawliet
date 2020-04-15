@@ -25,7 +25,7 @@ class GuacamoleConnection(models.Model):
     failover_only = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_connection"
         unique_together = (("connection_name", "parent"),)
 
@@ -38,7 +38,7 @@ class GuacamoleConnectionAttribute(models.Model):
     attribute_value = models.CharField(max_length=4096)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_connection_attribute"
         unique_together = (("connection", "attribute_name"),)
 
@@ -53,7 +53,7 @@ class GuacamoleConnectionGroup(models.Model):
     enable_session_affinity = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_connection_group"
         unique_together = (("connection_group_name", "parent"),)
 
@@ -66,7 +66,7 @@ class GuacamoleConnectionGroupAttribute(models.Model):
     attribute_value = models.CharField(max_length=4096)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_connection_group_attribute"
         unique_together = (("connection_group", "attribute_name"),)
 
@@ -79,7 +79,7 @@ class GuacamoleConnectionGroupPermission(models.Model):
     permission = models.CharField(max_length=10)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_connection_group_permission"
         unique_together = (("entity", "connection_group", "permission"),)
 
@@ -101,7 +101,7 @@ class GuacamoleConnectionHistory(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_connection_history"
 
 
@@ -113,7 +113,7 @@ class GuacamoleConnectionParameter(models.Model):
     parameter_value = models.CharField(max_length=4096)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_connection_parameter"
         unique_together = (("connection", "parameter_name"),)
 
@@ -137,7 +137,7 @@ class GuacamoleEntity(models.Model):
     type = models.CharField(max_length=10)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_entity"
         unique_together = (("type", "name"),)
 
@@ -148,7 +148,7 @@ class GuacamoleSharingProfile(models.Model):
     primary_connection = models.ForeignKey(GuacamoleConnection, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_sharing_profile"
         unique_together = (("sharing_profile_name", "primary_connection"),)
 
@@ -161,7 +161,7 @@ class GuacamoleSharingProfileAttribute(models.Model):
     attribute_value = models.CharField(max_length=4096)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_sharing_profile_attribute"
         unique_together = (("sharing_profile", "attribute_name"),)
 
@@ -174,7 +174,7 @@ class GuacamoleSharingProfileParameter(models.Model):
     parameter_value = models.CharField(max_length=4096)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_sharing_profile_parameter"
         unique_together = (("sharing_profile", "parameter_name"),)
 
@@ -185,19 +185,19 @@ class GuacamoleSharingProfilePermission(models.Model):
     permission = models.CharField(max_length=10)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_sharing_profile_permission"
         unique_together = (("entity", "sharing_profile", "permission"),)
 
 
 class GuacamoleSystemPermission(models.Model):
-    entity = models.OneToOneField(GuacamoleEntity, models.DO_NOTHING, primary_key=True)
+    entity_id = models.IntegerField()
     permission = models.CharField(max_length=23)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_system_permission"
-        unique_together = (("entity", "permission"),)
+        unique_together = (("entity_id", "permission"),)
 
 
 class GuacamoleUser(models.Model):
@@ -229,7 +229,7 @@ class GuacamoleUserAttribute(models.Model):
     attribute_value = models.CharField(max_length=4096)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_attribute"
         unique_together = (("user", "attribute_name"),)
 
@@ -240,7 +240,7 @@ class GuacamoleUserGroup(models.Model):
     disabled = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_group"
 
 
@@ -252,7 +252,7 @@ class GuacamoleUserGroupAttribute(models.Model):
     attribute_value = models.CharField(max_length=4096)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_group_attribute"
         unique_together = (("user_group", "attribute_name"),)
 
@@ -264,7 +264,7 @@ class GuacamoleUserGroupMember(models.Model):
     member_entity = models.ForeignKey(GuacamoleEntity, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_group_member"
         unique_together = (("user_group", "member_entity"),)
 
@@ -275,7 +275,7 @@ class GuacamoleUserGroupPermission(models.Model):
     permission = models.CharField(max_length=10)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_group_permission"
         unique_together = (("entity", "affected_user_group", "permission"),)
 
@@ -289,7 +289,7 @@ class GuacamoleUserHistory(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_history"
 
 
@@ -301,16 +301,16 @@ class GuacamoleUserPasswordHistory(models.Model):
     password_date = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_password_history"
 
 
 class GuacamoleUserPermission(models.Model):
-    entity = models.OneToOneField(GuacamoleEntity, models.DO_NOTHING, primary_key=True)
-    affected_user = models.ForeignKey(GuacamoleUser, models.DO_NOTHING)
+    entity_id = models.IntegerField()
+    affected_user_id = models.IntegerField()
     permission = models.CharField(max_length=10)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "guacamole_user_permission"
-        unique_together = (("entity", "affected_user", "permission"),)
+        unique_together = (("entity_id", "affected_user_id", "permission"),)

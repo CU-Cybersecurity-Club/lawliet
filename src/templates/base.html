@@ -1,34 +1,61 @@
 <!doctype html>
 {% spaceless %}
 {% load static %}
+{% load compress %}
 <html>
   <head>
     <meta charset="utf-8"/>
     <title>{% block title %}Lawliet{% endblock %}</title>
 
-    {% block head %}{% endblock %}
-
     <link rel="favicon" type="image/png" href="{% static 'img/favicon.png' %}" />
 
-    {% block css %}
-    {# UIkit stylesheet #}
-    <link rel="stylesheet" href="{% static 'css/uikit.min.css' %}">
+    {% comment %}
+    Stylesheet block
+    {% endcomment %}
 
-    {# Custom stylesheets #}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    {% compress css %}
+      {% block css %}
+      {# UIkit stylesheet #}
+      <link rel="stylesheet" href="{% static 'css/uikit.min.css' %}">
+      {# Custom stylesheets #}
+      <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+      {% endblock %}
+    {% endcompress %}
+
+    {% comment %}
+    An additional block for anything else we might want to put in the head
+    {% endcomment %}
+
+    {% block head %}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
     {% endblock %}
   </head>
 
   {% block navbar %}{% endblock %}
 
-  <body>
+  <body id="body">
     {% block body %}{% endblock %}
 
     {# JavaScript #}
     {% block javascripts %}
-    <script type="application/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" ></script>
-    <script type="application/javascript" src="{% static 'js/uikit.min.js' %}"></script>
-    <script type="application/javascript" src="{% static 'js/uikit-icons.min.js' %}"></script>
+    {% compress js %}
+      <script
+        type="text/javascript"
+        src="{% static 'js/jquery-3.4.1.min.js' %}">
+      </script>
+      <script
+        type="text/javascript"
+        src="{% static 'js/uikit.min.js' %}">
+      </script>
+      <script
+        type="text/javascript"
+        src="{% static 'js/uikit-icons.min.js' %}">
+      </script>
+    {% endcompress %}
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
+    </script>
     {% endblock %}
   </body>
 </html>

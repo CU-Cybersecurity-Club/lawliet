@@ -2,7 +2,7 @@ from django.conf.urls import url
 from labs.views import *
 
 urlpatterns = [
-    url(r"^generate-lab$", GenerateLabView.as_view(), name="generate lab"),
-    url(r"^delete-lab$", DeleteLabView.as_view(), name="delete lab"),
-    url(r"^lab-status$", LabStatusView.as_view(), name="lab status"),
+    url(r"^generate$", GenerateLabView.as_view(), name="generate lab"),
+    url(r"^delete$", DeleteLabView.as_view(), name="delete lab"),
+    url(r"^status$", LabStatusView.as_view(), name="lab status"),
 ]

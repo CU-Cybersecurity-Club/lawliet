@@ -5,9 +5,7 @@ import requests
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
-from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
 from django.views import View
 from django.urls import reverse
 from labs.models import LabEnvironment
@@ -28,10 +26,14 @@ class HubAPIView(LoginRequiredMixin, View, metaclass=abc.ABCMeta):
     logger = logging.getLogger("labs")
     api_server_host = "http://lawliet-k8s-api-server"
 
-    def _render_dashboard(self, request):
-        template = os.path.join("dashboard", "dashboard.html")
-        environments = LabEnvironment.objects.all()
-        return render(request, template, context={"environments": environments})
+    def generate_response(self, status=200, **kwargs):
+        """
+        Return a JsonResponse with the given status code, and with contents given
+        by the keyword arguments.
+        """
+        self.logger.info(f"status = {status}")
+        self.logger.info(f"kwargs = {kwargs}")
+        return JsonResponse(kwargs, status=status)
 
 
 class GenerateLabView(HubAPIView):
@@ -52,6 +54,9 @@ class GenerateLabView(HubAPIView):
                     f"User {username!r} failed to create new lab environment: lab "
                     f"with id {lab_id} does not exist"
                 )
+            )
+            return self.generate_response(
+                status=422, err=f"Lab environment does not exist", id=lab_id,
             )
         else:
             protocol = labenv[0].protocol
@@ -82,7 +87,13 @@ class GenerateLabView(HubAPIView):
                 entity=entity, connection=conn, permission="READ",
             )
 
-        return self._render_dashboard(request)
+            return self.generate_response(
+                status=200,
+                msg="Successfully created lab",
+                id=lab_id,
+                protocol=protocol,
+                port=port,
+            )
 
 
 class DeleteLabView(HubAPIView):
@@ -92,12 +103,15 @@ class DeleteLabView(HubAPIView):
         # response = requests.delete(endpoint)
         self.logger.info(f"User {username!r} requested to delete a lab")
 
-        conn = GuacamoleConnection.objects.get(connection_name="ssh-test")
+        conn = GuacamoleConnection.objects.filter(connection_name="ssh-test")
+        n_connections = len(conn)
 
         # Delete the connection
         conn.delete()
 
-        return self._render_dashboard(request)
+        return self.generate_response(
+            status=200, msg="Successfully deleted labs", n_deleted=n_connections,
+        )
 
 
 class LabStatusView(HubAPIView):

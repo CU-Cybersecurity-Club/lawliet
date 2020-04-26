@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.forms",
+    # django-compressor
+    "compressor",
     # Custom apps
     "dashboard",
     "guacamole",
@@ -177,6 +179,25 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_URL = "/static/"
 STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+)
+
+### Compression settings for django-compressor
+
+# COMPRESS_ENABLED: whether or not to compress files.
+# COMPRESS_ENABLED = not DEBUG
+COMPRESS_ENABLED = True
+
+# Filters to apply during compression
+COMPRESS_FILTERS = {
+    "css": [
+        "compressor.filters.css_default.CssAbsoluteFilter",
+        "compressor.filters.cssmin.CSSCompressorFilter",
+    ],
+}
 
 # Authentication options
 

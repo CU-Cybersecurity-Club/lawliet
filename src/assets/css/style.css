@@ -32,6 +32,13 @@ input.remember-me {
 }
 
 /***********************************
+ * Navbar
+ ***********************************/
+.site-navbar {
+  background-color: #222 !important;
+}
+
+/***********************************
  * Pop-up notifications
  ***********************************/
 .notification {

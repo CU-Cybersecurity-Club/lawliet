@@ -39,9 +39,7 @@ class HubAPIView(LoginRequiredMixin, View, metaclass=abc.ABCMeta):
 class GenerateLabView(HubAPIView):
     def post(self, request):
         username = request.user.username
-        self.logger.info(f"User {username!r} requested to create a new lab")
-        # response = requests.put(endpoint)
-        endpoint = f"{self.api_server_host}/container/{username}"
+        env_id = request.GET.get("create", "")
 
         # Get the lab environment specified by the "create" parameter in
         # the URL
@@ -59,6 +57,7 @@ class GenerateLabView(HubAPIView):
                 status=422, err=f"Lab environment does not exist", id=lab_id,
             )
         else:
+            image = labenv[0].url
             protocol = labenv[0].protocol
             port = str(labenv[0].port)
 
@@ -87,6 +86,17 @@ class GenerateLabView(HubAPIView):
                 entity=entity, connection=conn, permission="READ",
             )
 
+            try:
+                msg = f"Username {username!r} requested to create a new lab (environment id: {env_id})"
+                msg += f" (image: {image}) (port: {port})"
+                self.logger.info(msg)
+                endpoint = f"{self.api_server_host}/pods/{username}"
+                response = requests.put(
+                    endpoint, data={"image": image, "ports": [port]}
+                )
+            except Exception as ex:
+                self.logger.error(f"API error creating lab: {ex}")
+
             return self.generate_response(
                 status=200,
                 msg="Successfully created lab",
@@ -99,8 +109,11 @@ class GenerateLabView(HubAPIView):
 class DeleteLabView(HubAPIView):
     def post(self, request):
         username = request.user.username
-        endpoint = f"{self.api_server_host}/container/{username}"
-        # response = requests.delete(endpoint)
+        endpoint = f"{self.api_server_host}/pods/{username}"
+        try:
+            response = requests.delete(endpoint)
+        except Exception as ex:
+            self.logger.error(f"API error deleting lab: {ex}")
         self.logger.info(f"User {username!r} requested to delete a lab")
 
         conn = GuacamoleConnection.objects.filter(connection_name="ssh-test")
@@ -116,6 +129,6 @@ class DeleteLabView(HubAPIView):
 
 class LabStatusView(HubAPIView):
     def post(self, request):
-        endpoint = f"{self.api_server_host}/container/{request.user.username}"
+        endpoint = f"{self.api_server_host}/pods/{request.user.username}"
         response = requests.get(endpoint)
         return self._render_dashboard(request)

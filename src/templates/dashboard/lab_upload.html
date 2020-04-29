@@ -29,9 +29,9 @@ Interface for uploading new lab environments to Lawliet.
       <div class="uk-container">
         {% for field in lab_form %}
         <h2 class="uk-h2">{{ field.label }}</h2>
-        {% if field.help_text %}
-        <p>{{ field.help_text }}</p>
-        {% endif %}
+          {% if field.help_text %}
+          <p>{{ field.help_text }}</p>
+          {% endif %}
         <div>
           {% include "includes/field_errors.html" with errors=field.errors only %}
           {{ field }}

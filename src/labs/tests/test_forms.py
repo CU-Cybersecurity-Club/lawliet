@@ -43,16 +43,16 @@ class LabUploadFormTestCase(UnitTest):
             "name": self.lab_name,
             "description": self.lab_description,
             "url": self.lab_url,
-            "has_web_interface": True,
+            "protocol": "ssh",
         }
         form = LabUploadForm(data)
         self.assertTrue(form.is_valid())
 
         # Save the new environment to the database
-        form.save()
+        LabEnvironment.objects.create(**form.cleaned_data)
+        # form.save()
         self.assertEqual(len(LabEnvironment.objects.all()), 1)
 
         lab = LabEnvironment.objects.get(name=self.lab_name)
         self.assertEqual(lab.description, self.lab_description)
         self.assertEqual(lab.url, self.lab_url)
-        self.assertTrue(lab.has_web_interface)

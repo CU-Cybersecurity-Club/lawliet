@@ -1,6 +1,6 @@
 {% extends 'dashboard/dashboard_base.html' %}
 
-{% block page_header %}Dashboard{% endblock %}
+{% block page_header %}Lab environments{% endblock %}
 
 {% block javascripts %}
 {% load static %}
@@ -22,6 +22,8 @@
 <div class="uk-grid-divider" uk-grid>
   {% csrf_token %}
   <div class="uk-width-3-4@m">
+
+    {% if request.user.n_active_labs > 0 %}
     <div class="uk-container uk-text-center">
       <ul class="uk-list">
         <li>
@@ -40,6 +42,7 @@
         </li>
       </ul>
     </div>
+    {% endif %}
 
     <br>
 

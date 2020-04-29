@@ -42,9 +42,9 @@ class LabUploadForm(forms.ModelForm):
                     "class": "uk-textarea uk-form-width-large",
                 }
             ),
-            "url": URLTextInput(
+            "url": forms.TextInput(
                 attrs={
-                    "placeholder": "ex. https://hub.docker.com/r/wshand/cutter",
+                    "placeholder": "ex. wshand/cutter:latest",
                     "class": "uk-input uk-form-width-large",
                 }
             ),
@@ -72,6 +72,9 @@ class LabUploadForm(forms.ModelForm):
         # Add a port if one wasn't specified
         if "port" not in cleaned_data:
             protocol = cleaned_data.get("protocol")
+            print("=" * 30)
+            print(f"PROTOCOL: {protocol}")
+            print("=" * 30)
             if protocol == "ssh":
                 cleaned_data["port"] = 22
             elif protocol == "vnc":
@@ -84,6 +87,7 @@ class LabUploadForm(forms.ModelForm):
                 )
                 self.add_error("protocol", error)
 
+        print(f"CLEANED_DATA: {cleaned_data}")
         return cleaned_data
 
 

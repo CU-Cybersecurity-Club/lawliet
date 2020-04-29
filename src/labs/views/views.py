@@ -92,10 +92,14 @@ class GenerateLabView(HubAPIView):
                 self.logger.info(msg)
                 endpoint = f"{self.api_server_host}/pods/{username}"
                 response = requests.put(
-                    endpoint, data={"image": image, "ports": [port]}
+                    endpoint, json={"image": image, "ports": [port]}
                 )
             except Exception as ex:
                 self.logger.error(f"API error creating lab: {ex}")
+
+            # Increment the number of active labs that the user has
+            request.user.n_active_labs += 1
+            request.user.save()
 
             return self.generate_response(
                 status=200,
@@ -118,6 +122,11 @@ class DeleteLabView(HubAPIView):
 
         conn = GuacamoleConnection.objects.filter(connection_name="ssh-test")
         n_connections = len(conn)
+
+        # Decrement the number of active labs that the user has
+        if request.user.n_active_labs > 0:
+            request.user.n_active_labs -= 1
+            request.user.save()
 
         # Delete the connection
         conn.delete()

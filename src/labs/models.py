@@ -26,7 +26,7 @@ class LabEnvironment(models.Model):
 
     # URL of the Docker image for the lab. Set default=None to force an error
     # if we try to save a LabEnvironment to the database without a url.
-    url = models.URLField(max_length=200, blank=False, default=None)
+    url = models.CharField(max_length=200, blank=False, default=None)
 
     # Protocol used by Guacamole to connect to the lab
     protocol = models.CharField(max_length=32, blank=False)

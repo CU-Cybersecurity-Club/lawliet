@@ -20,6 +20,7 @@ from django.contrib import admin
 from dashboard import views as dboard_views
 from labs import urls as lab_urls
 from users import views as user_views
+from users import urls as user_urls
 
 urlpatterns = [
     url(r"^$", dboard_views.index_page, name="index"),
@@ -38,6 +39,8 @@ urlpatterns = [
     url(r"^upload-lab$", dboard_views.upload_lab, name="upload lab"),
     # Lab API
     url(r"^labs/", include(lab_urls)),
+    # User API
+    url(r"^user/", include(user_urls)),
 ]
 
 if settings.DEBUG:

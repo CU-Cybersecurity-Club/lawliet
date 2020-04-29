@@ -34,6 +34,8 @@ class LabEnvironmentTestCase(UnitTest):
             name="Cutter + Radare2",
             description="Cutter & Radare2 desktop",
             url=random_docker_image(self.rd),
+            protocol="vnc",
+            port=5901,
         )
 
     def test_can_retrieve_basic_environment(self):
@@ -43,4 +45,3 @@ class LabEnvironmentTestCase(UnitTest):
         """
         cutter_lab = LabEnvironment.objects.get(name="Cutter + Radare2")
         self.assertEqual(cutter_lab.description, "Cutter & Radare2 desktop")
-        self.assertTrue(cutter_lab.has_web_interface)  # True by default

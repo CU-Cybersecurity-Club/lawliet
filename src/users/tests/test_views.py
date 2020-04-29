@@ -333,3 +333,19 @@ class LogoutViewTestCase(UnitTest):
         self.assertFalse(get_user(self.client).is_authenticated)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("login"))
+
+
+"""
+---------------------------------------------------
+User API tests
+---------------------------------------------------
+"""
+
+
+@tag("user-api")
+class UserAPITestCase(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+
+    def test_get_user_info(self):
+        pass

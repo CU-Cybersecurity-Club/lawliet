@@ -27,7 +27,7 @@ class UserInfoView(UserAPIView):
             "username": user.username,
             "email": user.email,
             "date_joined": user.date_joined,
-            "active_labs": user.n_active_labs,
+            "n_active_labs": user.n_active_labs,
         }
 
         return JsonResponse(info)

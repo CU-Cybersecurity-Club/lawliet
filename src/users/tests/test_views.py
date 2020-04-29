@@ -2,6 +2,7 @@
 Tests for authentication-related views.
 """
 
+import datetime
 import os
 import re
 
@@ -348,4 +349,9 @@ class UserAPITestCase(UnitTest):
         super().setUp(preauth=True)
 
     def test_get_user_info(self):
-        pass
+        response = self.client.get(reverse("user_api.user_info"))
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        self.assertEqual(response["username"], self.user.username)
+        self.assertEqual(response["email"], self.user.email)
+        self.assertEqual(response["n_active_labs"], self.user.n_active_labs)

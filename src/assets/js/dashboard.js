@@ -1,64 +1,71 @@
 /* JavaScript for the site dashboard. */
 
-/***************************************
- * Dashboard sidebar toggle
- ***************************************/
-$("#sidebar-toggle").click(function(e) {
-    e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+
+/*
+ * Vue components
+ */
+
+const active_lab_management_template = `
+<ul class="uk-list">
+  <li>
+    <button type="button" class="uk-button uk-button-primary uk-width-1-3@m">
+      Lab status
+    </button>
+  </li>
+  <li>
+    <button
+      type="button"
+      id="delete-button"
+      class="uk-button uk-button-primary uk-width-1-3@m"
+      v-on:click="delete_lab()">
+      Delete lab
+    </button>
+  </li>
+</ul>`;
+
+/*
+const active_lab_management_template = `
+<div class="uk-container uk-width-1-2@m">
+<div class="uk-card uk-card-body uk-card-secondary">
+  <h3 class="uk-card-title">Current lab:</h3>
+</div></div>`;
+*/
+
+Vue.component("active-lab-manager", {
+  // props: [],
+  template: active_lab_management_template,
 });
 
-/***************************************
- * Text autosizing to fit in enclosing containers.
- ***************************************/
-// Resize text in elements
-function scale_font_by_factor(el, shrink_factor) {
-     // Scale the font size of a CSS element by a provided factor
-    const initial_font_size = parseInt(el.css("font-size"), 10);
-    const scaled_font_size = initial_font_size * shrink_factor;
-    el.css("font-size", scaled_font_size + "px");
-}
+/*
+ * Helper functions
+ */
 
-function get_shrinkage_ratio(el, width) {
-    /* 
-     * Shrink the font size in an element until the element
-     * reaches a desired width. Return the shrinking factor
-     * (in the range of 0 to 1).
-     */
-    const initial_font_size = parseInt(el.css("font-size"), 10);
-    let current_font_size = initial_font_size;
-
-    for ( ; el.width() > width; --current_font_size ) {
-        el.css("font-size", current_font_size + "px");
-    }
-
-    // Restore the element back to its original font size
-    el.css("font-size", initial_font_size);
-
-    let ratio = current_font_size / initial_font_size;
-    return current_font_size / initial_font_size;
-}
-
-function autosize_text() {
-    $(".resize-parent").each(function () {
-        const rs_parent = $(this);
-        const parent_width = rs_parent.width();
-        let shrink_ratio = 1;
-
-        // Get the shrink factor that will bring all of the text
-        // to the appropriate width
-        let shrink_factors = rs_parent.find(".resize-child").each(function () {
-            const ratio = get_shrinkage_ratio($(this), parent_width);
-            const font_size = parseInt($(this).css("font-size"), 10);
-            scale_font_by_factor($(this), ratio);
-            $(this).removeClass("resize-child");
+function display_lab_manager() {
+  axios.get("/user/info")
+    .then(response => {
+      console.log("Number of active labs: " + response.data.n_active_labs);
+      if ( response.data.n_active_labs > 0 ) {
+        // If n_active_labs > 0, display the lab manager
+        new Vue({
+          el: "#active_lab_management",
         });
+      }
+      else {
+        // Otherwise, don't display anything
+        console.log("User has no active labs");
+      }
+    })
+    .catch(error => {
+      // Can't do anything outside of printing an error
+      console.log("Unable to read user information");
+      console.log(error);
     });
 }
 
-/***************************************
- * Code to run when the page loads.
- ***************************************/
-$(document).ready(function() {
-    autosize_text();
-});
+/*
+ * Script to run on page load
+ */
+
+display_lab_manager();

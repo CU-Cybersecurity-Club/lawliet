@@ -17,15 +17,11 @@ function generate_lab(lab_id) {
   axios.post(url)
     .then(function (response) {
       // Success
-      console.log("Successfully created lab");
-      console.log(response);
     })
     .catch(function (error) {
       // Error
-      console.log("Error creating lab");
       console.log(error);
     });
-  window.location.reload();
 }
 
 function delete_lab() {

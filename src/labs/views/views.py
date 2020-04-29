@@ -1,11 +1,13 @@
 import abc
+import json
 import logging
 import os
 import requests
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.core import serializers
+from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.urls import reverse
 from labs.models import LabEnvironment
@@ -63,7 +65,10 @@ class GenerateLabView(HubAPIView):
 
             # Create a new GuacamoleConnection to the container
             conn = GuacamoleConnection.objects.create(
-                connection_name="ssh-test", protocol=protocol,
+                # connection_name="ssh-test",
+                protocol=protocol,
+                lab=labenv[0],
+                user=request.user,
             )
             GuacamoleConnectionParameter.objects.bulk_create(
                 [
@@ -111,16 +116,42 @@ class GenerateLabView(HubAPIView):
 
 
 class DeleteLabView(HubAPIView):
+    """
+    Delete a user's active lab environment
+    """
+
     def post(self, request):
-        username = request.user.username
-        endpoint = f"{self.api_server_host}/pods/{username}"
+        user = request.user
+        conn_name = request.GET.get("id", None)
+        self.logger.info(
+            f"User {user.username} requested to delete lab (connection name: {conn_name})"
+        )
+
+        if conn_name is None:
+            return self.generate_response(
+                status=422, err="Connection name not provided"
+            )
+
+        conns = GuacamoleConnection.objects.filter(connection_name=conn_name)
+        if not conns.exists():
+            return self.generate_response(
+                status=422, err=f"Connection {conn_name} does not exist"
+            )
+
+        conns = conns.filter(user=user)
+        if not conns.exists():
+            return self.generate_response(
+                status=403, err=f"Cannot delete {conn_name}: permission denied"
+            )
+
+        endpoint = f"{self.api_server_host}/pods/{conn_name}"
+
         try:
             response = requests.delete(endpoint)
         except Exception as ex:
             self.logger.error(f"API error deleting lab: {ex}")
-        self.logger.info(f"User {username!r} requested to delete a lab")
 
-        conn = GuacamoleConnection.objects.filter(connection_name="ssh-test")
+        conn = GuacamoleConnection.objects.filter(connection_name=conn_name)
         n_connections = len(conn)
 
         # Decrement the number of active labs that the user has
@@ -136,8 +167,34 @@ class DeleteLabView(HubAPIView):
         )
 
 
-class LabStatusView(HubAPIView):
-    def post(self, request):
+class LabInfoView(HubAPIView):
+    """
+    Get all information about the labs being run by a single user
+    """
+
+    def get(self, request):
+        user = request.user
+        fields = ("name", "url", "protocol")
+        conns = GuacamoleConnection.objects.filter(user=request.user)
+
+        data = []
+        for conn in conns:
+            data.append(
+                {
+                    "name": conn.lab.name,
+                    "url": conn.lab.url,
+                    "protocol": conn.lab.protocol,
+                    "conn_id": conn.connection_id,
+                    "conn_name": conn.connection_name,
+                }
+            )
+
+        data = json.dumps(data)
+        return HttpResponse(data, status=200, content_type="application/json")
+
+
+class PodStatusView(HubAPIView):
+    def get(self, request):
         endpoint = f"{self.api_server_host}/pods/{request.user.username}"
         response = requests.get(endpoint)
         return self._render_dashboard(request)

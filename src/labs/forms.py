@@ -27,7 +27,7 @@ class LabUploadForm(forms.ModelForm):
 
     class Meta:
         model = LabEnvironment
-        fields = ["name", "description", "url", "protocol"]
+        fields = ["name", "description", "url", "protocol", "category"]
         widgets = {
             "name": forms.TextInput(
                 attrs={
@@ -42,11 +42,17 @@ class LabUploadForm(forms.ModelForm):
                     "class": "uk-textarea uk-form-width-large",
                 }
             ),
+            "category": forms.Select(
+                choices=[
+                    (_, _)
+                    for _ in ("Reverse engineering", "Recon", "Web", "Miscellaneous",)
+                ]
+            ),
             "url": forms.TextInput(
                 attrs={
                     "placeholder": "ex. wshand/cutter:latest",
                     "class": "uk-input uk-form-width-large",
-                }
+                },
             ),
             "protocol": forms.Select(
                 choices=[
@@ -72,9 +78,6 @@ class LabUploadForm(forms.ModelForm):
         # Add a port if one wasn't specified
         if "port" not in cleaned_data:
             protocol = cleaned_data.get("protocol")
-            print("=" * 30)
-            print(f"PROTOCOL: {protocol}")
-            print("=" * 30)
             if protocol == "ssh":
                 cleaned_data["port"] = 22
             elif protocol == "vnc":

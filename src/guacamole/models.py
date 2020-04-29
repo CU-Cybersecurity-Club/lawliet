@@ -7,11 +7,19 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.utils import timezone
+from uuid import uuid4
+
+# from labs.models import LabEnvironment
+# from user.models import User
+
+
+def gen_connection_name():
+    return str(uuid4())
 
 
 class GuacamoleConnection(models.Model):
     connection_id = models.AutoField(primary_key=True)
-    connection_name = models.CharField(max_length=128)
+    connection_name = models.CharField(max_length=128, default=gen_connection_name)
     parent = models.ForeignKey(
         "GuacamoleConnectionGroup", models.CASCADE, blank=True, null=True
     )
@@ -23,6 +31,10 @@ class GuacamoleConnection(models.Model):
     max_connections_per_user = models.IntegerField(blank=True, null=True)
     connection_weight = models.IntegerField(blank=True, null=True)
     failover_only = models.IntegerField(default=0)
+
+    # Additional custom fields, provided outside of Guacamole
+    lab = models.ForeignKey("labs.LabEnvironment", on_delete=models.CASCADE,)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE,)
 
     class Meta:
         managed = True

@@ -24,11 +24,11 @@ function generate_lab(lab_id) {
     });
 }
 
-function delete_lab() {
+function delete_lab(conn_name) {
   /* Delete the running lab */
   console.log("Deleting lab");
 
-  const url = "/labs/delete";
+  const url = "/labs/delete?id=" + encodeURIComponent(conn_name);
   axios.post(url)
     .then(function (response) {
       console.log("Successfully deleted lab");

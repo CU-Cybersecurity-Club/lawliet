@@ -15,12 +15,11 @@
 {% endblock %}
 
 {% block page-content %}
-<div class="uk-grid-divider" uk-grid>
+<div uk-grid>
   {% csrf_token %}
   <div class="uk-width-3-4@m">
 
-    <div class="uk-container uk-text-center" id="active_lab_management">
-      <active-lab-manager></active-lab-manager>
+    <div class="uk-child-width-1-2@m uk-grid-medium" id="active_lab_management" uk-grid>
     </div>
 
     <br>
@@ -81,19 +80,16 @@
 
   <div class="uk-width-1-4@m uk-text-center">
     <div class="uk-width-1-1">
-
-    {% load static %}
-    <div class="uk-container uk-width-1-2@m uk-margin-bottom">
-      <img src="{% static 'img/guacamole.png' %}">
-    </div>
-
-    <a href="/guacamole" target="_blank">
-      <button type="button" class="uk-button uk-button-secondary">
-        Go to Guacamole
-        <span uk-icon="icon: arrow-right"></span>
-      </button>
-    </a>
-
+      {% load static %}
+      <div class="uk-container uk-width-1-2@m uk-margin-bottom">
+        <img src="{% static 'img/guacamole.png' %}">
+      </div>
+      <a href="/guacamole" target="_blank">
+        <button type="button" class="uk-button uk-button-secondary">
+          Go to Guacamole
+          <span uk-icon="icon: arrow-right"></span>
+        </button>
+      </a>
     </div>
   </div>
 </div>

@@ -22,6 +22,7 @@ function generate_lab(lab_id) {
       // Error
       console.log(error);
     });
+  window.location.reload();
 }
 
 function delete_lab(conn_name) {

@@ -28,7 +28,7 @@ class HubAPIView(LoginRequiredMixin, View, metaclass=abc.ABCMeta):
     logger = logging.getLogger("labs")
     api_server_host = "http://lawliet-k8s-api-server"
 
-    def generate_response(self, status=200, **kwargs):
+    def generate_response(self, *args, status=200, **kwargs):
         """
         Return a JsonResponse with the given status code, and with contents given
         by the keyword arguments.
@@ -165,6 +165,17 @@ class DeleteLabView(HubAPIView):
         return self.generate_response(
             status=200, msg="Successfully deleted labs", n_deleted=n_connections,
         )
+
+
+class LabListView(HubAPIView):
+    """
+    Retrieve all of the labs that are available on the server.
+    """
+
+    def get(self, request):
+        data = LabEnvironment.objects.all()
+        data = serializers.serialize("json", data)
+        return HttpResponse(data, status=200, content_type="application/json")
 
 
 class LabInfoView(HubAPIView):

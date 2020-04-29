@@ -1,5 +1,5 @@
 html, body {
-  background-color: #e8e8e8;
+  font-family: "Roboto", arial, sans-serif, monospace;
 }
 
 body {
@@ -33,6 +33,10 @@ input.remember-me {
 .site-logo {
   font-family: "Lobster Two", roboto, sans-serif !important;
   user-select: none;
+}
+
+.monospace {
+  font-family: monospace !important;
 }
 
 /***********************************

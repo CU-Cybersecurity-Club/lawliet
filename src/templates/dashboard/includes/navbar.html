@@ -4,23 +4,22 @@ Navbar for the dashboard
 
 <nav class="site-navbar uk-navbar-container" id="navbar" uk-navbar>
   <div class="uk-navbar-left">
-      <a class="uk-navbar-item uk-logo" href="{% url 'dashboard' %}">
-        {% include "includes/logo.html" %}
-      </a>
+    <a class="uk-navbar-item uk-logo" href="{% url 'dashboard' %}">
+      {% include "includes/logo.html" %}
+    </a>
 
     <ul class="uk-navbar-nav uk-margin-left">
-      {# Lab environments #}
+      {% if request.user.is_staff %}
       <li>
-        <a href="#">Labs</a>
-        <div class="uk-navbar-dropdown">
-          <ul class="uk-nav uk-navbar-dropdown-nav">
-            <li><a href="{% url 'available labs' %}">Available labs</a></li>
-            <li><a href="{% url 'active labs' %}">Active labs</a></li>
-            {% if request.user.is_staff %}
-            <li><a href="{% url 'upload lab' %}">Upload new</a></li>
-            {% endif %}
-          </ul>
-        </div>
+        <a class="uk-navbar-item" href="{% url 'upload lab' %}">
+          Upload new
+        </a>
+      </li>
+      {% endif %}
+      <li>
+        <a class="uk-navbar-item" href="https://lawliet.ai">
+          Documentation
+        </a>
       </li>
     </ul>
   </div>

@@ -202,6 +202,26 @@ class LabInfoView(HubAPIView):
 
 class PodStatusView(HubAPIView):
     def get(self, request):
-        endpoint = f"{self.api_server_host}/pods/{request.user.username}"
-        response = requests.get(endpoint)
-        return self._render_dashboard(request)
+        conn_name = request.GET.get("id", None)
+
+        if conn_name is None:
+            return self.generate_response(
+                status=422, err="Connection name not provided"
+            )
+
+        conns = GuacamoleConnection.objects.filter(connection_name=conn_name)
+        if not conns.exists():
+            return self.generate_response(
+                status=422, err=f"Connection {conn_name} does not exist"
+            )
+
+        conns = conns.filter(user=request.user)
+        if not conns.exists():
+            return self.generate_response(
+                status=403, err=f"Cannot delete {conn_name}: permission denied"
+            )
+
+        endpoint = f"{self.api_server_host}/pods/{conn_name}"
+        response = requests.get(endpoint).json()
+        self.logger.info(f"Response: {response}")
+        return JsonResponse(response)

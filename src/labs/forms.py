@@ -62,14 +62,15 @@ class LabUploadForm(forms.ModelForm):
         }
 
         labels = {
-            "url": "Docker image URL",
+            "url": "Docker image",
         }
 
         help_texts = {
             "protocol": (
                 "Choose the protocol that Guacamole will use to connect "
                 "to the container."
-            )
+            ),
+            "url": "What Docker image should be run by this lab?",
         }
 
     def clean(self):

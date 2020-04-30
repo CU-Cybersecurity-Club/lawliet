@@ -44,6 +44,7 @@ class LabUploadFormTestCase(UnitTest):
             "description": self.lab_description,
             "url": self.lab_url,
             "protocol": "ssh",
+            "category": "Reverse engineering",
         }
         form = LabUploadForm(data)
         self.assertTrue(form.is_valid())

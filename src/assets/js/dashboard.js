@@ -21,7 +21,7 @@ const active_lab_management_template = `
           type="button"
           class="uk-button uk-button-primary uk-width-1-1@m"
           disabled>
-          Start lab
+          Open lab
         </button>
       </li>
       <li>
@@ -65,10 +65,7 @@ Vue.component("active-lab-header", {
  * Helper functions
  */
 
-function lab_starting_animation(lab_management_el) {
-  let el = lab_management_el.getElementsByTagName("p")[0];
-  console.log(el);
-
+function lab_starting_animation(el) {
   // Display some text saying "Lab starting..." (with the ellipsis
   // animated) until the lab is ready to go.
   let ii = 0;
@@ -102,6 +99,12 @@ function display_lab_manager() {
 
       new Vue({
         el: "#active_labs",
+        mounted: function() {
+          document.querySelectorAll(".waiting-text").forEach(el => {
+            console.log("el");
+            lab_starting_animation(el);
+          });
+        }
       });
 
       //lab_starting_animation();
@@ -117,4 +120,6 @@ function display_lab_manager() {
  * Script to run on page load
  */
 
-display_lab_manager();
+document.addEventListener("DOMContentLoaded", function() {
+  display_lab_manager();
+}, false);

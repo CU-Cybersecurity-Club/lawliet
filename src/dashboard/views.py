@@ -42,7 +42,7 @@ class DashboardView(LoginRequiredMixin, View):
 
     def get(self, request):
         template = os.path.join(TEMPLATES, "dashboard.html")
-        environments = LabEnvironment.objects.all()
+        environments = LabEnvironment.objects.all().order_by("category")
         return render(request, template, context={"environments": environments})
 
     def post(self, request):

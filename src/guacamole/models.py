@@ -5,16 +5,17 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+import uuid
 from django.db import models
 from django.utils import timezone
-from uuid import uuid4
 
 # from labs.models import LabEnvironment
 # from user.models import User
 
 
 def gen_connection_name():
-    return str(uuid4())
+    # 160 bits of randomness
+    return f"lawliet-env-{uuid.uuid4()}"
 
 
 class GuacamoleConnection(models.Model):

@@ -41,11 +41,7 @@ class HubAPIView(LoginRequiredMixin, View, metaclass=abc.ABCMeta):
 class GenerateLabView(HubAPIView):
     def post(self, request):
         username = request.user.username
-        env_id = request.GET.get("create", "")
-
-        # Get the lab environment specified by the "create" parameter in
-        # the URL
-        lab_id = request.GET.get("create", None)
+        lab_id = request.GET.get("create", "")
         labenv = LabEnvironment.objects.filter(id=lab_id)
 
         if not labenv.exists():
@@ -61,7 +57,7 @@ class GenerateLabView(HubAPIView):
         else:
             image = labenv[0].url
             protocol = labenv[0].protocol
-            port = str(labenv[0].port)
+            port = labenv[0].port
 
             # Create a new GuacamoleConnection to the container
             conn = GuacamoleConnection.objects.create(
@@ -75,7 +71,7 @@ class GenerateLabView(HubAPIView):
                     GuacamoleConnectionParameter(
                         connection=conn,
                         parameter_name="hostname",
-                        parameter_value="lawliet-ssh",
+                        parameter_value=conn.connection_name,
                     ),
                     GuacamoleConnectionParameter(
                         connection=conn, parameter_name="port", parameter_value=port,
@@ -92,10 +88,10 @@ class GenerateLabView(HubAPIView):
             )
 
             try:
-                msg = f"Username {username!r} requested to create a new lab (environment id: {env_id})"
+                msg = f"Username {username!r} requested to create a new lab (lab id: {lab_id})"
                 msg += f" (image: {image}) (port: {port})"
                 self.logger.info(msg)
-                endpoint = f"{self.api_server_host}/pods/{username}"
+                endpoint = f"{self.api_server_host}/pods/{conn.connection_name}"
                 response = requests.put(
                     endpoint, json={"image": image, "ports": [port]}
                 )

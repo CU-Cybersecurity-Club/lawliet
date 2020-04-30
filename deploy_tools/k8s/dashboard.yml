@@ -145,3 +145,12 @@ spec:
       targetPort: 3306
       protocol: TCP
 
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: lawliet-ingress
+spec:
+  backend:
+    serviceName: lawliet-proxy
+    servicePort: 80

@@ -40,16 +40,16 @@ kind: Deployment
 metadata:
   name: lawliet-guacd-dply
   labels:
-    app: lawliet-guacamole
+    app: lawliet-guacd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lawliet-guacamole
+      app: lawliet-guacd
   template:
     metadata:
       labels:
-        app: lawliet-guacamole
+        app: lawliet-guacd
     spec:
       containers:
         - name: lawliet-guacd

@@ -30,11 +30,11 @@ services:
     container_name: lawliet-webserver
     volumes:
       - ./src:/var/www/src:ro
-    env_file:
-      - .env
     environment:
       STATIC_ROOT: "/var/www/static"
-      DATABASE_ENGINE: sqlite3
+      DATABASE_ENGINE: mysql
+    env_file:
+      - .env
     networks:
       - labnet
     depends_on:
